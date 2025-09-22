@@ -4,6 +4,8 @@ import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 
 const scrolledNavigation = ref(false);
 const isMobileView = isMobile();
+const isDropdownOpen = ref(false);
+const dropdownRef = ref<HTMLElement>();
 
 const navigationClasses = computed(() => ({
   "navigation-scrolled": scrolledNavigation.value,
@@ -11,13 +13,28 @@ const navigationClasses = computed(() => ({
 }));
 
 const onScroll = () => (scrolledNavigation.value = window.scrollY > 10);
+const closeDropdown = () => (isDropdownOpen.value = false);
+const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
+const handleClickOutside = (event: MouseEvent) => {
+  if (!dropdownRef.value) {
+    return;
+  }
+
+  if (!dropdownRef.value.contains(event.target as Node)) {
+    closeDropdown();
+  }
+};
 
 onMounted(() => {
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("click", handleClickOutside);
 });
 
-onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", onScroll);
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -34,21 +51,47 @@ onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
         <button v-if="!isMobileView" class="navigation-right-button">
           Objavi svoj bazen
         </button>
-        <button class="navigation-right-button">
-          <svg
-            class="icon"
-            width="20"
-            height="15"
-            viewBox="0 0 20 15"
-            aria-hidden="true"
-          >
-            <path
-              d="M1.31 15h17.38c.723 0 1.31-.568 1.31-1.268s-.587-1.268-1.31-1.268H1.31c-.724 0-1.31.568-1.31 1.268S.586 15 1.31 15M1.31 8.768h17.38C19.413 8.768 20 8.2 20 7.5s-.587-1.268-1.31-1.268H1.31C.585 6.232 0 6.8 0 7.5s.586 1.268 1.31 1.268M20 1.268c0 .7-.587 1.268-1.31 1.268H1.31C.585 2.536 0 1.968 0 1.268S.586 0 1.31 0h17.38C19.413 0 20 .568 20 1.268"
-              fill="currentColor"
-            />
-          </svg>
-          Prijavi se
-        </button>
+        <div class="navigation-right-container" ref="dropdownRef" @click.stop>
+          <button class="navigation-right-button" @click="toggleDropdown">
+            <svg
+              class="icon"
+              width="20"
+              height="15"
+              viewBox="0 0 20 15"
+              aria-hidden="true"
+            >
+              <path
+                d="M1.31 15h17.38c.723 0 1.31-.568 1.31-1.268s-.587-1.268-1.31-1.268H1.31c-.724 0-1.31.568-1.31 1.268S.586 15 1.31 15M1.31 8.768h17.38C19.413 8.768 20 8.2 20 7.5s-.587-1.268-1.31-1.268H1.31C.585 6.232 0 6.8 0 7.5s.586 1.268 1.31 1.268M20 1.268c0 .7-.587 1.268-1.31 1.268H1.31C.585 2.536 0 1.968 0 1.268S.586 0 1.31 0h17.38C19.413 0 20 .568 20 1.268"
+                fill="currentColor"
+              />
+            </svg>
+            Prijavi se
+          </button>
+
+          <div v-if="isDropdownOpen" class="navigation-right-dropdown">
+            <button
+              class="navigation-right-dropdown-signin-button"
+              @click="closeDropdown"
+            >
+              Prijava ili registracija
+            </button>
+            <span class="navigation-right-dropdown-divider"></span>
+            <nav class="navigation-right-dropdown-links">
+              <a
+                class="navigation-right-dropdown-links-item"
+                @click.prevent="closeDropdown"
+              >
+                Objavi svoj bazen
+              </a>
+              <a
+                class="navigation-right-dropdown-links-item"
+                @click.prevent="closeDropdown"
+              >
+                Pomoć
+              </a>
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -84,6 +127,12 @@ onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
     display: flex;
     gap: 8px;
 
+    &-container {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+    }
+
     &-button {
       display: flex;
       align-items: center;
@@ -96,6 +145,51 @@ onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
       transition: filter 120ms ease;
       color: var(--text-color-white);
     }
+
+    &-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      background: #ffffff;
+      box-shadow: 0 14px 40px rgba(2, 8, 23, 0.12);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 99;
+
+      &-signin-button {
+        border-radius: 14px;
+        background: var(--primary-color);
+        padding: 14px 12px;
+        cursor: pointer;
+      }
+
+      &-divider {
+        height: 1px;
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      &-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        cursor: pointer;
+
+        &-item {
+          display: block;
+          text-decoration: none;
+          color: var(--text-color-black);
+          font-weight: 500;
+          padding: 10px 12px;
+
+          &:first-child {
+            color: var(--primary-color);
+          }
+        }
+      }
+    }
   }
 
   &--mobile {
@@ -104,13 +198,34 @@ onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
       padding: 20px 16px;
     }
 
-    .navigation-right-button {
-      font-size: 16px;
-    }
-
     .navigation-left-logo {
       height: 80px;
       width: 80px;
+    }
+
+    .navigation-right {
+      width: 100%;
+      justify-content: flex-end;
+
+      &-button {
+        font-size: 16px;
+      }
+
+      &-dropdown {
+        position: fixed;
+        top: 65px;
+        left: 5%;
+        right: 5%;
+        transform: none;
+
+        &-signin-button {
+          font-size: 16px;
+        }
+
+        &-links {
+          font-size: 14px;
+        }
+      }
     }
   }
 
@@ -120,19 +235,33 @@ onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
       padding: 30px 60px;
     }
 
-    .navigation-right-button {
-      font-size: 22px;
-
-      &:hover {
-        background-color: var(--button-hover);
-        color: var(--text-color-white);
-        border: 1px solid var(--button-hover);
-      }
-    }
-
     .navigation-left-logo {
       height: 100px;
       width: 100px;
+    }
+
+    .navigation-right {
+      &-button {
+        font-size: 22px;
+
+        &:hover {
+          background-color: var(--button-hover);
+          color: var(--text-color-white);
+          border: 1px solid var(--button-hover);
+        }
+      }
+
+      &-dropdown {
+        width: 420px;
+
+        &-signin-button {
+          font-size: 21px;
+        }
+
+        &-links {
+          font-size: 18px;
+        }
+      }
     }
   }
 }
