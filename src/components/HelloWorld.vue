@@ -1,3 +1,0 @@
-<script setup lang="ts"></script>
-
-<template>sto sad ece</template>
