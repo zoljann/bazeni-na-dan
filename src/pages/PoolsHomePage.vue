@@ -1,13 +1,31 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import Navigation from "../components/Navigation.vue";
 import isMobile from "is-mobile";
+import LocationDropdown from "../components/utility/LocationDropdown.vue";
+import allCities from "../helpers/bih-cities.json";
 
 const isMobileView = isMobile();
+const showLocationDropdown = ref(false);
+const selectedCity = ref<string>("Odaberite lokaciju");
 
 const contentClasses = computed(() => ({
   [`content--${isMobileView ? "mobile" : "desktop"}`]: true,
 }));
+
+const onSelectCity = (city: string) => {
+  selectedCity.value = city;
+  console.log("Odabrani grad:", city);
+};
+const onNearby = () => {
+  selectedCity.value = "Moja lokacija";
+  //ovdje ces zatrazti pristup lokaciji i iz nje izvuc grad, to istrazit dodatno
+};
+const handleSearchPoolClick = () => {
+  console.log(
+    "Otvorit search page tamo i zatrazit lokaciju ako ne dozvoli sve prikazat"
+  );
+};
 </script>
 
 <template>
@@ -15,25 +33,35 @@ const contentClasses = computed(() => ({
 
   <section class="content" :class="contentClasses">
     <div class="content-middle">
-      <h1 class="content-middle-title">Iznajmi privatni bazen, na dan</h1>
+      <h1 class="content-middle-title">Iznajmi privatne bazene, na dan</h1>
 
       <div class="content-search">
-        <div class="content-search-row">
-          <svg
-            class="content-search-icon"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
-              fill="currentColor"
-            />
-          </svg>
-          <span class="content-search-label">Trenutna lokacija</span>
-        </div>
-        <button class="content-search-button">Pretraži bazene</button>
+        <button class="content-search-row" @click="showLocationDropdown = true">
+          <span class="content-search-label">📍 {{ selectedCity }}</span>
+          <span class="content-search-dropdown-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24">
+              <path
+                d="M7 10l5 5 5-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
+
+        <LocationDropdown
+          v-model="showLocationDropdown"
+          :allCities="allCities"
+          @select="onSelectCity"
+          @nearby="onNearby"
+        />
+
+        <button class="content-search-button" @click="handleSearchPoolClick()">
+          Pretraži bazene
+        </button>
       </div>
     </div>
 
@@ -41,19 +69,9 @@ const contentClasses = computed(() => ({
       <h2>Prva platforma u BiH za dnevni najam privatnih bazena</h2>
       <p>
         Jednostavno pronađi bazen u svom gradu, kontaktiraj vlasnika i uživaj —
-        bez komplikacija i nepotrebnog dopisivanja. Filtriraj po lokaciji,
-        cijeni i pravilima (muzika, roštilj, parking…).
+        bez komplikacija…
       </p>
     </div>
-  </section>
-
-  <section class="page-section">
-    <h3>Kako funkcioniše?</h3>
-    <p>
-      Pretraži bazene po gradu, pronađi detalje i dostupnost, pa rezerviši
-      direktno telefonom ili putem poruke vlasniku. Vlasnici uređuju kalendar
-      zauzetosti i ističu svoj bazen kroz premium pakete.
-    </p>
   </section>
 </template>
 
@@ -61,7 +79,8 @@ const contentClasses = computed(() => ({
 .content {
   position: relative;
   min-height: 95vh;
-  background: url("../assets/background.png") center / cover no-repeat fixed;
+  background: url("../assets/background.jpg") center / cover no-repeat fixed;
+  background-color: red;
   display: grid;
   place-items: center;
 
@@ -80,6 +99,7 @@ const contentClasses = computed(() => ({
   }
 
   &-search {
+    position: relative;
     background: #ffffff;
     border-radius: 25px;
     box-shadow: 0 10px 30px rgba(2, 8, 23, 0.08);
@@ -95,13 +115,34 @@ const contentClasses = computed(() => ({
       padding: 8px 4px;
       color: var(--text-color-black);
       font-weight: 500;
+      cursor: pointer;
+    }
+
+    &-row:hover {
+      background: #e9ecf1;
+      opacity: 1;
+      border-radius: 20px;
     }
 
     &-button {
+      cursor: pointer;
       border-radius: 100px;
       height: 43px;
       font-weight: 800;
       background: var(--primary-color);
+
+      &:hover {
+        background: #119ec9;
+      }
+    }
+
+    &-dropdown-icon {
+      margin-left: auto;
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -121,7 +162,7 @@ const contentClasses = computed(() => ({
         width: 90%;
 
         &-title {
-          font-size: 28px;
+          font-size: 27px;
         }
       }
     }
@@ -129,6 +170,7 @@ const contentClasses = computed(() => ({
 
   &--desktop {
     margin-top: -90px;
+    font-size: 125%;
 
     .content {
       &-middle {

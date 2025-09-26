@@ -68,7 +68,10 @@ onBeforeUnmount(() => {
             Prijavi se
           </button>
 
-          <div v-if="isDropdownOpen" class="navigation-right-dropdown">
+          <div
+            class="navigation-right-dropdown"
+            :class="{ 'is-open': isDropdownOpen }"
+          >
             <button
               class="navigation-right-dropdown-signin-button"
               @click="closeDropdown"
@@ -158,6 +161,15 @@ onBeforeUnmount(() => {
       flex-direction: column;
       gap: 16px;
       z-index: 99;
+      opacity: 0;
+      transform: translateY(-6px);
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity 300ms ease,
+        transform 300ms ease,
+        visibility 0s linear 300ms;
+      transform-origin: top right;
 
       &-signin-button {
         border-radius: 14px;
@@ -189,6 +201,17 @@ onBeforeUnmount(() => {
           }
         }
       }
+    }
+
+    &-dropdown.is-open {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+      transition:
+        opacity 300ms ease,
+        transform 300ms ease,
+        visibility 0s;
     }
   }
 
@@ -245,6 +268,7 @@ onBeforeUnmount(() => {
         font-size: 22px;
 
         &:hover {
+          transition: 0.2s;
           background-color: var(--button-hover);
           color: var(--text-color-white);
           border: 1px solid var(--button-hover);
@@ -252,7 +276,7 @@ onBeforeUnmount(() => {
       }
 
       &-dropdown {
-        width: 420px;
+        width: 400px;
 
         &-signin-button {
           font-size: 21px;
