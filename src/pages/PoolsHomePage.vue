@@ -5,8 +5,10 @@ import isMobile from "is-mobile";
 import LocationDropdown from "../components/utility/LocationDropdown.vue";
 import allCities from "../helpers/bih-cities.json";
 import { faqData } from "../helpers/index";
+import { useRouter } from "vue-router";
 
 const isMobileView = isMobile();
+const router = useRouter();
 const showLocationDropdown = ref(false);
 const selectedCity = ref<string>("Odaberite lokaciju");
 const activeFaqTab = ref<"guests" | "hosts">("guests");
@@ -30,9 +32,7 @@ const onNearby = () => {
 };
 const onFindNearby = () => console.log("show nearest pools");
 const handleSearchPoolClick = () => {
-  console.log(
-    "Otvorit search page tamo i zatrazit lokaciju ako ne dozvoli sve prikazat"
-  );
+  router.push({ name: "PoolsSearchPage" });
 };
 </script>
 

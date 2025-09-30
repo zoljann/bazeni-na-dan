@@ -3,8 +3,13 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
-    name: "poolsHomePage",
+    name: "PoolsHomePage",
     component: () => import("../pages/PoolsHomePage.vue"),
+  },
+  {
+    path: "/search",
+    name: "PoolsSearchPage",
+    component: () => import("../pages/PoolsSearchPage.vue"),
   },
 ];
 
