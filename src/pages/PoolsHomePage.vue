@@ -339,7 +339,7 @@ const handleSearchPoolClick = () => {
     );
 
     &-how-it-works {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
       color: var(--text-color-black);
 
@@ -429,7 +429,7 @@ const handleSearchPoolClick = () => {
     }
 
     &-faq {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 28px auto 0;
       border-radius: 18px;
       background: #f2fbfe;
