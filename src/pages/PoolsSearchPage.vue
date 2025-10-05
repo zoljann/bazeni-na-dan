@@ -18,7 +18,7 @@ const pools = ref<Pool[]>([
     city: "Mostar",
     capacity: 8,
     pricePerDay: 150,
-    images: [demoImg],
+    images: [demoImg, "https://leisurepoolscanada.ca/wp-content/uploads/2020/06/best-type-of-swimming-pool-for-my-home_2.jpg", "https://media.istockphoto.com/id/1825000760/photo/swimming-pool-underwater.jpg?s=612x612&w=0&k=20&c=dv0Rwh7oQmjUBmyWriv2lHLq03u_noDfr5nG8ydxJGU="],
   },
   {
     id: "2",

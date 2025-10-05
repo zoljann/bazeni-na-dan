@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
 import isMobile from "is-mobile";
 import type { Pool } from "src/types";
 import { useFavorites } from "../../composables/useFavorites";
@@ -10,6 +13,9 @@ const props = defineProps<{
 
 const isMobileView = isMobile();
 const { isPoolFavorite, toggleFavoritePool } = useFavorites();
+const swiperRef = ref<any>(null);
+const isBeginning = ref(true);
+const isEnd = ref(props.pool.images.length <= 1);
 
 const priceLabel = computed(() =>
   props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : ""
@@ -19,12 +25,68 @@ const poolCardClasses = computed(() => ({
 }));
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(props.pool));
 
+const onSwiperInit = (sw: any) => {
+  swiperRef.value = sw;
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+};
+const onSlideChange = (sw: any) => {
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+};
+const goPrev = () => swiperRef.value?.slidePrev();
+const goNext = () => swiperRef.value?.slideNext();
 const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
 <template>
   <div class="pool-card" :class="poolCardClasses">
     <div class="pool-card-media">
-      <img class="pool-card-media" :src="pool.images[0]" alt="bazen slike" />
+      <Swiper
+        class="pool-card-media-swiper"
+        :modules="[Navigation]"
+        :slides-per-view="1"
+        @swiper="onSwiperInit"
+        @slideChange="onSlideChange"
+      >
+        <SwiperSlide v-for="(img, i) in pool.images" :key="i">
+          <img class="pool-card-media-img" :src="img" alt="bazen slike" />
+        </SwiperSlide>
+      </Swiper>
+
+      <button
+        class="pool-card-media-arrow pool-card-media-arrow--prev"
+        :class="{ 'is-disabled': isBeginning }"
+        @click.stop="goPrev"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M15 18 9 12l6-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <button
+        class="pool-card-media-arrow pool-card-media-arrow--next"
+        :class="{ 'is-disabled': isEnd }"
+        @click.stop="goNext"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="m9 18 6-6-6-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
       <button
         class="pool-card-like"
         :class="{ 'pool-card-like-active': isPoolAddedToFavorites }"
@@ -113,6 +175,21 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
   &-media {
     position: relative;
     aspect-ratio: 16 / 10;
+    overflow: hidden;
+
+    &-swiper {
+      height: 100%;
+      width: 100%;
+      position: relative;
+      z-index: 0;
+    }
+
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     &::after {
       content: "";
@@ -123,6 +200,40 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         rgba(0, 0, 0, 0.35),
         transparent 55%
       );
+      z-index: 1;
+    }
+
+    &-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: #ffffffcc;
+      color: var(--text-color-black);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
+
+      &:hover {
+        filter: brightness(0.95);
+      }
+
+      &--prev {
+        left: 8px;
+      }
+
+      &--next {
+        right: 8px;
+      }
+
+      &.is-disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
     }
 
     &-price {
@@ -135,6 +246,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       color: var(--text-color-white);
       font-weight: 800;
       box-shadow: 0 6px 14px rgba(0, 178, 255, 0.35);
+      z-index: 3;
     }
   }
 
@@ -149,7 +261,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     color: var(--text-color-black);
     display: grid;
     place-items: center;
-    z-index: 1;
+    z-index: 3;
     cursor: pointer;
 
     &:hover {
