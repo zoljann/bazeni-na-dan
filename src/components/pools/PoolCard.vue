@@ -2,12 +2,14 @@
 import { computed } from "vue";
 import isMobile from "is-mobile";
 import type { Pool } from "src/types";
+import { useFavorites } from "../../composables/useFavorites";
 
 const props = defineProps<{
   pool: Pool;
 }>();
 
 const isMobileView = isMobile();
+const { isPoolFavorite, toggleFavoritePool } = useFavorites();
 
 const priceLabel = computed(() =>
   props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : ""
@@ -15,18 +17,23 @@ const priceLabel = computed(() =>
 const poolCardClasses = computed(() => ({
   [`pool-card--${isMobileView ? "mobile" : "desktop"}`]: true,
 }));
+const isPoolAddedToFavorites = computed(() => isPoolFavorite(props.pool));
 
-const onLikeClick = () => console.log("add to favorites", props.pool.id);
+const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
 <template>
   <div class="pool-card" :class="poolCardClasses">
     <div class="pool-card-media">
       <img class="pool-card-media" :src="pool.images[0]" alt="bazen slike" />
-      <button class="pool-card-like" @click.stop="onLikeClick">
-        <svg width="18" height="18" viewBox="0 0 24 24">
+      <button
+        class="pool-card-like"
+        :class="{ 'pool-card-like-active': isPoolAddedToFavorites }"
+        @click.stop="onLikeClick"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.35l8.84-8.96a5.5 5.5 0 0 0 0-7.78Z"
-            fill="none"
+            :fill="isPoolAddedToFavorites ? 'currentColor' : 'none'"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
@@ -147,6 +154,11 @@ const onLikeClick = () => console.log("add to favorites", props.pool.id);
 
     &:hover {
       filter: brightness(0.95);
+    }
+
+    &-active {
+      color: rgb(156, 0, 0);
+      background: #ffffffdc;
     }
   }
 

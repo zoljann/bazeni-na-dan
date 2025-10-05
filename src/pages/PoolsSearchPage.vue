@@ -22,7 +22,8 @@ const pools = ref<Pool[]>([
   },
   {
     id: "2",
-    title: "Oaza Mira",
+    title:
+      "Oaza MirAAA A A AAAAAAAAAA NEKA TAMO MIRA NEMAM POJMA KOJE MIRA S A AA  A ASAAS a",
     city: "Sarajevo",
     capacity: 12,
     pricePerDay: 220,
@@ -31,7 +32,7 @@ const pools = ref<Pool[]>([
   {
     id: "3",
     title: "Plavi Raj",
-    city: "Tuzla",
+    city: "Tuzla  a a a a a aasassasssi",
     capacity: 6,
     images: [demoImg],
   },
@@ -89,7 +90,7 @@ const filteredPools = computed(() => {
   return pools.value.filter(
     (p) =>
       p.title.toLowerCase().includes(term) ||
-      p.city.toLowerCase().includes(term)
+      p.city.toLowerCase().includes(term),
   );
 });
 

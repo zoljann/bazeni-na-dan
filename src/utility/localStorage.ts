@@ -17,7 +17,7 @@ const isSupported = (): boolean => {
   }
 };
 
-export const localStorage: Storage = {
+export const storage: Storage = {
   isSupported: isSupported(),
   getItem(key: string) {
     if (!this.isSupported) return null;
