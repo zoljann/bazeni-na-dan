@@ -24,10 +24,10 @@ const toggleFaq = (i: number) => {
 };
 const onSelectCity = (city: string) => {
   selectedCity.value = city;
-  console.log("Odabrani grad:", city);
+  router.push({ name: "PoolsSearchPage", query: { city } });
 };
 const onNearby = () => {
-  selectedCity.value = "Moja lokacija";
+  selectedCity.value = "Blizu mene";
   //ovdje ces zatrazti pristup lokaciji i iz nje izvuc grad, to istrazit dodatno
 };
 const onFindNearby = () => console.log("show nearest pools");

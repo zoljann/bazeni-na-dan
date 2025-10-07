@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import isMobile from "is-mobile";
 import Navigation from "../components/Navigation.vue";
 import PoolCard from "../components/pools/PoolCard.vue";
 import type { Pool } from "src/types";
 import { getAvailablePools } from "../api";
 import { notificationsStore } from "../stores/notifications";
+import { useRoute } from "vue-router";
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
+const route = useRoute();
 const searchTerm = ref("");
 const pools = ref<Pool[]>();
 
@@ -40,6 +42,14 @@ onMounted(async () => {
     );
   }
 });
+
+watch(
+  () => route.query.city,
+  (city) => {
+    searchTerm.value = (city as string) || "";
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -74,7 +84,7 @@ onMounted(async () => {
           v-model="searchTerm"
           class="search-controls-input"
           type="text"
-          placeholder="Pretraži bazene"
+          placeholder="Pretraži po gradu ili nazivu"
         />
       </div>
 
