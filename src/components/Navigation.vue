@@ -24,6 +24,10 @@ const handleClickOutside = (event: MouseEvent) => {
     closeDropdown();
   }
 };
+const scrollToFaq = () => {
+  document.getElementById("faq")?.scrollIntoView();
+  closeDropdown();
+};
 
 onMounted(() => {
   onScroll();
@@ -89,6 +93,12 @@ onBeforeUnmount(() => {
               <a
                 class="navigation-right-dropdown-links-item"
                 @click.prevent="closeDropdown"
+              >
+                Sačuvani bazeni
+              </a>
+              <a
+                class="navigation-right-dropdown-links-item"
+                @click.prevent="scrollToFaq"
               >
                 Pomoć
               </a>

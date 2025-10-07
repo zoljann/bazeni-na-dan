@@ -18,7 +18,7 @@ const isBeginning = ref(true);
 const isEnd = ref(props.pool.images.length <= 1);
 
 const priceLabel = computed(() =>
-  props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : ""
+  props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : "",
 );
 const poolCardClasses = computed(() => ({
   [`pool-card--${isMobileView ? "mobile" : "desktop"}`]: true,

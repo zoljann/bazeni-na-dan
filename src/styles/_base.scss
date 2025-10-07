@@ -20,6 +20,10 @@ body {
     sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Remove default margin */
 body,
 h1,

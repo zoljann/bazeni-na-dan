@@ -82,7 +82,6 @@ const handleSearchPoolClick = () => {
         height="7"
         fill="currentColor"
         viewBox="0 0 11 7"
-        data-testid="findPoolsNearButton"
       >
         <path
           fill-rule="evenodd"
@@ -151,7 +150,7 @@ const handleSearchPoolClick = () => {
       </div>
     </div>
 
-    <div class="content-after-faq">
+    <div class="content-after-faq" id="faq">
       <h2 class="content-after-faq-title">Često postavljena pitanja</h2>
 
       <div class="content-after-faq-tabs">
