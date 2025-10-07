@@ -1,100 +1,24 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import isMobile from "is-mobile";
 import Navigation from "../components/Navigation.vue";
 import PoolCard from "../components/pools/PoolCard.vue";
 import type { Pool } from "src/types";
+import { getAvailablePools } from "../api";
+import { notificationsStore } from "../stores/notifications";
 
 const isMobileView = isMobile();
+const useNotificationsStore = notificationsStore();
 const searchTerm = ref("");
-
-const demoImg =
-  "https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg";
-
-const pools = ref<Pool[]>([
-  {
-    id: "1",
-    title: "Vila Sunce",
-    city: "Mostar",
-    capacity: 8,
-    pricePerDay: 150,
-    images: [
-      demoImg,
-      "https://leisurepoolscanada.ca/wp-content/uploads/2020/06/best-type-of-swimming-pool-for-my-home_2.jpg",
-      "https://media.istockphoto.com/id/1825000760/photo/swimming-pool-underwater.jpg?s=612x612&w=0&k=20&c=dv0Rwh7oQmjUBmyWriv2lHLq03u_noDfr5nG8ydxJGU=",
-    ],
-  },
-  {
-    id: "2",
-    title:
-      "Oaza MirAAA A A AAAAAAAAAA NEKA TAMO MIRA NEMAM POJMA KOJE MIRA S A AA  A ASAAS a",
-    city: "Sarajevo",
-    capacity: 12,
-    pricePerDay: 220,
-    images: [demoImg],
-  },
-  {
-    id: "3",
-    title: "Plavi Raj",
-    city: "Tuzla  a a a a a aasassasssi",
-    capacity: 6,
-    images: [demoImg],
-  },
-  {
-    id: "4",
-    title: "Jadranska Laguna",
-    city: "Neum",
-    capacity: 10,
-    pricePerDay: 280,
-    images: [demoImg],
-  },
-  {
-    id: "5",
-    title: "Zeleni Brežuljak",
-    city: "Banja Luka",
-    capacity: 14,
-    pricePerDay: 240,
-    images: [demoImg],
-  },
-  {
-    id: "6",
-    title: "Kamenita Bašta",
-    city: "Konjic",
-    capacity: 5,
-    images: [demoImg],
-  },
-  {
-    id: "7",
-    title: "Mostarska Terasa",
-    city: "Mostar",
-    capacity: 9,
-    pricePerDay: 190,
-    images: [demoImg],
-  },
-  {
-    id: "8",
-    title: "Rimski Izvor",
-    city: "Ilidža",
-    capacity: 7,
-    pricePerDay: 170,
-    images: [demoImg],
-  },
-  {
-    id: "9",
-    title: "Mala Laguna",
-    city: "Zenica",
-    capacity: 4,
-    images: [demoImg],
-  },
-]);
+const pools = ref<Pool[]>();
 
 const filteredPools = computed(() => {
   const term = searchTerm.value.trim().toLowerCase();
   if (!term) return pools.value;
-  return pools.value.filter(
+  return pools.value?.filter(
     (p) =>
       p.title.toLowerCase().includes(term) ||
-      p.city.toLowerCase().includes(term),
+      p.city.toLowerCase().includes(term)
   );
 });
 
@@ -104,10 +28,22 @@ const searchClasses = computed(() => ({
 
 const onOpenFilters = () => console.log("open filters");
 const onOpenDay = () => console.log("open day picker");
+
+onMounted(async () => {
+  const res = await getAvailablePools();
+  if (res.state === "success") {
+    pools.value = res.pools;
+  } else {
+    useNotificationsStore.addNotification(
+      "Nešto je pošlo po krivu, pokušajte malo kasnije",
+      "error"
+    );
+  }
+});
 </script>
 
 <template>
-  <Navigation />
+  <Navigation variant="solid" />
 
   <section class="search" :class="searchClasses">
     <div class="search-controls">
@@ -204,7 +140,7 @@ const onOpenDay = () => console.log("open day picker");
         <PoolCard v-for="p in filteredPools" :key="p.id" :pool="p" />
       </div>
 
-      <p v-if="filteredPools.length === 0" class="search-results-empty">
+      <p v-if="filteredPools?.length === 0" class="search-results-empty">
         Nema rezultata.
       </p>
     </div>
@@ -214,7 +150,7 @@ const onOpenDay = () => console.log("open day picker");
 <style scoped lang="scss">
 .search {
   width: 100%;
-  padding: 18px;
+  padding: 16px;
 
   &-controls {
     max-width: 1100px;
@@ -222,7 +158,6 @@ const onOpenDay = () => console.log("open day picker");
     display: grid;
     grid-template-columns: 1fr auto auto;
     gap: 10px;
-    align-items: center;
 
     &-inputwrap {
       position: relative;
@@ -242,7 +177,6 @@ const onOpenDay = () => console.log("open day picker");
       height: 44px;
       border-radius: 12px;
       padding: 0 14px 0 38px;
-      background: #ffffff;
       box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
       color: var(--text-color-black);
       font-weight: 500;
@@ -253,7 +187,6 @@ const onOpenDay = () => console.log("open day picker");
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: #ffffff;
       color: var(--text-color-black);
       display: grid;
       place-items: center;
@@ -262,7 +195,7 @@ const onOpenDay = () => console.log("open day picker");
       border: 1px solid #e5e7eb;
 
       &:hover {
-        filter: brightness(0.98);
+        background-color: rgba(0, 0, 0, 0.041);
       }
     }
   }
@@ -291,10 +224,36 @@ const onOpenDay = () => console.log("open day picker");
   }
 
   &--desktop {
-    font-size: 115%;
+    .search {
+      &-controls {
+        margin-bottom: 20px;
 
-    .search-results-grid {
-      grid-template-columns: repeat(3, 1fr);
+        &-input {
+          height: 54px;
+          padding: 0 16px 0 48px;
+          font-size: 18px;
+        }
+
+        &-inputicon {
+          width: 22px;
+          height: 22px;
+        }
+
+        &-iconbtn {
+          width: 54px;
+          height: 54px;
+        }
+
+        &-iconbtn svg,
+        &-inputicon svg {
+          width: 22px;
+          height: 22px;
+        }
+      }
+
+      &-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
   }
 }

@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import isMobile from "is-mobile";
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { useRouter } from "vue-router";
 
+const props = defineProps<{
+  variant?: "transparent" | "solid";
+}>();
+
+const router = useRouter();
 const scrolledNavigation = ref(false);
 const isMobileView = isMobile();
 const isDropdownOpen = ref(false);
 const dropdownRef = ref<HTMLElement>();
 
 const navigationClasses = computed(() => ({
-  "navigation-scrolled": scrolledNavigation.value,
+  "navigation-scrolled": scrolledNavigation.value || props.variant === "solid",
   [`navigation--${isMobileView ? "mobile" : "desktop"}`]: true,
 }));
 
@@ -28,6 +34,7 @@ const scrollToFaq = () => {
   document.getElementById("faq")?.scrollIntoView();
   closeDropdown();
 };
+const goHome = () => router.push({ name: "PoolsHomePage" });
 
 onMounted(() => {
   onScroll();
@@ -44,12 +51,18 @@ onBeforeUnmount(() => {
 <template>
   <header class="navigation" :class="navigationClasses">
     <div class="navigation-inner">
-      <div class="navigation-left">
+      <div class="navigation-left" @click="goHome">
         <img
           class="navigation-left-logo"
           src="../assets/logo.png"
           alt="Bazeni na dan"
         />
+        <h3
+          v-if="!isMobileView && props.variant === 'solid'"
+          class="navigation-left-title"
+        >
+          Bazeni na dan
+        </h3>
       </div>
       <div class="navigation-right">
         <button v-if="!isMobileView" class="navigation-right-button">
@@ -122,7 +135,7 @@ onBeforeUnmount(() => {
 
   &-scrolled {
     background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
     .navigation-right-button {
       border: 1px solid rgba(0, 0, 0, 0.12);
@@ -233,7 +246,7 @@ onBeforeUnmount(() => {
 
     .navigation-left-logo {
       height: 80px;
-      width: 80px;
+      width: 100px;
     }
 
     .navigation-right {
@@ -268,9 +281,22 @@ onBeforeUnmount(() => {
       padding: 30px 60px;
     }
 
-    .navigation-left-logo {
-      height: 100px;
-      width: 100px;
+    .navigation-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+
+      &-logo {
+        height: 100px;
+        width: 100px;
+      }
+
+      &-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: rgb(74, 81, 90);
+      }
     }
 
     .navigation-right {

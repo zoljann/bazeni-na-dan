@@ -125,7 +125,11 @@ const classes = computed(() => ({
 
   &--desktop {
     width: 500px;
-    font-size: 120%;
+
+    .notifications-item {
+      font-size: 1.2rem;
+      padding: 18px 18px;
+    }
   }
 }
 </style>
