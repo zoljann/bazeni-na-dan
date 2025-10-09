@@ -7,12 +7,15 @@ import type { Pool } from "src/types";
 import { getAvailablePools } from "../api";
 import { notificationsStore } from "../stores/notifications";
 import { useRoute } from "vue-router";
+import DayPicker from "../components/utility/DayPicker.vue";
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
 const route = useRoute();
 const searchTerm = ref("");
 const pools = ref<Pool[]>();
+const showDayPicker = ref(false);
+const selectedDate = ref<string | null>(null);
 
 const filteredPools = computed(() => {
   const term = searchTerm.value.trim().toLowerCase();
@@ -29,7 +32,9 @@ const searchClasses = computed(() => ({
 }));
 
 const onOpenFilters = () => console.log("open filters");
-const onOpenDay = () => console.log("open day picker");
+const onSelectDate = (iso: string | null) => {
+  selectedDate.value = iso;
+};
 
 onMounted(async () => {
   const res = await getAvailablePools();
@@ -63,7 +68,6 @@ watch(
           width="18"
           height="18"
           viewBox="0 0 24 24"
-          aria-hidden="true"
         >
           <circle
             cx="11"
@@ -90,10 +94,9 @@ watch(
 
       <button
         class="search-controls-iconbtn"
-        @click="onOpenDay"
-        aria-label="Odaberi datum"
+        @click.stop="showDayPicker = true"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24">
           <path
             d="M7 2v3M17 2v3M3.5 9.5h17M5 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"
             stroke="currentColor"
@@ -104,11 +107,7 @@ watch(
         </svg>
       </button>
 
-      <button
-        class="search-controls-iconbtn"
-        @click="onOpenFilters"
-        aria-label="Filteri"
-      >
+      <button class="search-controls-iconbtn" @click="onOpenFilters">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="22"
@@ -143,6 +142,11 @@ watch(
           ></path>
         </svg>
       </button>
+      <DayPicker
+        v-model="showDayPicker"
+        :selected="selectedDate || undefined"
+        @select="onSelectDate"
+      />
     </div>
 
     <div class="search-results">
@@ -163,6 +167,7 @@ watch(
   padding: 16px;
 
   &-controls {
+    position: relative;
     max-width: 1100px;
     margin: 0 auto 16px;
     display: grid;

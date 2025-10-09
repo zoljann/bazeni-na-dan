@@ -5,5 +5,5 @@ export type Pool = {
   capacity: number;
   pricePerDay?: number;
   images: string[];
-  //available dates?
+  availableDays?: string[];
 };
