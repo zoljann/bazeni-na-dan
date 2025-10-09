@@ -6,24 +6,26 @@ import PoolCard from "../components/pools/PoolCard.vue";
 import type { Pool } from "src/types";
 import { getAvailablePools } from "../api";
 import { notificationsStore } from "../stores/notifications";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import DayPicker from "../components/utility/DayPicker.vue";
+import LocationDropdown from "../components/utility/LocationDropdown.vue";
+import allCities from "../helpers/bih-cities.json";
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
 const route = useRoute();
-const searchTerm = ref("");
+const router = useRouter();
 const pools = ref<Pool[]>();
 const showDayPicker = ref(false);
 const selectedDate = ref<string | null>(null);
+const showLocationDropdown = ref(false);
+const selectedCity = ref<string>("Sve lokacije");
 
 const filteredPools = computed(() => {
-  const term = searchTerm.value.trim().toLowerCase();
-  if (!term) return pools.value;
+  const city = selectedCity.value;
+  if (!city || city === "Sve lokacije") return pools.value;
   return pools.value?.filter(
-    (p) =>
-      p.title.toLowerCase().includes(term) ||
-      p.city.toLowerCase().includes(term)
+    (p) => p.city.toLowerCase() === city.toLowerCase()
   );
 });
 
@@ -34,6 +36,17 @@ const searchClasses = computed(() => ({
 const onOpenFilters = () => console.log("open filters");
 const onSelectDate = (iso: string | null) => {
   selectedDate.value = iso;
+};
+const onSelectCity = (city: string) => {
+  selectedCity.value = city;
+  router.replace({ query: { ...route.query, city } });
+  showLocationDropdown.value = false;
+};
+const showAllPools = () => {
+  selectedCity.value = "Sve lokacije";
+  const q = { ...route.query };
+  delete q.city;
+  router.replace({ query: q });
 };
 
 onMounted(async () => {
@@ -51,7 +64,7 @@ onMounted(async () => {
 watch(
   () => route.query.city,
   (city) => {
-    searchTerm.value = (city as string) || "";
+    selectedCity.value = (city as string) || "Sve lokacije";
   },
   { immediate: true }
 );
@@ -62,33 +75,33 @@ watch(
 
   <section class="search" :class="searchClasses">
     <div class="search-controls">
-      <div class="search-controls-inputwrap">
-        <svg
-          class="search-controls-inputicon"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
+      <div class="search-locwrap">
+        <button
+          class="search-controls-location"
+          @click="showLocationDropdown = true"
         >
-          <circle
-            cx="11"
-            cy="11"
-            r="7"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-          />
-          <path
-            d="M20 20l-3-3"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-        <input
-          v-model="searchTerm"
-          class="search-controls-input"
-          type="text"
-          placeholder="Pretraži po gradu ili nazivu"
+          <span class="search-controls-location-label"
+            >📍 {{ selectedCity }}</span
+          >
+          <span class="search-controls-location-caret">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M7 10l5 5 5-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
+
+        <LocationDropdown
+          v-model="showLocationDropdown"
+          :allCities="allCities"
+          @select="onSelectCity"
+          @nearby="showAllPools"
         />
       </div>
 
@@ -174,28 +187,32 @@ watch(
     grid-template-columns: 1fr auto auto;
     gap: 10px;
 
-    &-inputwrap {
-      position: relative;
-    }
-
-    &-inputicon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6b7280;
-      pointer-events: none;
-    }
-
-    &-input {
+    &-location {
       width: 100%;
       height: 44px;
+      box-sizing: border-box;
       border-radius: 12px;
-      padding: 0 14px 0 38px;
+      padding: 0 14px;
       box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
       color: var(--text-color-black);
-      font-weight: 500;
+      font-weight: 600;
       border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.041);
+      }
+
+      &-label {
+        flex: 1;
+        text-align: left;
+      }
+
+      &-caret {
+        display: inline-flex;
+      }
     }
 
     &-iconbtn {
@@ -212,6 +229,10 @@ watch(
       &:hover {
         background-color: rgba(0, 0, 0, 0.041);
       }
+    }
+
+    .search-locwrap {
+      position: relative;
     }
   }
 
@@ -243,15 +264,9 @@ watch(
       &-controls {
         margin-bottom: 20px;
 
-        &-input {
+        &-location {
           height: 54px;
-          padding: 0 16px 0 48px;
           font-size: 18px;
-        }
-
-        &-inputicon {
-          width: 22px;
-          height: 22px;
         }
 
         &-iconbtn {
@@ -259,8 +274,7 @@ watch(
           height: 54px;
         }
 
-        &-iconbtn svg,
-        &-inputicon svg {
+        &-iconbtn svg {
           width: 22px;
           height: 22px;
         }
@@ -271,5 +285,10 @@ watch(
       }
     }
   }
+}
+
+:deep(.location-dropdown--desktop) {
+  top: calc(100% + 4px);
+  font-size: 120%;
 }
 </style>

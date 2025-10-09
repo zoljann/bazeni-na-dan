@@ -10,7 +10,7 @@ import { useRouter } from "vue-router";
 const isMobileView = isMobile();
 const router = useRouter();
 const showLocationDropdown = ref(false);
-const selectedCity = ref<string>("Odaberite lokaciju");
+const selectedCity = ref<string>("Sve lokacije");
 const activeFaqTab = ref<"guests" | "hosts">("guests");
 const openFaqIndex = ref<number | null>(null);
 
@@ -26,9 +26,8 @@ const onSelectCity = (city: string) => {
   selectedCity.value = city;
   router.push({ name: "PoolsSearchPage", query: { city } });
 };
-const onNearby = () => {
-  selectedCity.value = "Blizu mene";
-  //ovdje ces zatrazti pristup lokaciji i iz nje izvuc grad, to istrazit dodatno
+const showAllPools = () => {
+  router.push({ name: "PoolsSearchPage" });
 };
 const onFindNearby = () => console.log("show nearest pools");
 const handleSearchPoolClick = () => {
@@ -64,7 +63,7 @@ const handleSearchPoolClick = () => {
           v-model="showLocationDropdown"
           :allCities="allCities"
           @select="onSelectCity"
-          @nearby="onNearby"
+          @nearby="showAllPools"
         />
 
         <button class="content-search-button" @click="handleSearchPoolClick()">

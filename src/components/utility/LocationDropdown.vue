@@ -103,8 +103,8 @@ watch(isDropdownOpen, async (open) => {
           class="location-dropdown-item location-dropdown-item--nearby"
           @click="handleNearbyClick"
         >
-          <i class="location-dropdown-item-icon">📍</i>
-          <span class="location-dropdown-item-label">Blizu mene</span>
+          <i class="location-dropdown-item-icon">🌊</i>
+          <span class="location-dropdown-item-label">Sve lokacije</span>
         </button>
 
         <div class="location-dropdown-section">
