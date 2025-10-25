@@ -10,6 +10,7 @@ import { useRoute, useRouter } from "vue-router";
 import DayPicker from "../components/utility/DayPicker.vue";
 import LocationDropdown from "../components/utility/LocationDropdown.vue";
 import allCities from "../helpers/bih-cities.json";
+import FiltersDropdown from "../components/utility/FiltersDropdown.vue";
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
@@ -20,6 +21,8 @@ const showDayPicker = ref(false);
 const selectedDate = ref<string | null>(null);
 const showLocationDropdown = ref(false);
 const selectedCity = ref<string>("Sve lokacije");
+const showFilters = ref(false);
+const filters = ref({ petsAllowed: false, heated: false });
 
 const filteredPools = computed(() => {
   const iso = selectedDate.value ? selectedDate.value.slice(0, 10) : null;
@@ -28,7 +31,9 @@ const filteredPools = computed(() => {
   return pools.value?.filter(
     (p) =>
       (city === "sve lokacije" || !city || p.city.toLowerCase() === city) &&
-      (!iso || p.availableDays?.includes(iso))
+      (!iso || p.availableDays?.includes(iso)) &&
+      (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
+      (!filters.value.heated || !!p.filters?.heated)
   );
 });
 const displayDate = computed(() => {
@@ -46,11 +51,14 @@ const displayDate = computed(() => {
 const resultsText = computed(
   () => `${filteredPools.value?.length} pronađenih bazena`
 );
+const filtersCount = computed(
+  () => Object.values(filters.value).filter(Boolean).length
+);
+
 const searchClasses = computed(() => ({
   [`search--${isMobileView ? "mobile" : "desktop"}`]: true,
 }));
 
-const onOpenFilters = () => console.log("open filters");
 const onSelectDate = (iso: string | null) => {
   selectedDate.value = iso;
 };
@@ -64,6 +72,14 @@ const showAllPools = () => {
   const q = { ...route.query };
   delete q.city;
   router.replace({ query: q });
+};
+const toggleDayPicker = () => {
+  showDayPicker.value = !showDayPicker.value;
+  if (showDayPicker.value) showFilters.value = false;
+};
+const toggleFilters = () => {
+  showFilters.value = !showFilters.value;
+  if (showFilters.value) showDayPicker.value = false;
 };
 
 onMounted(async () => {
@@ -85,6 +101,12 @@ watch(
   },
   { immediate: true }
 );
+watch(showDayPicker, (v) => {
+  if (v) showFilters.value = false;
+});
+watch(showFilters, (v) => {
+  if (v) showDayPicker.value = false;
+});
 </script>
 
 <template>
@@ -126,10 +148,7 @@ watch(
       </div>
 
       <div class="search-controls-tool">
-        <button
-          class="search-controls-iconbtn"
-          @click.stop="showDayPicker = true"
-        >
+        <button class="search-controls-iconbtn" @click.stop="toggleDayPicker">
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path
               d="M7 2v3M17 2v3M3.5 9.5h17M5 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"
@@ -147,7 +166,7 @@ watch(
       </div>
 
       <div class="search-controls-tool">
-        <button class="search-controls-iconbtn" @click="onOpenFilters">
+        <button class="search-controls-iconbtn" @click.stop="toggleFilters">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -181,6 +200,9 @@ watch(
               mask="url(#filters_svg__a)"
             ></path>
           </svg>
+          <span v-if="filtersCount" class="search-controls-iconbtn-badge">
+            {{ filtersCount }}
+          </span>
         </button>
         <span class="search-controls-tool-label">Filteri</span>
       </div>
@@ -190,6 +212,8 @@ watch(
         :selected="selectedDate || undefined"
         @select="onSelectDate"
       />
+
+      <FiltersDropdown v-model="showFilters" v-model:filters="filters" />
     </div>
 
     <div class="search-results">

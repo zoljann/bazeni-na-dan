@@ -6,4 +6,8 @@ export type Pool = {
   pricePerDay?: number;
   images: string[];
   availableDays?: string[];
+  filters?: {
+    heated: string;
+    petsAllowed: string;
+  }
 };
