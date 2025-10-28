@@ -33,7 +33,7 @@ const filteredPools = computed(() => {
       (city === "sve lokacije" || !city || p.city.toLowerCase() === city) &&
       (!iso || p.availableDays?.includes(iso)) &&
       (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
-      (!filters.value.heated || !!p.filters?.heated)
+      (!filters.value.heated || !!p.filters?.heated),
   );
 });
 const displayDate = computed(() => {
@@ -49,10 +49,10 @@ const displayDate = computed(() => {
   return d.getFullYear() === thisYear ? `${dd}.${mm}.` : `${dd}.${mm}.'${yy}`;
 });
 const resultsText = computed(
-  () => `${filteredPools.value?.length} pronađenih bazena`
+  () => `${filteredPools.value?.length} pronađenih bazena`,
 );
 const filtersCount = computed(
-  () => Object.values(filters.value).filter(Boolean).length
+  () => Object.values(filters.value).filter(Boolean).length,
 );
 
 const searchClasses = computed(() => ({
@@ -89,7 +89,7 @@ onMounted(async () => {
   } else {
     useNotificationsStore.addNotification(
       "Nešto je pošlo po krivu, pokušajte malo kasnije",
-      "error"
+      "error",
     );
   }
 });
@@ -99,7 +99,7 @@ watch(
   (city) => {
     selectedCity.value = (city as string) || "Sve lokacije";
   },
-  { immediate: true }
+  { immediate: true },
 );
 watch(showDayPicker, (v) => {
   if (v) showFilters.value = false;

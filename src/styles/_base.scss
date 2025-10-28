@@ -20,6 +20,12 @@ body {
     sans-serif;
 }
 
+body:has(.location-dropdown-backdrop-open),
+body:has(.daypicker--mobile),
+body:has(.filters-backdrop-open) {
+  overflow: hidden;
+}
+
 html {
   scroll-behavior: smooth;
 }

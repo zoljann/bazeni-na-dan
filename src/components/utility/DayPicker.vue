@@ -64,7 +64,7 @@ const grid = computed(() => {
   const first = new Date(
     viewDate.value.getFullYear(),
     viewDate.value.getMonth(),
-    1
+    1,
   );
   const startOffset = mondayIndex(first.getDay());
   const total = daysInMonth(viewDate.value);
@@ -79,7 +79,7 @@ const grid = computed(() => {
     const date = new Date(
       viewDate.value.getFullYear(),
       viewDate.value.getMonth(),
-      d
+      d,
     );
     const iso = toISO(date);
     cells.push({
@@ -123,7 +123,7 @@ function handleClickOutside(e: MouseEvent) {
 }
 onMounted(() => document.addEventListener("click", handleClickOutside));
 onBeforeUnmount(() =>
-  document.removeEventListener("click", handleClickOutside)
+  document.removeEventListener("click", handleClickOutside),
 );
 </script>
 
@@ -208,6 +208,7 @@ onBeforeUnmount(() =>
     position: fixed;
     inset: 0;
     z-index: 120;
+    touch-action: none;
   }
   &-backdrop {
     position: absolute;

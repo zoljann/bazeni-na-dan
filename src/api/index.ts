@@ -30,6 +30,16 @@ type AvailablePoolsSuccess = {
   pools: Pool[];
 };
 
+function fmt(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+function addDays(n: number) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + n);
+  return fmt(d);
+}
+
 export async function getAvailablePools(): Promise<
   AvailablePoolsSuccess | ApiError
 > {
@@ -46,6 +56,8 @@ export async function getAvailablePools(): Promise<
     const demoImg =
       "https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg";
 
+    await new Promise((r) => setTimeout(r, 500));
+
     return {
       state: "success",
       pools: [
@@ -55,73 +67,44 @@ export async function getAvailablePools(): Promise<
           city: "Mostar",
           capacity: 8,
           pricePerDay: 150,
-          images: [
-            demoImg,
-            "https://leisurepoolscanada.ca/wp-content/uploads/2020/06/best-type-of-swimming-pool-for-my-home_2.jpg",
-            "https://media.istockphoto.com/id/1825000760/photo/swimming-pool-underwater.jpg?s=612x612&w=0&k=20&c=dv0Rwh7oQmjUBmyWriv2lHLq03u_noDfr5nG8ydxJGU=",
-          ],
+          images: [demoImg],
+          availableDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
         },
         {
           id: "2",
-          title:
-            "Oaza MirAAA A A AAAAAAAAAA NEKA TAMO MIRA NEMAM POJMA KOJE MIRA S A AA  A ASAAS a",
+          title: "Plavi Raj",
           city: "Sarajevo",
-          capacity: 12,
-          pricePerDay: 220,
+          capacity: 6,
+          pricePerDay: 200,
           images: [demoImg],
+          availableDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
         },
         {
           id: "3",
-          title: "Plavi Raj",
-          city: "Tuzla  a a a a a aasassasssi",
-          capacity: 6,
-          images: [demoImg],
-        },
-        {
-          id: "4",
           title: "Jadranska Laguna",
           city: "Neum",
           capacity: 10,
           pricePerDay: 280,
           images: [demoImg],
+          availableDays: [addDays(1), addDays(4), addDays(6), addDays(8)],
         },
         {
-          id: "5",
+          id: "4",
           title: "Zeleni Brežuljak",
           city: "Banja Luka",
           capacity: 14,
           pricePerDay: 240,
           images: [demoImg],
+          availableDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
         },
         {
-          id: "6",
-          title: "Kamenita Bašta",
-          city: "Konjic",
-          capacity: 5,
-          images: [demoImg],
-        },
-        {
-          id: "7",
+          id: "5",
           title: "Mostarska Terasa",
           city: "Mostar",
           capacity: 9,
           pricePerDay: 190,
           images: [demoImg],
-        },
-        {
-          id: "8",
-          title: "Rimski Izvor",
-          city: "Ilidža",
-          capacity: 7,
-          pricePerDay: 170,
-          images: [demoImg],
-        },
-        {
-          id: "9",
-          title: "Mala Laguna",
-          city: "Zenica",
-          capacity: 4,
-          images: [demoImg],
+          availableDays: [addDays(3), addDays(4), addDays(11)],
         },
       ],
     };

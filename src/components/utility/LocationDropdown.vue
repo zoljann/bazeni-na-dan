@@ -165,6 +165,7 @@ watch(isDropdownOpen, async (open) => {
     background: rgba(2, 8, 23, 0.4);
     opacity: 1;
     pointer-events: auto;
+    touch-action: none;
   }
 }
 

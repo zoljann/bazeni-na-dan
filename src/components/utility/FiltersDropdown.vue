@@ -40,8 +40,10 @@ function close() {
 
 onClickOutside(
   panelRef,
-  () => { if (!isMobileView) close(); },
-  { ignore: ['.search-controls-iconbtn'] }
+  () => {
+    if (!isMobileView) close();
+  },
+  { ignore: [".search-controls-iconbtn"] },
 );
 
 watch(isOpen, async (open) => {
@@ -65,7 +67,7 @@ function onApply() {
 }
 
 const hasSelected = computed(
-  () => local.value.petsAllowed || local.value.heated
+  () => local.value.petsAllowed || local.value.heated,
 );
 
 const classes = computed(() => ({
@@ -308,6 +310,7 @@ const classes = computed(() => ({
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     max-height: 75vh;
+    touch-action: none;
 
     &.filters-open {
       transform: translateY(0%);

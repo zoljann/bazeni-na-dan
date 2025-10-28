@@ -18,7 +18,7 @@ const notificationsStore = defineStore("notificationsStore", () => {
   const addNotification = (
     text: string,
     type: "success" | "error",
-    duration = 4000
+    duration = 4000,
   ) => {
     const n: Notification = {
       id: Date.now() + Math.random(),
@@ -26,6 +26,10 @@ const notificationsStore = defineStore("notificationsStore", () => {
       type,
     };
     notifications.value.push(n);
+
+    if (notifications.value.length > 2) {
+      notifications.value.shift();
+    }
 
     useTimeoutFn(() => {
       const index = notifications.value.findIndex((x) => x.id === n.id);

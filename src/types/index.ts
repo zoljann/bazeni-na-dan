@@ -9,5 +9,5 @@ export type Pool = {
   filters?: {
     heated: string;
     petsAllowed: string;
-  }
+  };
 };
