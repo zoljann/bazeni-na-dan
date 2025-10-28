@@ -29,7 +29,7 @@ const onSelectCity = (city: string) => {
 const showAllPools = () => {
   router.push({ name: "PoolsSearchPage" });
 };
-const onFindNearby = () => console.log("show nearest pools");
+const onFindNearby = () => console.log("pronadji bazene u blizini");
 const handleSearchPoolClick = () => {
   router.push({ name: "PoolsSearchPage" });
 };
@@ -63,7 +63,7 @@ const handleSearchPoolClick = () => {
           v-model="showLocationDropdown"
           :allCities="allCities"
           @select="onSelectCity"
-          @nearby="showAllPools"
+          @allpools="showAllPools"
         />
 
         <button class="content-search-button" @click="handleSearchPoolClick()">

@@ -158,7 +158,7 @@ watch(showFilters, (v) => {
           v-model="showLocationDropdown"
           :allCities="allCities"
           @select="onSelectCity"
-          @nearby="showAllPools"
+          @allpools="showAllPools"
         />
         <div v-if="filteredPools?.length ?? 0 > 0" class="search-info">
           {{ resultsText }}

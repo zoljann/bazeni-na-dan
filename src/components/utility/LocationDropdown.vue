@@ -11,7 +11,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
   select: [city: string];
-  nearby: [];
+  allpools: [];
   open: [];
   close: [];
 }>();
@@ -44,9 +44,8 @@ const closeDropdown = () => {
   emit("close");
 };
 
-const handleNearbyClick = () => {
-  console.log("Blizu mene");
-  emit("nearby");
+const handleAllPoolsClick = () => {
+  emit("allpools");
   closeDropdown();
 };
 
@@ -100,8 +99,8 @@ watch(isDropdownOpen, async (open) => {
     <div class="location-dropdown-content">
       <template v-if="isShowingDefaults">
         <button
-          class="location-dropdown-item location-dropdown-item--nearby"
-          @click="handleNearbyClick"
+          class="location-dropdown-item location-dropdown-item--allpools"
+          @click="handleAllPoolsClick"
         >
           <i class="location-dropdown-item-icon">🌊</i>
           <span class="location-dropdown-item-label">Sve lokacije</span>
@@ -256,7 +255,7 @@ watch(isDropdownOpen, async (open) => {
       border-color: #eef0f3;
     }
 
-    &--nearby {
+    &--allpools {
       font-weight: 600;
     }
 
