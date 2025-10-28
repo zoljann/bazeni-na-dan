@@ -7,7 +7,7 @@ export type Pool = {
   images: string[];
   availableDays?: string[];
   filters?: {
-    heated: string;
-    petsAllowed: string;
+    heated: boolean;
+    petsAllowed: boolean;
   };
 };

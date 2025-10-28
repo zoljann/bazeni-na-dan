@@ -69,6 +69,10 @@ export async function getAvailablePools(): Promise<
           pricePerDay: 150,
           images: [demoImg],
           availableDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
+          filters: {
+            heated: true,
+            petsAllowed: true,
+          },
         },
         {
           id: "2",
@@ -78,6 +82,10 @@ export async function getAvailablePools(): Promise<
           pricePerDay: 200,
           images: [demoImg],
           availableDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
+          filters: {
+            heated: true,
+            petsAllowed: true,
+          },
         },
         {
           id: "3",
@@ -96,6 +104,10 @@ export async function getAvailablePools(): Promise<
           pricePerDay: 240,
           images: [demoImg],
           availableDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
+          filters: {
+            heated: true,
+            petsAllowed: true,
+          },
         },
         {
           id: "5",

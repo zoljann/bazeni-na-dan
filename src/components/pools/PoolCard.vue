@@ -24,6 +24,16 @@ const poolCardClasses = computed(() => ({
   [`pool-card--${isMobileView ? "mobile" : "desktop"}`]: true,
 }));
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(props.pool));
+const isPoolAvailableTomorrow = computed(() => {
+  const days = props.pool.availableDays;
+  if (!days?.length) return false;
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 1);
+  const tomorrowIso = d.toISOString().slice(0, 10);
+  return days.includes(tomorrowIso);
+});
+
 
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
@@ -138,7 +148,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
           do {{ pool.capacity }} gostiju
         </span>
       </div>
-      <div class="pool-card-body-quick">
+      <div v-if="isPoolAvailableTomorrow" class="pool-card-body-quick">
         <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
           <circle
             cx="12"

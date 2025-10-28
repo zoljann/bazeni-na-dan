@@ -48,9 +48,27 @@ const displayDate = computed(() => {
 
   return d.getFullYear() === thisYear ? `${dd}.${mm}.` : `${dd}.${mm}.'${yy}`;
 });
-const resultsText = computed(
-  () => `${filteredPools.value?.length} pronađenih bazena`,
-);
+const selectedFiltersLabel = computed(() => {
+  const list: string[] = [];
+  if (filters.value.petsAllowed) list.push("dozvoljeni ljubimci");
+  if (filters.value.heated) list.push("grijani bazen");
+  return list.join(", ");
+});
+
+const resultsText = computed(() => {
+  const n = filteredPools.value?.length ?? 0;
+  const base =
+    n === 1
+      ? "1 pronađen bazen"
+      : `${n} ${n >= 2 && n <= 4 ? "pronađena" : "pronađenih"} bazena`;
+
+  const parts = [base];
+  if (displayDate.value) parts.push(`na datum ${displayDate.value}`);
+  if (filtersCount.value) parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
+
+  return parts.join(", ");
+});
+
 const filtersCount = computed(
   () => Object.values(filters.value).filter(Boolean).length,
 );
@@ -338,7 +356,6 @@ watch(showFilters, (v) => {
     margin-top: 6px;
     padding: 4px 10px;
     border-radius: 999px;
-    text-transform: uppercase;
     color: #6b7280;
     font-weight: 700;
     line-height: 1;
