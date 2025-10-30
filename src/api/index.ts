@@ -30,6 +30,11 @@ type AvailablePoolsSuccess = {
   pools: Pool[];
 };
 
+type PoolByIdSuccess = {
+  state: "success";
+  pool: Pool;
+};
+
 function fmt(d: Date) {
   return d.toISOString().slice(0, 10);
 }
@@ -120,6 +125,30 @@ export async function getAvailablePools(): Promise<
         },
       ],
     };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function getPoolById(
+  id: string
+): Promise<PoolByIdSuccess | ApiError> {
+  try {
+/*     const { data } = await api.get("/pool", {
+      params: { id },
+    });
+    return { state: "success", pool: data }; */
+
+    const all = await getAvailablePools();
+    if (all.state === "error") return all;
+
+    const found = all.pools.find((p) => p.id === id);
+    if (!found) {
+      return { state: "error", message: "Bazen nije pronađen." };
+    }
+    await new Promise((r) => setTimeout(r, 10));
+
+    return { state: "success", pool: found };
   } catch (e) {
     return handleApiError(e);
   }

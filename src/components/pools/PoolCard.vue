@@ -11,6 +11,10 @@ const props = defineProps<{
   pool: Pool;
 }>();
 
+const emit = defineEmits<{
+  openPool: [id: string];
+}>();
+
 const isMobileView = isMobile();
 const { isPoolFavorite, toggleFavoritePool } = useFavorites();
 const swiperRef = ref<any>(null);
@@ -34,7 +38,7 @@ const isPoolAvailableTomorrow = computed(() => {
   return days.includes(tomorrowIso);
 });
 
-
+const onPoolClick = () => emit("openPool", props.pool.id);
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
   isBeginning.value = sw.isBeginning;
@@ -49,7 +53,7 @@ const goNext = () => swiperRef.value?.slideNext();
 const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
 <template>
-  <div class="pool-card" :class="poolCardClasses">
+  <div class="pool-card" :class="poolCardClasses" @click="onPoolClick">
     <div class="pool-card-media">
       <Swiper
         class="pool-card-media-swiper"

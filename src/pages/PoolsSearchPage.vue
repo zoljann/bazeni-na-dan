@@ -3,7 +3,6 @@ import { ref, computed, onMounted, watch } from "vue";
 import isMobile from "is-mobile";
 import Navigation from "../components/Navigation.vue";
 import PoolCard from "../components/pools/PoolCard.vue";
-import type { Pool } from "src/types";
 import { getAvailablePools } from "../api";
 import { notificationsStore } from "../stores/notifications";
 import { useRoute, useRouter } from "vue-router";
@@ -11,12 +10,13 @@ import DayPicker from "../components/utility/DayPicker.vue";
 import LocationDropdown from "../components/utility/LocationDropdown.vue";
 import allCities from "../helpers/bih-cities.json";
 import FiltersDropdown from "../components/utility/FiltersDropdown.vue";
+import { usePoolsStore } from "../stores/pools";
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
+const poolsStore = usePoolsStore();
 const route = useRoute();
 const router = useRouter();
-const pools = ref<Pool[]>();
 const showDayPicker = ref(false);
 const selectedDate = ref<string | null>(null);
 const showLocationDropdown = ref(false);
@@ -28,7 +28,7 @@ const filteredPools = computed(() => {
   const iso = selectedDate.value ? selectedDate.value.slice(0, 10) : null;
   const city = selectedCity.value?.toLowerCase();
 
-  return pools.value?.filter(
+  return poolsStore.pools?.filter(
     (p) =>
       (city === "sve lokacije" || !city || p.city.toLowerCase() === city) &&
       (!iso || p.availableDays?.includes(iso)) &&
@@ -64,7 +64,8 @@ const resultsText = computed(() => {
 
   const parts = [base];
   if (displayDate.value) parts.push(`na datum ${displayDate.value}`);
-  if (filtersCount.value) parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
+  if (filtersCount.value)
+    parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
 
   return parts.join(", ");
 });
@@ -99,11 +100,14 @@ const toggleFilters = () => {
   showFilters.value = !showFilters.value;
   if (showFilters.value) showDayPicker.value = false;
 };
+const openPool = (id: string) => {
+  router.push({ name: "PoolDetailsPage", query: { id } });
+};
 
 onMounted(async () => {
   const res = await getAvailablePools();
   if (res.state === "success") {
-    pools.value = res.pools;
+    poolsStore.pools = res.pools;
   } else {
     useNotificationsStore.addNotification(
       "Nešto je pošlo po krivu, pokušajte malo kasnije",
@@ -236,7 +240,12 @@ watch(showFilters, (v) => {
 
     <div class="search-results">
       <div class="search-results-grid">
-        <PoolCard v-for="p in filteredPools" :key="p.id" :pool="p" />
+        <PoolCard
+          v-for="p in filteredPools"
+          :key="p.id"
+          :pool="p"
+          @open-pool="openPool"
+        />
       </div>
 
       <p v-if="filteredPools?.length === 0" class="search-results-empty">

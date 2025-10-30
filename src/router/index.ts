@@ -11,6 +11,11 @@ const routes = [
     name: "PoolsSearchPage",
     component: () => import("../pages/PoolsSearchPage.vue"),
   },
+  {
+    path: "/pool",
+    name: "PoolDetailsPage",
+    component: () => import("../pages/PoolDetailsPage.vue"),
+  },
 ];
 
 const router = createRouter({
