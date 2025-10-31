@@ -40,7 +40,15 @@ onMounted(async () => {
 <template>
   <Navigation variant="solid" />
 
-  <div class="pool-details" :class="poolDetailsClasses" v-if="pool"></div>
+  <div class="pool-details" :class="poolDetailsClasses" v-if="pool">
+    <div class="pool-details-header">{{ pool.title }} {{ pool.city }}</div>
+    <div class="pool-details-price">{{ pool.pricePerDay }}</div>
+    <div class="pool-details-gallery">{{ pool.images }}</div>
+    <div class="pool-details-description">
+      {{ pool.capacity }} {{ pool.filters }}
+    </div>
+    <div class="pool-details-calendar">{{ pool.availableDays }}</div>
+  </div>
 </template>
 
 <style scoped lang="scss">
