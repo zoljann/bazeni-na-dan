@@ -4,6 +4,7 @@ export type Pool = {
   city: string;
   capacity: number;
   pricePerDay?: number;
+  description: string;
   images: string[];
   availableDays?: string[];
   filters?: {
