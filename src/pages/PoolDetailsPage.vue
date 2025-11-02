@@ -2,6 +2,9 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import isMobile from "is-mobile";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation as SwiperNavigation } from "swiper/modules";
+import "swiper/css";
 import type { Pool } from "src/types";
 import { getPoolById } from "../api";
 import { notificationsStore } from "../stores/notifications";
@@ -15,6 +18,9 @@ const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
 const { isPoolFavorite, toggleFavoritePool } = useFavorites();
 const poolsStore = usePoolsStore();
+const swiperRef = ref<any>(null);
+const isBeginning = ref(true);
+const isEnd = ref(false);
 const pool = ref<Pool>();
 const contactPhone = "062614300";
 
@@ -27,6 +33,17 @@ const poolDetailsClasses = computed(() => ({
 }));
 
 const onContact = () => (window.location.href = `tel:${contactPhone}`);
+const onSwiperInit = (sw: any) => {
+  swiperRef.value = sw;
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+};
+const onSlideChange = (sw: any) => {
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+};
+const goPrev = () => swiperRef.value?.slidePrev();
+const goNext = () => swiperRef.value?.slideNext();
 
 onMounted(async () => {
   const storedPool = poolsStore.findPoolById(selectedPoolId.value);
@@ -90,11 +107,57 @@ onMounted(async () => {
 
       <div class="pool-details-media">
         <div class="pool-details-media-imgwrapper">
-          <img
-            :src="pool.images[0]"
-            alt="Slika bazena"
-            class="pool-details-media-img"
-          />
+          <Swiper
+            class="pool-details-media-swiper"
+            :modules="[SwiperNavigation]"
+            :slides-per-view="1"
+            @swiper="onSwiperInit"
+            @slideChange="onSlideChange"
+          >
+            <SwiperSlide v-for="(img, i) in pool.images" :key="i">
+              <img
+                class="pool-details-media-img"
+                :src="img"
+                alt="bazen slike"
+              />
+            </SwiperSlide>
+          </Swiper>
+
+          <button
+            class="pool-details-media-arrow pool-details-media-arrow--prev"
+            :class="{ 'is-disabled': isBeginning }"
+            @click.stop="goPrev"
+            aria-label="Prethodna slika"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 18 9 12l6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <button
+            class="pool-details-media-arrow pool-details-media-arrow--next"
+            :class="{ 'is-disabled': isEnd }"
+            @click.stop="goNext"
+            aria-label="Sljedeća slika"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="m9 18 6-6-6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -251,11 +314,52 @@ onMounted(async () => {
 
   &-media {
     margin-top: 12px;
+    cursor: pointer;
+
+    &-imgwrapper {
+      position: relative;
+    }
+
+    &-swiper {
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
 
     &-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    &-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      border-radius: 999px;
+      background: #ffffffcc;
+      color: var(--text-color-black);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
+
+      &:hover {
+        filter: brightness(0.95);
+      }
+
+      &--prev {
+        left: 8px;
+      }
+      &--next {
+        right: 8px;
+      }
+
+      &.is-disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
     }
   }
 
@@ -441,8 +545,15 @@ onMounted(async () => {
         font-size: 14px;
       }
 
-      &-media-imgwrapper {
-        height: 260px;
+      &-media {
+        &-imgwrapper {
+          height: 260px;
+        }
+
+        &-arrow {
+          width: 36px;
+          height: 36px;
+        }
       }
 
       &-favbtn {
@@ -494,8 +605,15 @@ onMounted(async () => {
         font-size: 18px;
       }
 
-      &-media-imgwrapper {
-        height: 420px;
+      &-media {
+        &-imgwrapper {
+          height: 420px;
+        }
+
+        &-arrow {
+          width: 50px;
+          height: 50px;
+        }
       }
 
       &-summarybar {
