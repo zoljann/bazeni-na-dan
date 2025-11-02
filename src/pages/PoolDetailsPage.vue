@@ -1,4 +1,3 @@
-<!-- PoolDetailsPage.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -7,18 +6,20 @@ import type { Pool } from "src/types";
 import { getPoolById } from "../api";
 import { notificationsStore } from "../stores/notifications";
 import { usePoolsStore } from "../stores/pools";
+import { useFavorites } from "../composables/useFavorites";
 import Navigation from "../components/Navigation.vue";
 
 const route = useRoute();
 const router = useRouter();
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
+const { isPoolFavorite, toggleFavoritePool } = useFavorites();
 const poolsStore = usePoolsStore();
-
 const pool = ref<Pool>();
-const selectedPoolId = computed(() => route.query.id as string);
 const contactPhone = "062614300";
 
+const selectedPoolId = computed(() => route.query.id as string);
+const isPoolAddedToFavorites = computed(() => isPoolFavorite(pool.value!));
 const hasHeated = computed(() => !!pool.value?.filters?.heated);
 const hasPets = computed(() => !!pool.value?.filters?.petsAllowed);
 const poolDetailsClasses = computed(() => ({
@@ -33,6 +34,7 @@ onMounted(async () => {
     pool.value = storedPool;
     return;
   }
+
   const res = await getPoolById(selectedPoolId.value);
   if (res.state === "success") {
     pool.value = res.pool;
@@ -68,6 +70,24 @@ onMounted(async () => {
         <span>Kapacitet do {{ pool.capacity }} osoba</span>
       </p>
 
+      <button
+        class="pool-details-favbtn"
+        :class="{ 'is-active': isPoolAddedToFavorites }"
+        @click="toggleFavoritePool(pool)"
+        title="Dodaj u favorite"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.35l8.84-8.96a5.5 5.5 0 0 0 0-7.78Z"
+            :fill="isPoolAddedToFavorites ? 'currentColor' : 'none'"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
       <div class="pool-details-media">
         <div class="pool-details-media-imgwrapper">
           <img
@@ -84,34 +104,46 @@ onMounted(async () => {
           <div class="pool-details-host-info">
             <span class="pool-details-smalllabel">Domaćin</span>
             <span class="pool-details-host-name">Ime i prezime</span>
-            <a class="pool-details-host-phone" :href="`tel:${contactPhone}`"
-              >📞 {{ contactPhone }}</a
-            >
           </div>
+          <a v-if="!isMobileView" class="pool-details-host-phone"
+            >📞 {{ contactPhone }}</a
+          >
         </div>
 
         <div class="pool-details-card pool-details-price">
           <span class="pool-details-smalllabel">Cijena</span>
-          <div class="pool-details-price-row">
+
+          <div v-if="pool.pricePerDay" class="pool-details-price-row">
             <span class="pool-details-price-amount">{{
               pool.pricePerDay
             }}</span>
             <span class="pool-details-price-unit">KM / dan</span>
           </div>
+
+          <div v-else class="pool-details-price-row">
+            <a class="pool-details-price-unit">
+              Kontaktiraj domaćina za cijenu
+            </a>
+          </div>
         </div>
 
         <button
+          v-if="isMobileView"
           type="button"
           class="pool-details-card pool-details-cta"
           @click="onContact"
         >
-          Kontaktiraj domaćina
+          Kontaktiraj domaćina na
+          <span class="pool-details-cta-number">{{ contactPhone }}</span>
         </button>
       </div>
     </header>
 
     <div class="pool-details-body">
-      <section class="pool-details-card pool-details-about">
+      <section
+        v-if="pool.description"
+        class="pool-details-card pool-details-about"
+      >
         <h2 class="pool-details-section-title">O bazenu</h2>
         <p class="pool-details-text">
           {{ pool.description }}
@@ -121,6 +153,12 @@ onMounted(async () => {
       <section class="pool-details-card pool-details-featureswrap">
         <h2 class="pool-details-section-title">Mogućnosti</h2>
         <ul class="pool-details-features">
+          <li class="pool-details-feature">
+            <span class="pool-details-feature-icon is-on">👥</span>
+            <span class="pool-details-feature-text"
+              >do {{ pool.capacity }} osoba</span
+            >
+          </li>
           <li class="pool-details-feature">
             <span
               class="pool-details-feature-icon"
@@ -140,12 +178,6 @@ onMounted(async () => {
             <span class="pool-details-feature-text">{{
               hasPets ? "Dozvoljeni ljubimci" : "Ljubimci nisu dozvoljeni"
             }}</span>
-          </li>
-          <li v-if="pool.capacity" class="pool-details-feature">
-            <span class="pool-details-feature-icon is-on">👥</span>
-            <span class="pool-details-feature-text"
-              >{{ pool.capacity }} osoba</span
-            >
           </li>
         </ul>
       </section>
@@ -192,20 +224,47 @@ onMounted(async () => {
     }
   }
 
+  > header {
+    position: relative;
+  }
+
+  &-favbtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    color: var(--text-color-black);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.041);
+    }
+
+    &.is-active svg path {
+      color: rgb(156, 0, 0);
+    }
+  }
+
   &-media {
     margin-top: 12px;
-
-    &-imgwrapper {
-      border-radius: 8px;
-      overflow: hidden;
-      height: 260px;
-    }
 
     &-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+    }
+  }
+
+  &-about {
+    max-height: 350px;
+    display: grid;
+
+    .pool-details-text {
+      overflow: auto;
     }
   }
 
@@ -233,12 +292,9 @@ onMounted(async () => {
   &-host {
     display: flex;
     align-items: center;
-    gap: 10px;
     border-color: #d7ecff;
 
     &-avatar {
-      width: 44px;
-      height: 44px;
       border-radius: 50%;
       border: 2px solid #cfe8ff;
       box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
@@ -267,19 +323,20 @@ onMounted(async () => {
   }
 
   &-price {
+    display: flex;
+    align-items: left;
+    justify-content: center;
+    flex-direction: column;
+
     &-row {
       display: flex;
       gap: 8px;
-      margin-top: 6px;
-      padding: 4px 8px;
-      border-radius: 10px;
-      background: rgba(2, 60, 99, 0.06);
     }
 
     &-amount {
       font-weight: 900;
-      color: #023c63;
       line-height: 1;
+      color: #023c63;
     }
 
     &-unit {
@@ -293,13 +350,14 @@ onMounted(async () => {
     color: var(--text-color-white);
     background: var(--primary-color);
     font-weight: 800;
-    text-align: center;
-    cursor: pointer;
-    grid-column: 1 / -1;
+
+    &-number {
+      text-decoration: underline;
+      font-weight: 900;
+    }
   }
 
   &-calendar {
-    margin-top: 12px;
     min-height: 220px;
     border-radius: 12px;
     background: #f8fcff;
@@ -314,7 +372,6 @@ onMounted(async () => {
 
   &-section-title {
     font-weight: 800;
-    margin-bottom: 6px;
     color: var(--text-color-black);
   }
 
@@ -322,9 +379,16 @@ onMounted(async () => {
     color: #4b5563;
   }
 
+  &-featureswrap {
+    max-height: 350px;
+    display: grid;
+
+    .pool-details-features {
+      overflow: auto;
+    }
+  }
+
   &-features {
-    list-style: none;
-    padding: 0;
     margin: 6px 0 0;
     display: grid;
     gap: 10px;
@@ -339,59 +403,81 @@ onMounted(async () => {
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     background: #fbfdff;
-  }
 
-  &-feature-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    font-size: 16px;
-    font-weight: 900;
+    &-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      font-weight: 900;
 
-    &.is-on {
-      background: #eafff1;
-      color: #0a7a33;
-      border: 1px solid #c3f2d5;
+      &.is-on {
+        background: #eafff1;
+        color: #0a7a33;
+        border: 1px solid #c3f2d5;
+      }
+      &.is-off {
+        background: #fff4f4;
+        color: #a31515;
+        border: 1px solid #ffdcdc;
+      }
     }
-    &.is-off {
-      background: #fff4f4;
-      color: #a31515;
-      border: 1px solid #ffdcdc;
-    }
-  }
 
-  &-feature-text {
-    font-weight: 700;
-    color: #0f172a;
+    &-text {
+      font-weight: 700;
+      color: var(--text-color-black);
+    }
   }
 
   &--mobile {
     .pool-details {
       &-titlebar-title {
-        font-size: 27px;
+        font-size: 26px;
       }
+
+      &-meta {
+        font-size: 14px;
+      }
+
       &-media-imgwrapper {
         height: 260px;
       }
+
+      &-favbtn {
+        top: 5px;
+        width: 40px;
+        height: 40px;
+      }
+
       &-summarybar {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
+
       &-cta {
         grid-column: 1 / -1;
       }
+
       &-body {
         grid-template-columns: 1fr;
       }
+
       &-price-amount {
         font-size: 18px;
       }
+
       &-price-unit {
         font-size: 14px;
       }
-      &-host-phone {
-        font-size: 17px;
+
+      &-host {
+        gap: 10px;
+
+        &-avatar {
+          width: 44px;
+          height: 44px;
+        }
       }
     }
   }
@@ -399,28 +485,75 @@ onMounted(async () => {
   &--desktop {
     .pool-details {
       padding-top: 92px;
+
       &-titlebar-title {
-        font-size: 32px;
+        font-size: 36px;
       }
+
+      &-meta {
+        font-size: 18px;
+      }
+
       &-media-imgwrapper {
         height: 420px;
       }
+
       &-summarybar {
         grid-template-columns: 1fr 1fr;
       }
-      &-cta {
-        display: none;
+
+      &-favbtn {
+        top: 10px;
+        width: 50px;
+        height: 50px;
       }
+
       &-body {
         grid-template-columns: 1fr 1fr;
       }
-      &-price-amount {
-        font-size: 20px;
+
+      &-section-title {
+        font-size: 26px;
       }
+
+      &-featureswrap {
+        grid-template-rows: auto 1fr;
+      }
+
+      &-features {
+        grid-auto-rows: max-content;
+      }
+
+      &-text,
+      &-feature-text {
+        font-size: 18px;
+      }
+
+      &-price {
+        &-amount {
+          font-size: 25px;
+        }
+      }
+
+      &-host {
+        gap: 15px;
+
+        &-avatar {
+          width: 80px;
+          height: 80px;
+        }
+
+        &-phone {
+          margin-left: auto;
+          font-size: 20px;
+        }
+
+        &-name {
+          font-size: 20px;
+        }
+      }
+
       &-price-unit {
-        font-size: 15px;
-      }
-      &-host-phone {
         font-size: 18px;
       }
     }
