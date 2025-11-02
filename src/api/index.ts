@@ -72,7 +72,7 @@ export async function getAvailablePools(): Promise<
           city: "Mostar",
           capacity: 8,
           pricePerDay: 150,
-          images: [demoImg, demoImg, demoImg, demoImg],
+          images: [demoImg, demoImg, demoImg, demoImg, 'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'],
           availableDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
           filters: {
             heated: true,

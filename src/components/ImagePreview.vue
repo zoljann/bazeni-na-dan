@@ -12,21 +12,42 @@ const props = defineProps<{
   startIndex?: number;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", v: boolean): void;
-}>();
+const emit = defineEmits<{ (e: "update:modelValue", v: boolean): void }>();
 
 const isMobileView = isMobile();
-const open = ref(props.modelValue);
-const swRef = ref<any>(null);
+const isOpen = ref(props.modelValue);
+const swiperRef = ref<any>(null);
+const isBeginning = ref(true);
+const isEnd = ref(false);
+
+const onClosePreview = () => emit("update:modelValue", false);
+
+const onSwiperInit = (sw: any) => {
+  swiperRef.value = sw;
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+  if (typeof props.startIndex === "number") sw.slideTo(props.startIndex, 0);
+};
+
+const onSlideChange = (sw: any) => {
+  isBeginning.value = sw.isBeginning;
+  isEnd.value = sw.isEnd;
+};
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (e.key === "Escape") onClosePreview();
+  if (!isMobileView && swiperRef.value) {
+    if (e.key === "ArrowLeft") swiperRef.value.slidePrev();
+    if (e.key === "ArrowRight") swiperRef.value.slideNext();
+  }
+};
 
 watch(
   () => props.modelValue,
   (v) => {
-    open.value = v;
+    isOpen.value = v;
     if (v && typeof props.startIndex === "number") {
-      // jump to requested image after mount
-      setTimeout(() => swRef.value?.slideTo(props.startIndex!, 0), 0);
+      setTimeout(() => swiperRef.value?.slideTo(props.startIndex!, 0), 0);
     }
   },
   { immediate: true }
@@ -35,79 +56,97 @@ watch(
 watch(
   () => props.startIndex,
   (i) => {
-    if (open.value && typeof i === "number") swRef.value?.slideTo(i, 0);
+    if (isOpen.value && typeof i === "number") swiperRef.value?.slideTo(i, 0);
   }
 );
 
-const onSwiper = (sw: any) => {
-  swRef.value = sw;
-  if (typeof props.startIndex === "number") sw.slideTo(props.startIndex, 0);
-};
-
-const close = () => emit("update:modelValue", false);
-
-const goPrev = () => swRef.value?.slidePrev();
-const goNext = () => swRef.value?.slideNext();
-
-const onKey = (e: KeyboardEvent) => {
-  if (e.key === "Escape") close();
-  if (!isMobileView) {
-    if (e.key === "ArrowLeft") goPrev();
-    if (e.key === "ArrowRight") goNext();
-  }
-};
-onMounted(() => document.addEventListener("keydown", onKey));
-onBeforeUnmount(() => document.removeEventListener("keydown", onKey));
+onMounted(() => document.addEventListener("keydown", onKeydown));
+onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
 </script>
 
 <template>
   <teleport to="body">
-    <div v-if="open" class="imgprev" role="dialog" aria-modal="true">
-      <div class="imgprev-backdrop" @click="close" />
-      <div class="imgprev-content" @click.stop>
-        <button class="imgprev-close" @click="close" aria-label="Zatvori">
-          <!-- exact icon you provided -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" class="h-8 w-8">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12" />
+    <div v-if="isOpen" class="image-preview" role="dialog" aria-modal="true">
+      <div class="image-preview-backdrop" @click="onClosePreview" />
+      <div class="image-preview-content" @click.stop>
+        <button
+          class="image-preview-close"
+          @click="onClosePreview"
+          aria-label="Zatvori"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            width="28"
+            height="28"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
         <Swiper
-          class="imgprev-swiper"
+          class="image-preview-swiper"
           :modules="[SwiperPagination, Keyboard]"
           :slides-per-view="1"
           :pagination="{ clickable: true }"
           :keyboard="{ enabled: true }"
-          @swiper="onSwiper"
+          @swiper="onSwiperInit"
+          @slideChange="onSlideChange"
         >
           <SwiperSlide v-for="(img, i) in images" :key="i">
-            <img class="imgprev-img" :src="img" alt="pregled slike" />
+            <img
+              class="image-preview-img"
+              :src="img"
+              alt="pregled slike"
+              draggable="false"
+            />
           </SwiperSlide>
         </Swiper>
 
-        <!-- desktop-only arrows -->
         <button
           v-if="!isMobileView && images.length > 1"
-          class="imgprev-arrow imgprev-arrow--prev"
-          @click="goPrev"
+          class="image-preview-arrow image-preview-arrow--prev"
+          :class="{ 'is-disabled': isBeginning }"
+          :disabled="isBeginning"
+          @click="swiperRef?.slidePrev()"
           aria-label="Prethodna slika"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M15 18 9 12l6-6" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M15 18 9 12l6-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
+
         <button
           v-if="!isMobileView && images.length > 1"
-          class="imgprev-arrow imgprev-arrow--next"
-          @click="goNext"
+          class="image-preview-arrow image-preview-arrow--next"
+          :class="{ 'is-disabled': isEnd }"
+          :disabled="isEnd"
+          @click="swiperRef?.slideNext()"
           aria-label="Sljedeća slika"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="m9 18 6-6-6-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -116,112 +155,130 @@ onBeforeUnmount(() => document.removeEventListener("keydown", onKey));
 </template>
 
 <style scoped lang="scss">
-.imgprev {
+.image-preview {
   position: fixed;
   inset: 0;
   z-index: 9999;
-}
-.imgprev-backdrop {
-  position: absolute;
-  inset: 0;
-  /* darker blackout */
-  background: rgba(2, 8, 23, 0.92);
-}
-.imgprev-content {
-  position: absolute;
-  inset: 0;
-  display: flex;               /* perfect centering */
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 2;
-}
-@media (min-width: 768px) {
-  .imgprev-content { padding: 32px; }
-}
 
-/* close button */
-.imgprev-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  border: 0;
-  background: #ffffffe6;
-  color: var(--text-color-black);
-  width: 44px; height: 44px;
-  border-radius: 999px;
-  display: grid; place-items: center;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
-  z-index: 4;
-}
-
-/* Swiper container centered */
-.imgprev-swiper {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  z-index: 2;
-}
-/* center slides content */
-:deep(.swiper-slide) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* image sizing */
-.imgprev-img {
-  max-width: 100%;
-  max-height: 85vh; /* mobile: full width feeling, keep ratio */
-  object-fit: contain;
-  display: block;
-}
-@media (min-width: 768px) {
-  .imgprev-img {
-    max-width: 90vw;   /* never reach edges */
-    max-height: 90vh;  /* keep some breathing room */
+  &-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.94);
   }
-}
 
-/* bigger pagination on desktop */
-:deep(.swiper-pagination) {
-  position: absolute;
-  bottom: 14px;
-}
-:deep(.swiper-pagination-bullet) {
-  width: 8px; height: 8px;
-  background: #ffffffcc;
-  opacity: 0.7;
-  margin: 0 4px !important;
-}
-:deep(.swiper-pagination-bullet-active) {
-  background: var(--primary-color);
-  opacity: 1;
-}
-@media (min-width: 768px) {
+  &-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 2;
+
+    @media (min-width: 768px) {
+      padding: 32px;
+    }
+  }
+
+  &-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--text-color-white);
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 4;
+
+    &:hover {
+      filter: brightness(0.95);
+    }
+  }
+
+  &-swiper {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+  }
+
+  :deep(.swiper-slide) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-img {
+    max-width: 100%;
+    max-height: 86vh;
+    object-fit: contain;
+    display: block;
+
+    @media (min-width: 768px) {
+      max-width: 92vw;
+      max-height: 92vh;
+    }
+  }
+
+  :deep(.swiper-pagination) {
+    position: absolute;
+    bottom: 14px;
+  }
+
   :deep(.swiper-pagination-bullet) {
-    width: 12px; height: 12px;     /* larger dots on desktop */
-    margin: 0 6px !important;
+    width: 8px;
+    height: 8px;
+    background: #ffffffcc;
+    opacity: 0.85;
+    margin: 0 4px !important;
+
+    @media (min-width: 768px) {
+      width: 12px;
+      height: 12px;
+      margin: 0 6px !important;
+    }
+  }
+
+  :deep(.swiper-pagination-bullet-active) {
+    background: var(--primary-color);
+    opacity: 1;
+  }
+
+  &-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: #ffffffe6;
+    color: var(--text-color-black);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
+    z-index: 3;
+
+    &:not(:disabled):hover {
+      filter: brightness(0.95);
+    }
+
+    &.is-disabled,
+    &:disabled {
+      opacity: 0.4;
+    }
+
+    &--prev {
+      left: 24px;
+    }
+
+    &--next {
+      right: 24px;
+    }
   }
 }
-
-/* desktop arrows */
-.imgprev-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 0;
-  width: 48px; height: 48px;
-  border-radius: 999px;
-  background: #ffffffe6;
-  color: var(--text-color-black);
-  display: grid; place-items: center;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
-  z-index: 3; /* above swiper */
-}
-.imgprev-arrow--prev { left: 24px; }
-.imgprev-arrow--next { right: 24px; }
 </style>

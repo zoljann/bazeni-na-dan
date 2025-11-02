@@ -134,6 +134,7 @@ onMounted(async () => {
           <button
             class="pool-details-media-arrow pool-details-media-arrow--prev"
             :class="{ 'is-disabled': isBeginning }"
+            :disabled="isBeginning"
             @click.stop="goPrev"
             aria-label="Prethodna slika"
           >
@@ -152,6 +153,7 @@ onMounted(async () => {
           <button
             class="pool-details-media-arrow pool-details-media-arrow--next"
             :class="{ 'is-disabled': isEnd }"
+            :disabled="isEnd"
             @click.stop="goNext"
             aria-label="Sljedeća slika"
           >
@@ -371,9 +373,9 @@ onMounted(async () => {
         right: 8px;
       }
 
-      &.is-disabled {
+      &.is-disabled,
+      &:disabled {
         opacity: 0.4;
-        pointer-events: none;
       }
     }
   }
