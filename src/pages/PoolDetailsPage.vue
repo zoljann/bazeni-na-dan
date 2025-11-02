@@ -11,6 +11,7 @@ import { notificationsStore } from "../stores/notifications";
 import { usePoolsStore } from "../stores/pools";
 import { useFavorites } from "../composables/useFavorites";
 import Navigation from "../components/Navigation.vue";
+import ImagePreview from "../components/ImagePreview.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,6 +22,8 @@ const poolsStore = usePoolsStore();
 const swiperRef = ref<any>(null);
 const isBeginning = ref(true);
 const isEnd = ref(false);
+const isPreviewOpen = ref(false);
+const previewIndex = ref(0);
 const pool = ref<Pool>();
 const contactPhone = "062614300";
 
@@ -33,6 +36,10 @@ const poolDetailsClasses = computed(() => ({
 }));
 
 const onContact = () => (window.location.href = `tel:${contactPhone}`);
+const openPreview = (index: number) => {
+  previewIndex.value = index;
+  isPreviewOpen.value = true;
+};
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
   isBeginning.value = sw.isBeginning;
@@ -119,6 +126,7 @@ onMounted(async () => {
                 class="pool-details-media-img"
                 :src="img"
                 alt="bazen slike"
+                @click="openPreview(i)"
               />
             </SwiperSlide>
           </Swiper>
@@ -248,6 +256,13 @@ onMounted(async () => {
 
     <div class="pool-details-calendar"></div>
   </section>
+
+  <ImagePreview
+    v-if="pool?.images"
+    v-model="isPreviewOpen"
+    :images="pool.images"
+    :start-index="previewIndex"
+  />
 </template>
 
 <style scoped lang="scss">
