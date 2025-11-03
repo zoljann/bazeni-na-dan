@@ -395,7 +395,6 @@ watch(showFilters, (v) => {
 
         &-location {
           height: 54px;
-          font-size: 18px;
         }
 
         &-iconbtn {
@@ -415,7 +414,7 @@ watch(showFilters, (v) => {
         }
 
         &-tool-label {
-          font-size: 15px;
+          font-size: 14px;
         }
       }
 
@@ -432,6 +431,5 @@ watch(showFilters, (v) => {
 
 :deep(.location-dropdown--desktop) {
   top: calc(100% + 4px);
-  font-size: 120%;
 }
 </style>

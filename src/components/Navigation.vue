@@ -293,7 +293,7 @@ onBeforeUnmount(() => {
       }
 
       &-title {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
         color: rgb(74, 81, 90);
       }
@@ -301,7 +301,7 @@ onBeforeUnmount(() => {
 
     .navigation-right {
       &-button {
-        font-size: 22px;
+        font-size: 18px;
 
         &:hover {
           transition: 0.2s;
@@ -315,11 +315,11 @@ onBeforeUnmount(() => {
         width: 400px;
 
         &-signin-button {
-          font-size: 21px;
+          font-size: 16px;
         }
 
         &-links {
-          font-size: 18px;
+          font-size: 16px;
         }
       }
     }

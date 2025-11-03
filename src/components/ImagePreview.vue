@@ -50,14 +50,14 @@ watch(
       setTimeout(() => swiperRef.value?.slideTo(props.startIndex!, 0), 0);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
   () => props.startIndex,
   (i) => {
     if (isOpen.value && typeof i === "number") swiperRef.value?.slideTo(i, 0);
-  }
+  },
 );
 
 onMounted(() => document.addEventListener("keydown", onKeydown));

@@ -602,14 +602,13 @@ const handleSearchPoolClick = () => {
 
   &--desktop {
     margin-top: -90px;
-    font-size: 125%;
 
     .content {
       &-middle {
         width: 70%;
 
         &-title {
-          font-size: 56px;
+          font-size: 52px;
         }
       }
 
@@ -633,16 +632,8 @@ const handleSearchPoolClick = () => {
         }
       }
 
-      &-works-text {
-        font-size: 22px;
-      }
-
       &-after {
         &-how-it-works {
-          &-title {
-            font-size: 32px;
-          }
-
           &-row {
             grid-template-areas: "body media";
             grid-template-columns: 1.1fr 1fr;
@@ -685,7 +676,6 @@ const handleSearchPoolClick = () => {
           }
 
           &-title {
-            font-size: 32px;
             margin-bottom: 22px;
             text-align: center;
           }
@@ -699,17 +689,12 @@ const handleSearchPoolClick = () => {
         &-faq {
           padding: 22px 22px;
 
-          &-tab {
-            font-size: 20px;
-          }
-
           &-question {
-            font-size: 20px;
             padding: 16px 12px;
           }
 
           &-answer p {
-            font-size: 18px;
+            font-size: 16px;
           }
         }
       }

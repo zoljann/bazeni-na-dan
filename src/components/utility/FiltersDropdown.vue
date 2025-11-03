@@ -318,7 +318,6 @@ const classes = computed(() => ({
   }
 
   &--desktop {
-    font-size: 120%;
     position: absolute;
     top: calc(100% + 10px);
     right: 0;

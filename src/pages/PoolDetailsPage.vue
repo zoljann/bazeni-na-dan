@@ -75,7 +75,7 @@ onMounted(async () => {
     <header>
       <div class="pool-details-titlebar">
         <button class="pool-details-titlebar-backbtn" @click="router.back()">
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M15 18l-6-6 6-6"
               fill="none"
@@ -614,14 +614,6 @@ onMounted(async () => {
     .pool-details {
       padding-top: 92px;
 
-      &-titlebar-title {
-        font-size: 36px;
-      }
-
-      &-meta {
-        font-size: 18px;
-      }
-
       &-media {
         &-imgwrapper {
           height: 420px;
@@ -647,21 +639,12 @@ onMounted(async () => {
         grid-template-columns: 1fr 1fr;
       }
 
-      &-section-title {
-        font-size: 26px;
-      }
-
       &-featureswrap {
         grid-template-rows: auto 1fr;
       }
 
       &-features {
         grid-auto-rows: max-content;
-      }
-
-      &-text,
-      &-feature-text {
-        font-size: 18px;
       }
 
       &-price {
@@ -680,16 +663,16 @@ onMounted(async () => {
 
         &-phone {
           margin-left: auto;
-          font-size: 20px;
+          font-size: 18px;
         }
 
         &-name {
-          font-size: 20px;
+          font-size: 18px;
         }
       }
 
       &-price-unit {
-        font-size: 18px;
+        font-size: 16px;
       }
     }
   }
