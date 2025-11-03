@@ -43,8 +43,8 @@ const scrollToFaq = async () => {
     closeDropdown();
   });
 };
-
 const goHome = () => router.push({ name: "PoolsHomePage" });
+const goToSavedPools = () => router.push({ name: "PoolsSavedPage" });
 
 onMounted(() => {
   onScroll();
@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
                 fill="currentColor"
               />
             </svg>
-            Prijavi se
+            Meni
           </button>
 
           <div
@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
               </a>
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="closeDropdown"
+                @click.prevent="goToSavedPools"
               >
                 Sačuvani bazeni
               </a>

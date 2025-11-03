@@ -682,8 +682,8 @@ const handleSearchPoolClick = () => {
         }
 
         &-cta {
-          height: 80px;
-          width: 30%;
+          height: 60px;
+          width: 25%;
         }
 
         &-faq {

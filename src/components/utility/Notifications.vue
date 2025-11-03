@@ -124,10 +124,10 @@ const classes = computed(() => ({
   }
 
   &--desktop {
-    width: 500px;
+    width: 450px;
 
     .notifications-item {
-      font-size: 1.2rem;
+      font-size: 16px;
       padding: 18px 18px;
     }
   }

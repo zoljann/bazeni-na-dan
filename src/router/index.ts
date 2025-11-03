@@ -7,14 +7,19 @@ const routes = [
     component: () => import("../pages/PoolsHomePage.vue"),
   },
   {
-    path: "/search",
+    path: "/pretraga",
     name: "PoolsSearchPage",
     component: () => import("../pages/PoolsSearchPage.vue"),
   },
   {
-    path: "/pool",
+    path: "/bazen",
     name: "PoolDetailsPage",
     component: () => import("../pages/PoolDetailsPage.vue"),
+  },
+  {
+    path: "/sacuvani",
+    name: "PoolsSavedPage",
+    component: () => import("../pages/PoolsSavedPage.vue"),
   },
 ];
 
