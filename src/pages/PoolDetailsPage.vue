@@ -187,7 +187,10 @@ onMounted(async () => {
         <div class="pool-details-card pool-details-price">
           <span class="pool-details-smalllabel">Cijena</span>
 
-          <div v-if="pool.pricePerDay" class="pool-details-price-row">
+          <div
+            v-if="pool.pricePerDay !== undefined"
+            class="pool-details-price-row"
+          >
             <span class="pool-details-price-amount">{{
               pool.pricePerDay
             }}</span>
@@ -195,9 +198,9 @@ onMounted(async () => {
           </div>
 
           <div v-else class="pool-details-price-row">
-            <a class="pool-details-price-unit">
-              Kontaktiraj domaćina za cijenu
-            </a>
+            <span class="pool-details-price-unit"
+              >Po dogovoru sa domaćinom</span
+            >
           </div>
         </div>
 
@@ -215,7 +218,7 @@ onMounted(async () => {
 
     <div class="pool-details-body">
       <section
-        v-if="pool.description"
+        v-if="pool.description !== undefined"
         class="pool-details-card pool-details-about"
       >
         <h2 class="pool-details-section-title">O bazenu</h2>
@@ -259,7 +262,7 @@ onMounted(async () => {
 
     <div class="pool-details-calendar">
       <AvailabilityCalendar
-        v-if="pool.availableDays !== undefined"
+        v-if="pool.availableDays === undefined"
         :available-days="pool.availableDays || []"
       />
       <p v-else class="pool-details-text">

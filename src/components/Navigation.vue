@@ -30,10 +30,20 @@ const handleClickOutside = (event: MouseEvent) => {
     closeDropdown();
   }
 };
-const scrollToFaq = () => {
-  document.getElementById("faq")?.scrollIntoView();
-  closeDropdown();
+const scrollToFaq = async () => {
+  const el = document.getElementById("faq");
+  if (el) {
+    el.scrollIntoView();
+    closeDropdown();
+    return;
+  }
+  await router.push({ name: "PoolsHomePage", hash: "#faq" });
+  requestAnimationFrame(() => {
+    document.getElementById("faq")?.scrollIntoView();
+    closeDropdown();
+  });
 };
+
 const goHome = () => router.push({ name: "PoolsHomePage" });
 
 onMounted(() => {
