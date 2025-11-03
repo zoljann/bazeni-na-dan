@@ -262,7 +262,7 @@ onMounted(async () => {
 
     <div class="pool-details-calendar">
       <AvailabilityCalendar
-        v-if="pool.availableDays === undefined"
+        v-if="pool.availableDays !== undefined"
         :available-days="pool.availableDays || []"
       />
       <p v-else class="pool-details-text">

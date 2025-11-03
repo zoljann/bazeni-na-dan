@@ -228,10 +228,6 @@ onBeforeUnmount(() => {
           color: var(--text-color-black);
           font-weight: 500;
           padding: 10px 12px;
-
-          &:first-child {
-            color: var(--primary-color);
-          }
         }
       }
     }
