@@ -12,6 +12,7 @@ import { usePoolsStore } from "../stores/pools";
 import { useFavorites } from "../composables/useFavorites";
 import Navigation from "../components/Navigation.vue";
 import ImagePreview from "../components/ImagePreview.vue";
+import AvailabilityCalendar from "../components/utility/AvailabilityCalendar.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -256,7 +257,16 @@ onMounted(async () => {
       </section>
     </div>
 
-    <div class="pool-details-calendar"></div>
+    <div class="pool-details-calendar">
+      <AvailabilityCalendar
+        v-if="pool.availableDays !== undefined"
+        :available-days="pool.availableDays || []"
+      />
+      <p v-else class="pool-details-text">
+        Domaćin nije uključio raspored dostupnosti bazena. Kontaktirajte ga za
+        više informacija na {{ contactPhone }}
+      </p>
+    </div>
   </section>
 
   <ImagePreview
@@ -479,10 +489,10 @@ onMounted(async () => {
   }
 
   &-calendar {
-    min-height: 220px;
-    border-radius: 12px;
-    background: #f8fcff;
-    border: 1px dashed rgba(2, 60, 99, 0.12);
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
+    padding: 12px;
   }
 
   &-body {

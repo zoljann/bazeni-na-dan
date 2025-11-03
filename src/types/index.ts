@@ -3,12 +3,13 @@ export type Pool = {
   title: string;
   city: string;
   capacity: number;
-  pricePerDay?: number;
-  description?: string;
   images: string[];
-  availableDays?: string[];
+  pricePerDay?: number | undefined;
+  description?: string | undefined;
+  availableDays?: string[] | undefined;
   filters?: {
     heated: boolean;
     petsAllowed: boolean;
   };
 };
+//stvari koje dodju undefined znaci da ih nema tj. ne koriste se

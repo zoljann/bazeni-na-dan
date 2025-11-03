@@ -63,7 +63,7 @@ const resultsText = computed(() => {
       : `${n} ${n >= 2 && n <= 4 ? "pronađena" : "pronađenih"} bazena`;
 
   const parts = [base];
-  if (displayDate.value) parts.push(`na datum ${displayDate.value}`);
+  if (displayDate.value) parts.push(`na datum ${displayDate.value}(bazeni koji nemaju raspored dostupnih dana neće biti prikazani)`);
   if (filtersCount.value)
     parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
 
