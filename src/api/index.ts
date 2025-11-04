@@ -160,6 +160,21 @@ export async function getPoolById(id: string): Promise<PoolByIdSuccess | ApiErro
 
 type AuthSuccess = { state: 'success'; user: User };
 
+type UpdateUserSuccess = {
+  state: 'success';
+  user: User;
+};
+
+type UpdateUserPayload = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  avatarBase64?: string;
+  passwordChange?: { currentPassword: string; newPassword: string };
+};
+
 function demoUser(overrides?: Partial<User>): User {
   return {
     id: 'demo-1',
@@ -223,6 +238,30 @@ export async function registerUser(payload: {
       mobileNumber: phoneOk
     });
     return { state: 'success', user };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function updateUser(payload: UpdateUserPayload): Promise<UpdateUserSuccess | ApiError> {
+  try {
+    // const { data } = await api.put('/user', payload); return { state:'success', user: data };
+    await new Promise((r) => setTimeout(r, 500));
+
+    // Mock: fabricate updated user from payload; if avatarBase64 present, use it as avatarUrl.
+    const updated: User = {
+      id: payload.id,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      email: payload.email,
+      mobileNumber: payload.mobileNumber,
+      avatarUrl: payload.avatarBase64 || 'https://i.pravatar.cc/200?u=' + payload.id,
+      role: 'host',
+      pools: [] // leave as empty for mock; real API should return actual pools
+    };
+
+    // PasswordChange is ignored in mock, but kept to mirror final contract.
+    return { state: 'success', user: updated };
   } catch (e) {
     return handleApiError(e);
   }

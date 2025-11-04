@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import type { User } from 'src/types';
 import { notificationsStore } from './notifications';
-import { loginUser, registerUser } from '../api';
+import { loginUser, registerUser, updateUser } from '../api';
 import { storage } from '../utility/localStorage';
 
 const USER_STORAGE_KEY = 'BND_user';
@@ -56,10 +56,31 @@ export const useUserStore = defineStore('userStore', () => {
     return 'success' as const;
   };
 
+  const updateProfile = async (payload: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileNumber: string;
+    avatarBase64?: string;
+    passwordChange?: { currentPassword: string; newPassword: string };
+  }) => {
+    if (!user.value) return 'error' as const;
+
+    const res = await updateUser({ id: user.value.id, ...payload });
+    if (res.state === 'error') {
+      useNotificationsStore.addNotification(res.message || 'Ažuriranje nije uspjelo.', 'error');
+      return 'error' as const;
+    }
+
+    setUser(res.user);
+    useNotificationsStore.addNotification('Profil ažuriran.', 'success');
+    return 'success' as const;
+  };
+
   const logout = () => {
     setUser(null);
     useNotificationsStore.addNotification('Uspješna odjava', 'success');
   };
 
-  return { user, isAuthenticated, login, register, logout };
+  return { user, isAuthenticated, login, register, updateProfile, logout };
 });

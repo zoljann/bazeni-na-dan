@@ -536,33 +536,29 @@ const submitLogin = async () => {
   }
 
   &--mobile {
-    .auth {
-      &-titlebar-title {
-        font-size: 26px;
-      }
+    .auth-titlebar-title {
+      font-size: 26px;
+    }
 
-      &-submit {
-        width: 100%;
-      }
+    .auth-submit {
+      width: 100%;
     }
   }
 
   &--desktop {
-    &-auth {
-      &-titlebar-title {
-        font-size: 32px;
-      }
+    .auth-card {
+      padding: 14px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
+    }
 
-      &-card {
-        padding: 14px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
-      }
+    .auth-titlebar-title {
+      font-size: 32px;
+    }
 
-      &-submit {
-        width: 50%;
-        justify-self: center;
-      }
+    .auth-submit {
+      width: 50%;
+      justify-self: center;
     }
   }
 }

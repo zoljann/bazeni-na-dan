@@ -43,6 +43,7 @@ const goToFaqSection = async () => {
 };
 const logout = () => {
   userStore.logout();
+  closeDropdown();
   router.push({ name: 'PoolsHomePage' });
 };
 
@@ -144,7 +145,7 @@ onBeforeUnmount(() => {
                 class="navigation-right-dropdown-links-item"
                 @click.prevent="closeDropdown"
               >
-                Objavi svoj bazen
+                {{ userStore.isAuthenticated ? 'Objavljeni bazeni' : 'Objavi svoj bazen' }}
               </a>
               <a
                 class="navigation-right-dropdown-links-item"

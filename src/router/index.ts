@@ -26,6 +26,11 @@ const routes = [
     name: 'LoginRegisterPage',
     component: () => import('../pages/login-register/LoginRegisterPage.vue')
   },
+    {
+    path: '/profil',
+    name: 'UserProfilePage',
+    component: () => import('../pages/UserProfilePage.vue')
+  },
   {
     path: '/:pathMatch(.*)*',
     redirect: { name: 'PoolsHomePage' }
