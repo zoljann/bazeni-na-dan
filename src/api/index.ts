@@ -1,9 +1,9 @@
-import axios, { AxiosError } from "axios";
-import env from "../utility/env";
-import type { Pool } from "src/types";
+import axios, { AxiosError } from 'axios';
+import env from '../utility/env';
+import type { Pool } from 'src/types';
 
 const api = axios.create({
-  baseURL: env.apiUrl,
+  baseURL: env.apiUrl
 });
 
 function handleApiError(e: unknown): ApiError {
@@ -11,27 +11,27 @@ function handleApiError(e: unknown): ApiError {
   const httpCode = e instanceof AxiosError && e.response?.status;
 
   return {
-    state: "error",
+    state: 'error',
     message:
-      (error.code === "ERR_NETWORK" && "Network error") ||
-      (httpCode && httpCode >= 400 && httpCode < 600 && "Server error") ||
+      (error.code === 'ERR_NETWORK' && 'Network error') ||
+      (httpCode && httpCode >= 400 && httpCode < 600 && 'Server error') ||
       error?.details ||
-      error?.message,
+      error?.message
   };
 }
 
 interface ApiError {
   message: string;
-  state: "error";
+  state: 'error';
 }
 
 type AvailablePoolsSuccess = {
-  state: "success";
+  state: 'success';
   pools: Pool[];
 };
 
 type PoolByIdSuccess = {
-  state: "success";
+  state: 'success';
   pool: Pool;
 };
 
@@ -45,9 +45,7 @@ function addDays(n: number) {
   return fmt(d);
 }
 
-export async function getAvailablePools(): Promise<
-  AvailablePoolsSuccess | ApiError
-> {
+export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiError> {
   try {
     /*     const { data } = await api.get("/pools", {
       params: city ? { city } : undefined,
@@ -59,17 +57,17 @@ export async function getAvailablePools(): Promise<
     }; */
 
     const demoImg =
-      "https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg";
+      'https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg';
 
     await new Promise((r) => setTimeout(r, 500));
 
     return {
-      state: "success",
+      state: 'success',
       pools: [
         {
-          id: "1",
-          title: "Vila Sunce",
-          city: "Mostar",
+          id: '1',
+          title: 'Vila Sunce',
+          city: 'Mostar',
           capacity: 8,
           pricePerDay: 150,
           images: [
@@ -77,70 +75,68 @@ export async function getAvailablePools(): Promise<
             demoImg,
             demoImg,
             demoImg,
-            "https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg",
+            'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'
           ],
           availableDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
           filters: {
             heated: true,
-            petsAllowed: true,
+            petsAllowed: true
           },
           description:
-            "Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje iazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.",
+            'Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje iazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.'
         },
         {
-          id: "2",
-          title: "Plavi Raj",
-          city: "Sarajevo",
+          id: '2',
+          title: 'Plavi Raj',
+          city: 'Sarajevo',
           capacity: 6,
           pricePerDay: 200,
           images: [demoImg],
           availableDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
           filters: {
             heated: true,
-            petsAllowed: true,
-          },
+            petsAllowed: true
+          }
         },
         {
-          id: "3",
-          title: "Jadranska Laguna",
-          city: "Neum",
+          id: '3',
+          title: 'Jadranska Laguna',
+          city: 'Neum',
           capacity: 10,
           pricePerDay: 280,
           images: [demoImg],
-          availableDays: [addDays(1), addDays(4), addDays(6), addDays(8)],
+          availableDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
         },
         {
-          id: "4",
-          title: "Zeleni Brežuljak",
-          city: "Banja Luka",
+          id: '4',
+          title: 'Zeleni Brežuljak',
+          city: 'Banja Luka',
           capacity: 14,
           pricePerDay: 240,
           images: [demoImg],
           availableDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
           filters: {
             heated: true,
-            petsAllowed: true,
-          },
+            petsAllowed: true
+          }
         },
         {
-          id: "5",
-          title: "Mostarska Terasa",
-          city: "Mostar",
+          id: '5',
+          title: 'Mostarska Terasa',
+          city: 'Mostar',
           capacity: 9,
           pricePerDay: 190,
           images: [demoImg],
-          availableDays: [addDays(3), addDays(4), addDays(11)],
-        },
-      ],
+          availableDays: [addDays(3), addDays(4), addDays(11)]
+        }
+      ]
     };
   } catch (e) {
     return handleApiError(e);
   }
 }
 
-export async function getPoolById(
-  id: string,
-): Promise<PoolByIdSuccess | ApiError> {
+export async function getPoolById(id: string): Promise<PoolByIdSuccess | ApiError> {
   try {
     /*     const { data } = await api.get("/pool", {
       params: { id },
@@ -148,15 +144,15 @@ export async function getPoolById(
     return { state: "success", pool: data }; */
 
     const all = await getAvailablePools();
-    if (all.state === "error") return all;
+    if (all.state === 'error') return all;
 
     const found = all.pools.find((p) => p.id === id);
     if (!found) {
-      return { state: "error", message: "Bazen nije pronađen." };
+      return { state: 'error', message: 'Bazen nije pronađen.' };
     }
     await new Promise((r) => setTimeout(r, 10));
 
-    return { state: "success", pool: found };
+    return { state: 'success', pool: found };
   } catch (e) {
     return handleApiError(e);
   }

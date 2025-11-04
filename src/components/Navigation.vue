@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import isMobile from "is-mobile";
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
-import { useRouter } from "vue-router";
+import isMobile from 'is-mobile';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
-  variant?: "transparent" | "solid";
+  variant?: 'transparent' | 'solid';
 }>();
 
 const router = useRouter();
@@ -14,8 +14,8 @@ const isDropdownOpen = ref(false);
 const dropdownRef = ref<HTMLElement>();
 
 const navigationClasses = computed(() => ({
-  "navigation-scrolled": scrolledNavigation.value || props.variant === "solid",
-  [`navigation--${isMobileView ? "mobile" : "desktop"}`]: true,
+  'navigation-scrolled': scrolledNavigation.value || props.variant === 'solid',
+  [`navigation--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
 const onScroll = () => (scrolledNavigation.value = window.scrollY > 10);
@@ -30,38 +30,45 @@ const handleClickOutside = (event: MouseEvent) => {
     closeDropdown();
   }
 };
-const scrollToFaq = async () => {
-  const el = document.getElementById("faq");
+const goToFaqSection = async () => {
+  const el = document.getElementById('faq');
   if (el) {
     el.scrollIntoView();
     closeDropdown();
     return;
   }
-  await router.push({ name: "PoolsHomePage", hash: "#faq" });
+  await router.push({ name: 'PoolsHomePage', hash: '#faq' });
   requestAnimationFrame(() => {
-    document.getElementById("faq")?.scrollIntoView();
+    document.getElementById('faq')?.scrollIntoView();
     closeDropdown();
   });
 };
-const goHome = () => router.push({ name: "PoolsHomePage" });
-const goToSavedPools = () => router.push({ name: "PoolsSavedPage" });
+const goHome = () => router.push({ name: 'PoolsHomePage' });
+const goToSavedPools = () => router.push({ name: 'PoolsSavedPage' });
+const goToLoginRegisterPage = () => router.push({ name: 'LoginRegisterPage' });
 
 onMounted(() => {
   onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
-  document.addEventListener("click", handleClickOutside);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('click', handleClickOutside);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", onScroll);
-  document.removeEventListener("click", handleClickOutside);
+  window.removeEventListener('scroll', onScroll);
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
 <template>
-  <header class="navigation" :class="navigationClasses">
+  <header
+    class="navigation"
+    :class="navigationClasses"
+  >
     <div class="navigation-inner">
-      <div class="navigation-left" @click="goHome">
+      <div
+        class="navigation-left"
+        @click="goHome"
+      >
         <img
           class="navigation-left-logo"
           src="../assets/logo.png"
@@ -75,11 +82,21 @@ onBeforeUnmount(() => {
         </h3>
       </div>
       <div class="navigation-right">
-        <button v-if="!isMobileView" class="navigation-right-button">
+        <button
+          v-if="!isMobileView"
+          class="navigation-right-button"
+        >
           Objavi svoj bazen
         </button>
-        <div class="navigation-right-container" ref="dropdownRef" @click.stop>
-          <button class="navigation-right-button" @click="toggleDropdown">
+        <div
+          class="navigation-right-container"
+          ref="dropdownRef"
+          @click.stop
+        >
+          <button
+            class="navigation-right-button"
+            @click="toggleDropdown"
+          >
             <svg
               class="icon"
               width="20"
@@ -101,7 +118,7 @@ onBeforeUnmount(() => {
           >
             <button
               class="navigation-right-dropdown-signin-button"
-              @click="closeDropdown"
+              @click="goToLoginRegisterPage"
             >
               Prijava ili registracija
             </button>
@@ -121,7 +138,7 @@ onBeforeUnmount(() => {
               </a>
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="scrollToFaq"
+                @click.prevent="goToFaqSection"
               >
                 Pomoć
               </a>

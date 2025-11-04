@@ -8,15 +8,15 @@
 html,
 body {
   font-family:
-    "Nunito",
+    'Nunito',
     system-ui,
     -apple-system,
-    "Segoe UI",
+    'Segoe UI',
     Roboto,
-    "Helvetica Neue",
+    'Helvetica Neue',
     Arial,
-    "Noto Sans",
-    "Liberation Sans",
+    'Noto Sans',
+    'Liberation Sans',
     sans-serif;
 }
 
@@ -45,8 +45,8 @@ dd {
 }
 
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role="list"],
-ol[role="list"] {
+ul[role='list'],
+ol[role='list'] {
   list-style: none;
 }
 

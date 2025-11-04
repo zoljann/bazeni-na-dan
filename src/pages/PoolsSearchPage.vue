@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
-import isMobile from "is-mobile";
-import Navigation from "../components/Navigation.vue";
-import PoolCard from "../components/pools/PoolCard.vue";
-import { getAvailablePools } from "../api";
-import { notificationsStore } from "../stores/notifications";
-import { useRoute, useRouter } from "vue-router";
-import DayPicker from "../components/utility/DayPicker.vue";
-import LocationDropdown from "../components/utility/LocationDropdown.vue";
-import allCities from "../helpers/bih-cities.json";
-import FiltersDropdown from "../components/utility/FiltersDropdown.vue";
-import { usePoolsStore } from "../stores/pools";
+import { ref, computed, onMounted, watch } from 'vue';
+import isMobile from 'is-mobile';
+import Navigation from '../components/Navigation.vue';
+import PoolCard from '../components/pools/PoolCard.vue';
+import { getAvailablePools } from '../api';
+import { notificationsStore } from '../stores/notifications';
+import { useRoute, useRouter } from 'vue-router';
+import DayPicker from '../components/utility/DayPicker.vue';
+import LocationDropdown from '../components/utility/LocationDropdown.vue';
+import allCities from '../helpers/bih-cities.json';
+import FiltersDropdown from '../components/utility/FiltersDropdown.vue';
+import { usePoolsStore } from '../stores/pools';
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
@@ -20,7 +20,7 @@ const router = useRouter();
 const showDayPicker = ref(false);
 const selectedDate = ref<string | null>(null);
 const showLocationDropdown = ref(false);
-const selectedCity = ref<string>("Sve lokacije");
+const selectedCity = ref<string>('Sve lokacije');
 const showFilters = ref(false);
 const filters = ref({ petsAllowed: false, heated: false });
 
@@ -30,10 +30,10 @@ const filteredPools = computed(() => {
 
   return poolsStore.pools?.filter(
     (p) =>
-      (city === "sve lokacije" || !city || p.city.toLowerCase() === city) &&
+      (city === 'sve lokacije' || !city || p.city.toLowerCase() === city) &&
       (!iso || p.availableDays?.includes(iso)) &&
       (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
-      (!filters.value.heated || !!p.filters?.heated),
+      (!filters.value.heated || !!p.filters?.heated)
   );
 });
 const displayDate = computed(() => {
@@ -41,8 +41,8 @@ const displayDate = computed(() => {
   const d = new Date(selectedDate.value);
   if (isNaN(d.getTime())) return null;
 
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
   const yy = String(d.getFullYear()).slice(-2);
   const thisYear = new Date().getFullYear();
 
@@ -50,32 +50,30 @@ const displayDate = computed(() => {
 });
 const selectedFiltersLabel = computed(() => {
   const list: string[] = [];
-  if (filters.value.petsAllowed) list.push("dozvoljeni ljubimci");
-  if (filters.value.heated) list.push("grijani bazen");
-  return list.join(", ");
+  if (filters.value.petsAllowed) list.push('dozvoljeni ljubimci');
+  if (filters.value.heated) list.push('grijani bazen');
+  return list.join(', ');
 });
 
 const resultsText = computed(() => {
   const n = filteredPools.value?.length ?? 0;
   const base =
-    n === 1
-      ? "1 pronađen bazen"
-      : `${n} ${n >= 2 && n <= 4 ? "pronađena" : "pronađenih"} bazena`;
+    n === 1 ? '1 pronađen bazen' : `${n} ${n >= 2 && n <= 4 ? 'pronađena' : 'pronađenih'} bazena`;
 
   const parts = [base];
-  if (displayDate.value) parts.push(`na datum ${displayDate.value}(bazeni koji nemaju raspored dostupnih dana neće biti prikazani)`);
-  if (filtersCount.value)
-    parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
+  if (displayDate.value)
+    parts.push(
+      `na datum ${displayDate.value}(bazeni koji nemaju raspored dostupnih dana neće biti prikazani)`
+    );
+  if (filtersCount.value) parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
 
-  return parts.join(", ");
+  return parts.join(', ');
 });
 
-const filtersCount = computed(
-  () => Object.values(filters.value).filter(Boolean).length,
-);
+const filtersCount = computed(() => Object.values(filters.value).filter(Boolean).length);
 
 const searchClasses = computed(() => ({
-  [`search--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`search--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
 const onSelectDate = (iso: string | null) => {
@@ -87,7 +85,7 @@ const onSelectCity = (city: string) => {
   showLocationDropdown.value = false;
 };
 const showAllPools = () => {
-  selectedCity.value = "Sve lokacije";
+  selectedCity.value = 'Sve lokacije';
   const q = { ...route.query };
   delete q.city;
   router.replace({ query: q });
@@ -101,17 +99,17 @@ const toggleFilters = () => {
   if (showFilters.value) showDayPicker.value = false;
 };
 const openPool = (id: string) => {
-  router.push({ name: "PoolDetailsPage", query: { id } });
+  router.push({ name: 'PoolDetailsPage', query: { id } });
 };
 
 onMounted(async () => {
   const res = await getAvailablePools();
-  if (res.state === "success") {
+  if (res.state === 'success') {
     poolsStore.pools = res.pools;
   } else {
     useNotificationsStore.addNotification(
-      "Nešto je pošlo po krivu, pokušajte malo kasnije",
-      "error",
+      'Nešto je pošlo po krivu, pokušajte malo kasnije',
+      'error'
     );
   }
 });
@@ -119,9 +117,9 @@ onMounted(async () => {
 watch(
   () => route.query.city,
   (city) => {
-    selectedCity.value = (city as string) || "Sve lokacije";
+    selectedCity.value = (city as string) || 'Sve lokacije';
   },
-  { immediate: true },
+  { immediate: true }
 );
 watch(showDayPicker, (v) => {
   if (v) showFilters.value = false;
@@ -134,18 +132,24 @@ watch(showFilters, (v) => {
 <template>
   <Navigation variant="solid" />
 
-  <section class="search" :class="searchClasses">
+  <section
+    class="search"
+    :class="searchClasses"
+  >
     <div class="search-controls">
       <div class="search-locwrap">
         <button
           class="search-controls-location"
           @click="showLocationDropdown = true"
         >
-          <span class="search-controls-location-label"
-            >📍 {{ selectedCity }}</span
-          >
+          <span class="search-controls-location-label">📍 {{ selectedCity }}</span>
           <span class="search-controls-location-caret">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 d="M7 10l5 5 5-5"
                 fill="none"
@@ -164,14 +168,24 @@ watch(showFilters, (v) => {
           @select="onSelectCity"
           @allpools="showAllPools"
         />
-        <div v-if="filteredPools?.length ?? 0 > 0" class="search-info">
+        <div
+          v-if="filteredPools?.length ?? 0 > 0"
+          class="search-info"
+        >
           {{ resultsText }}
         </div>
       </div>
 
       <div class="search-controls-tool">
-        <button class="search-controls-iconbtn" @click.stop="toggleDayPicker">
-          <svg width="18" height="18" viewBox="0 0 24 24">
+        <button
+          class="search-controls-iconbtn"
+          @click.stop="toggleDayPicker"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+          >
             <path
               d="M7 2v3M17 2v3M3.5 9.5h17M5 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"
               stroke="currentColor"
@@ -180,7 +194,10 @@ watch(showFilters, (v) => {
               stroke-linecap="round"
             />
           </svg>
-          <span v-if="displayDate" class="search-controls-iconbtn-badge">
+          <span
+            v-if="displayDate"
+            class="search-controls-iconbtn-badge"
+          >
             {{ displayDate }}
           </span>
         </button>
@@ -188,7 +205,10 @@ watch(showFilters, (v) => {
       </div>
 
       <div class="search-controls-tool">
-        <button class="search-controls-iconbtn" @click.stop="toggleFilters">
+        <button
+          class="search-controls-iconbtn"
+          @click.stop="toggleFilters"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -205,7 +225,10 @@ watch(showFilters, (v) => {
               fill="current"
               maskUnits="userSpaceOnUse"
             >
-              <path fill="#fff" d="M0 .182h22v24H0z"></path>
+              <path
+                fill="#fff"
+                d="M0 .182h22v24H0z"
+              ></path>
               <path
                 fill-rule="evenodd"
                 d="M17.366 7.45a2.635 2.635 0 0 1-2.532-1.908h.077a2.6 2.6 0 0 1-.09-1h-.075a2.634 2.634 0 0 1 5.24 0h-.075a2.6 2.6 0 0 1-.09 1h.077a2.635 2.635 0 0 1-2.532 1.907m0-6.268a3.634 3.634 0 0 0-3.623 3.36H.652v1h13.153a3.635 3.635 0 0 0 7.122 0H21v-1h-.01a3.634 3.634 0 0 0-3.624-3.36M.652 12.81h.072a3.635 3.635 0 0 0 7.122 0H21v-1H7.908a3.634 3.634 0 0 0-7.247 0h-.01v1m3.633-3.36a2.634 2.634 0 0 0-2.62 2.36h.094a2.6 2.6 0 0 0 .09 1h-.096a2.635 2.635 0 0 0 5.064 0h-.096a2.5 2.5 0 0 0 .091-1h.092a2.634 2.634 0 0 0-2.62-2.36m5.16 10.628H.652v-1h8.73a3.634 3.634 0 0 1 7.248 0H21v1h-4.433a3.635 3.635 0 0 1-7.122 0m.942-1a2.634 2.634 0 0 1 5.239 0h-.063a2.6 2.6 0 0 1-.09 1h.065a2.635 2.635 0 0 1-5.064 0h.065a2.6 2.6 0 0 1-.09-1z"
@@ -222,7 +245,10 @@ watch(showFilters, (v) => {
               mask="url(#filters_svg__a)"
             ></path>
           </svg>
-          <span v-if="filtersCount" class="search-controls-iconbtn-badge">
+          <span
+            v-if="filtersCount"
+            class="search-controls-iconbtn-badge"
+          >
             {{ filtersCount }}
           </span>
         </button>
@@ -235,7 +261,10 @@ watch(showFilters, (v) => {
         @select="onSelectDate"
       />
 
-      <FiltersDropdown v-model="showFilters" v-model:filters="filters" />
+      <FiltersDropdown
+        v-model="showFilters"
+        v-model:filters="filters"
+      />
     </div>
 
     <div class="search-results">
@@ -248,7 +277,10 @@ watch(showFilters, (v) => {
         />
       </div>
 
-      <p v-if="filteredPools?.length === 0" class="search-results-empty">
+      <p
+        v-if="filteredPools?.length === 0"
+        class="search-results-empty"
+      >
         Nema rezultata.
       </p>
     </div>

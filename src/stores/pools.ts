@@ -1,8 +1,8 @@
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import type { Pool } from "src/types";
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import type { Pool } from 'src/types';
 
-const usePoolsStore = defineStore("poolsStore", () => {
+const usePoolsStore = defineStore('poolsStore', () => {
   const pools = ref<Pool[]>([]);
 
   const findPoolById = (id: string) => {

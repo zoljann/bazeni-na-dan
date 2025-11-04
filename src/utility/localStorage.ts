@@ -6,7 +6,7 @@ interface Storage {
 }
 
 const isSupported = (): boolean => {
-  const test = "localStorage";
+  const test = 'localStorage';
 
   try {
     localStorage.setItem(test, test);
@@ -43,5 +43,5 @@ export const storage: Storage = {
 
     localStorage.setItem(key, valueToStore as string);
     return this.getItem(key);
-  },
+  }
 };

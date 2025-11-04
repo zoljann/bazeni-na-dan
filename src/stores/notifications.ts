@@ -1,29 +1,25 @@
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import { useTimeoutFn } from "@vueuse/core";
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import { useTimeoutFn } from '@vueuse/core';
 
 type Notification = {
   id: number;
   text: string[];
-  type: "success" | "error";
+  type: 'success' | 'error';
 };
 
-const notificationsStore = defineStore("notificationsStore", () => {
+const notificationsStore = defineStore('notificationsStore', () => {
   const notifications = ref<Notification[]>([]);
 
   const removeNotification = (index: number) => {
     notifications.value.splice(index, 1);
   };
 
-  const addNotification = (
-    text: string,
-    type: "success" | "error",
-    duration = 4000,
-  ) => {
+  const addNotification = (text: string, type: 'success' | 'error', duration = 4000) => {
     const n: Notification = {
       id: Date.now() + Math.random(),
       text: [text],
-      type,
+      type
     };
     notifications.value.push(n);
 

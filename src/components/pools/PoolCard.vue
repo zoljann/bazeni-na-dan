@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import isMobile from "is-mobile";
-import type { Pool } from "src/types";
-import { useFavorites } from "../../composables/useFavorites";
+import { computed, ref } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import isMobile from 'is-mobile';
+import type { Pool } from 'src/types';
+import { useFavorites } from '../../composables/useFavorites';
 
 const props = defineProps<{
   pool: Pool;
@@ -22,10 +22,10 @@ const isBeginning = ref(true);
 const isEnd = ref(props.pool.images.length <= 1);
 
 const priceLabel = computed(() =>
-  props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : "",
+  props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : ''
 );
 const poolCardClasses = computed(() => ({
-  [`pool-card--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`pool-card--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(props.pool));
 const isPoolAvailableTomorrow = computed(() => {
@@ -38,7 +38,7 @@ const isPoolAvailableTomorrow = computed(() => {
   return days.includes(tomorrowIso);
 });
 
-const onPoolClick = () => emit("openPool", props.pool.id);
+const onPoolClick = () => emit('openPool', props.pool.id);
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
   isBeginning.value = sw.isBeginning;
@@ -53,7 +53,11 @@ const goNext = () => swiperRef.value?.slideNext();
 const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
 <template>
-  <div class="pool-card" :class="poolCardClasses" @click="onPoolClick">
+  <div
+    class="pool-card"
+    :class="poolCardClasses"
+    @click="onPoolClick"
+  >
     <div class="pool-card-media">
       <Swiper
         class="pool-card-media-swiper"
@@ -62,8 +66,15 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         @swiper="onSwiperInit"
         @slideChange="onSlideChange"
       >
-        <SwiperSlide v-for="(img, i) in pool.images" :key="i">
-          <img class="pool-card-media-img" :src="img" alt="bazen slike" />
+        <SwiperSlide
+          v-for="(img, i) in pool.images"
+          :key="i"
+        >
+          <img
+            class="pool-card-media-img"
+            :src="img"
+            alt="bazen slike"
+          />
         </SwiperSlide>
       </Swiper>
 
@@ -72,7 +83,12 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         :class="{ 'is-disabled': isBeginning }"
         @click.stop="goPrev"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             d="M15 18 9 12l6-6"
             fill="none"
@@ -89,7 +105,12 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         :class="{ 'is-disabled': isEnd }"
         @click.stop="goNext"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             d="m9 18 6-6-6-6"
             fill="none"
@@ -106,7 +127,12 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         :class="{ 'pool-card-like-active': isPoolAddedToFavorites }"
         @click.stop="onLikeClick"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.35l8.84-8.96a5.5 5.5 0 0 0 0-7.78Z"
             :fill="isPoolAddedToFavorites ? 'currentColor' : 'none'"
@@ -118,7 +144,10 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         </svg>
       </button>
 
-      <span v-if="priceLabel" class="pool-card-media-price">
+      <span
+        v-if="priceLabel"
+        class="pool-card-media-price"
+      >
         {{ priceLabel }}
       </span>
     </div>
@@ -127,19 +156,33 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       <h3 class="pool-card-body-title">{{ pool.title }}</h3>
       <div class="pool-card-body-meta">
         <span class="pool-card-body-meta-item">
-          <svg width="16" height="16" viewBox="0 0 24 24">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+          >
             <path
               d="M12 22s7-7.6 7-12a7 7 0 0 0-14 0c0 4.4 7 12 7 12z"
               stroke="currentColor"
               stroke-width="2"
               fill="none"
             />
-            <circle cx="12" cy="10" r="3" fill="currentColor" />
+            <circle
+              cx="12"
+              cy="10"
+              r="3"
+              fill="currentColor"
+            />
           </svg>
           <span class="pool-card-body-meta-text">{{ pool.city }}</span>
         </span>
         <span class="pool-card-body-meta-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm7 9v-1a7 7 0 0 0-14 0v1"
               stroke="currentColor"
@@ -152,8 +195,16 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
           do {{ pool.capacity }} gostiju
         </span>
       </div>
-      <div v-if="isPoolAvailableTomorrow" class="pool-card-body-quick">
-        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+      <div
+        v-if="isPoolAvailableTomorrow"
+        class="pool-card-body-quick"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <circle
             cx="12"
             cy="12"
@@ -206,14 +257,10 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.35),
-        transparent 55%
-      );
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 55%);
       z-index: 1;
     }
 

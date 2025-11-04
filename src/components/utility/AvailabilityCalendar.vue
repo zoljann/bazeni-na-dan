@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import isMobile from "is-mobile";
+import { computed, ref } from 'vue';
+import isMobile from 'is-mobile';
 
 const props = defineProps<{
   availableDays: string[];
 }>();
 
 const BS_MONTHS = [
-  "Januar",
-  "Februar",
-  "Mart",
-  "April",
-  "Maj",
-  "Juni",
-  "Juli",
-  "August",
-  "Septembar",
-  "Oktobar",
-  "Novembar",
-  "Decembar",
+  'Januar',
+  'Februar',
+  'Mart',
+  'April',
+  'Maj',
+  'Juni',
+  'Juli',
+  'August',
+  'Septembar',
+  'Oktobar',
+  'Novembar',
+  'Decembar'
 ];
-const WEEKDAYS_SHORT = ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"];
+const WEEKDAYS_SHORT = ['Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub', 'Ned'];
 const WEEKDAYS_LONG = [
-  "Ponedjeljak",
-  "Utorak",
-  "Srijeda",
-  "Četvrtak",
-  "Petak",
-  "Subota",
-  "Nedjelja",
+  'Ponedjeljak',
+  'Utorak',
+  'Srijeda',
+  'Četvrtak',
+  'Petak',
+  'Subota',
+  'Nedjelja'
 ];
 
 const isMobileView = isMobile();
@@ -36,28 +36,21 @@ const viewDate = ref(new Date());
 const availableSet = computed(() => new Set(props.availableDays || []));
 
 const rootClasses = computed(() => ({
-  "availcal--mobile": isMobileView,
-  "availcal--desktop": !isMobileView,
+  'availcal--mobile': isMobileView,
+  'availcal--desktop': !isMobileView
 }));
-const weekdays = computed(() =>
-  isMobileView ? WEEKDAYS_SHORT : WEEKDAYS_LONG
-);
+const weekdays = computed(() => (isMobileView ? WEEKDAYS_SHORT : WEEKDAYS_LONG));
 const monthTitle = computed(() => {
   try {
-    const parts = new Intl.DateTimeFormat("bs-BA", {
-      month: "long",
-      year: "numeric",
+    const parts = new Intl.DateTimeFormat('bs-BA', {
+      month: 'long',
+      year: 'numeric'
     }).formatToParts(viewDate.value);
 
-    const mRaw = (
-      parts.find((p) => p.type === "month")?.value || ""
-    ).toLowerCase();
-    const y =
-      parts.find((p) => p.type === "year")?.value ||
-      String(viewDate.value.getFullYear());
+    const mRaw = (parts.find((p) => p.type === 'month')?.value || '').toLowerCase();
+    const y = parts.find((p) => p.type === 'year')?.value || String(viewDate.value.getFullYear());
 
-    const looksBad =
-      !mRaw || /^m?\d+$/i.test(mRaw) || /\d+[\/\-.]\d+/.test(`${mRaw} ${y}`);
+    const looksBad = !mRaw || /^m?\d+$/i.test(mRaw) || /\d+[\/\-.]\d+/.test(`${mRaw} ${y}`);
     const month = looksBad ? BS_MONTHS[viewDate.value.getMonth()] : mRaw;
 
     return `${month} ${y}`;
@@ -71,46 +64,36 @@ const toISO = (d: Date) => {
   x.setHours(0, 0, 0, 0);
   return x.toISOString().slice(0, 10);
 };
-const daysInMonth = (d: Date) =>
-  new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+const daysInMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 const mondayIndex = (jsDay: number) => (jsDay + 6) % 7;
 
 type Cell = { iso?: string; label?: number; classes: Record<string, boolean> };
 
 const cells = computed<Cell[]>(() => {
-  const first = new Date(
-    viewDate.value.getFullYear(),
-    viewDate.value.getMonth(),
-    1
-  );
+  const first = new Date(viewDate.value.getFullYear(), viewDate.value.getMonth(), 1);
   const startOffset = mondayIndex(first.getDay());
   const total = daysInMonth(viewDate.value);
 
   const out: Cell[] = [];
   for (let i = 0; i < startOffset; i++)
-    out.push({ classes: { "availcal-cell": true, "is-blank": true } });
+    out.push({ classes: { 'availcal-cell': true, 'is-blank': true } });
 
   for (let d = 1; d <= total; d++) {
-    const date = new Date(
-      viewDate.value.getFullYear(),
-      viewDate.value.getMonth(),
-      d
-    );
+    const date = new Date(viewDate.value.getFullYear(), viewDate.value.getMonth(), d);
     const iso = toISO(date);
     const isAvailable = availableSet.value.has(iso);
     out.push({
       iso,
       label: d,
       classes: {
-        "availcal-cell": true,
-        "is-available": isAvailable,
-        "is-disabled": !isAvailable,
-      },
+        'availcal-cell': true,
+        'is-available': isAvailable,
+        'is-disabled': !isAvailable
+      }
     });
   }
 
-  while (out.length % 7 !== 0)
-    out.push({ classes: { "availcal-cell": true, "is-blank": true } });
+  while (out.length % 7 !== 0) out.push({ classes: { 'availcal-cell': true, 'is-blank': true } });
   return out;
 });
 
@@ -127,7 +110,10 @@ const onNextMonth = () => {
 </script>
 
 <template>
-  <div class="availcal" :class="rootClasses">
+  <div
+    class="availcal"
+    :class="rootClasses"
+  >
     <div class="availcal-caption">Kalendar dostupnosti</div>
 
     <div class="availcal-header">
@@ -149,7 +135,11 @@ const onNextMonth = () => {
     </div>
 
     <div class="availcal-week">
-      <span v-for="(d, i) in weekdays" :key="i" class="availcal-weekday">
+      <span
+        v-for="(d, i) in weekdays"
+        :key="i"
+        class="availcal-weekday"
+      >
         {{ d }}
       </span>
     </div>

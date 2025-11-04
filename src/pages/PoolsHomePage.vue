@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import Navigation from "../components/Navigation.vue";
-import isMobile from "is-mobile";
-import LocationDropdown from "../components/utility/LocationDropdown.vue";
-import allCities from "../helpers/bih-cities.json";
-import { faqData } from "../helpers/index";
-import { useRouter } from "vue-router";
+import { ref, computed } from 'vue';
+import Navigation from '../components/Navigation.vue';
+import isMobile from 'is-mobile';
+import LocationDropdown from '../components/utility/LocationDropdown.vue';
+import allCities from '../helpers/bih-cities.json';
+import { faqData } from '../helpers/index';
+import { useRouter } from 'vue-router';
 
 const isMobileView = isMobile();
 const router = useRouter();
 const showLocationDropdown = ref(false);
-const selectedCity = ref<string>("Sve lokacije");
-const activeFaqTab = ref<"guests" | "hosts">("guests");
+const selectedCity = ref<string>('Sve lokacije');
+const activeFaqTab = ref<'guests' | 'hosts'>('guests');
 const openFaqIndex = ref<number | null>(null);
 
 const currentFaq = computed(() => faqData[activeFaqTab.value]);
 const contentClasses = computed(() => ({
-  [`content--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`content--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
 const toggleFaq = (i: number) => {
@@ -24,29 +24,39 @@ const toggleFaq = (i: number) => {
 };
 const onSelectCity = (city: string) => {
   selectedCity.value = city;
-  router.push({ name: "PoolsSearchPage", query: { city } });
+  router.push({ name: 'PoolsSearchPage', query: { city } });
 };
 const showAllPools = () => {
-  router.push({ name: "PoolsSearchPage" });
+  router.push({ name: 'PoolsSearchPage' });
 };
-const onFindNearby = () => console.log("pronadji bazene u blizini");
+const onFindNearby = () => console.log('pronadji bazene u blizini');
 const handleSearchPoolClick = () => {
-  router.push({ name: "PoolsSearchPage" });
+  router.push({ name: 'PoolsSearchPage' });
 };
 </script>
 
 <template>
   <Navigation />
 
-  <section class="content" :class="contentClasses">
+  <section
+    class="content"
+    :class="contentClasses"
+  >
     <div class="content-middle">
       <h1 class="content-middle-title">Iznajmi privatne bazene, na dan</h1>
 
       <div class="content-search">
-        <button class="content-search-row" @click="showLocationDropdown = true">
+        <button
+          class="content-search-row"
+          @click="showLocationDropdown = true"
+        >
           <span class="content-search-label">📍 {{ selectedCity }}</span>
           <span class="content-search-dropdown-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+            >
               <path
                 d="M7 10l5 5 5-5"
                 fill="none"
@@ -66,13 +76,19 @@ const handleSearchPoolClick = () => {
           @allpools="showAllPools"
         />
 
-        <button class="content-search-button" @click="handleSearchPoolClick()">
+        <button
+          class="content-search-button"
+          @click="handleSearchPoolClick()"
+        >
           Pretraži bazene
         </button>
       </div>
     </div>
 
-    <a href="#how-it-works" class="content-works">
+    <a
+      href="#how-it-works"
+      class="content-works"
+    >
       <span class="content-works-text">Kako rezervisati bazen</span>
       <svg
         class="content-works-arrow"
@@ -91,11 +107,19 @@ const handleSearchPoolClick = () => {
     </a>
 
     <div class="content-curly">
-      <img class="content-curly-img" src="../assets/waves.png" alt="Waves" />
+      <img
+        class="content-curly-img"
+        src="../assets/waves.png"
+        alt="Waves"
+      />
       <h3 class="content-curly-title"></h3>
     </div>
   </section>
-  <section class="content-after" :class="contentClasses" id="how-it-works">
+  <section
+    class="content-after"
+    :class="contentClasses"
+    id="how-it-works"
+  >
     <div class="content-after-how-it-works">
       <h2 class="content-after-how-it-works-title">Kako rezervisati bazen</h2>
 
@@ -104,13 +128,10 @@ const handleSearchPoolClick = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">1</span>
-            <h3 class="content-after-how-it-works-body-title">
-              Pronađi bazen koji ti odgovara
-            </h3>
+            <h3 class="content-after-how-it-works-body-title">Pronađi bazen koji ti odgovara</h3>
             <p class="content-after-how-it-works-body-text">
-              Pretraži po gradu ili blizini, otvori profil i pregledaj fotke,
-              cijene i pravila kućnog reda. Sačuvaj favorite – vratićeš im se
-              lako.
+              Pretraži po gradu ili blizini, otvori profil i pregledaj fotke, cijene i pravila
+              kućnog reda. Sačuvaj favorite – vratićeš im se lako.
             </p>
           </div>
         </div>
@@ -119,12 +140,10 @@ const handleSearchPoolClick = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">2</span>
-            <h3 class="content-after-how-it-works-body-title">
-              Provjeri termine i detalje
-            </h3>
+            <h3 class="content-after-how-it-works-body-title">Provjeri termine i detalje</h3>
             <p class="content-after-how-it-works-body-text">
-              Otvori kalendar dostupnosti, provjeri cijenu za tvoj termin i vidi
-              što je uključeno (muzička oprema, roštilj, parking…).
+              Otvori kalendar dostupnosti, provjeri cijenu za tvoj termin i vidi što je uključeno
+              (muzička oprema, roštilj, parking…).
             </p>
           </div>
         </div>
@@ -133,23 +152,27 @@ const handleSearchPoolClick = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">3</span>
-            <h3 class="content-after-how-it-works-body-title">
-              Javi se domaćinu
-            </h3>
+            <h3 class="content-after-how-it-works-body-title">Javi se domaćinu</h3>
             <p class="content-after-how-it-works-body-text">
-              Pozovi broj sa profila, dogovori detalje i potvrdi termin. Dođi na
-              vrijeme i uživaj — sve je spremno za kupanje! 🏊‍♂️
+              Pozovi broj sa profila, dogovori detalje i potvrdi termin. Dođi na vrijeme i uživaj —
+              sve je spremno za kupanje! 🏊‍♂️
             </p>
           </div>
         </div>
 
-        <button class="content-after-cta" @click="onFindNearby">
+        <button
+          class="content-after-cta"
+          @click="onFindNearby"
+        >
           Pronađi bazene u blizini
         </button>
       </div>
     </div>
 
-    <div class="content-after-faq" id="faq">
+    <div
+      class="content-after-faq"
+      id="faq"
+    >
       <h2 class="content-after-faq-title">Često postavljena pitanja</h2>
 
       <div class="content-after-faq-tabs">
@@ -181,18 +204,17 @@ const handleSearchPoolClick = () => {
           :key="i"
           class="content-after-faq-item"
         >
-          <button class="content-after-faq-question" @click="toggleFaq(i)">
+          <button
+            class="content-after-faq-question"
+            @click="toggleFaq(i)"
+          >
             <span>{{ item.q }}</span>
             <span
               class="content-after-faq-plus"
               :class="{ 'is-open': openFaqIndex === i }"
             >
-              <span
-                class="content-after-faq-plus-bar content-after-faq-plus-h"
-              ></span>
-              <span
-                class="content-after-faq-plus-bar content-after-faq-plus-v"
-              ></span>
+              <span class="content-after-faq-plus-bar content-after-faq-plus-h"></span>
+              <span class="content-after-faq-plus-bar content-after-faq-plus-v"></span>
             </span>
           </button>
           <div
@@ -211,7 +233,7 @@ const handleSearchPoolClick = () => {
 .content {
   position: relative;
   min-height: 94vh;
-  background: url("../assets/background.jpg") center / cover no-repeat fixed;
+  background: url('../assets/background.jpg') center / cover no-repeat fixed;
   display: grid;
   place-items: center;
 
@@ -328,13 +350,7 @@ const handleSearchPoolClick = () => {
   &-after {
     width: 100%;
     padding: 120px 18px 30px;
-    background: linear-gradient(
-      to bottom,
-      #5cc9ff 0px,
-      #5cc9ff 200px,
-      #ffffff 600px,
-      #ffffff 100%
-    );
+    background: linear-gradient(to bottom, #5cc9ff 0px, #5cc9ff 200px, #ffffff 600px, #ffffff 100%);
 
     &-how-it-works {
       max-width: 1200px;
@@ -356,8 +372,8 @@ const handleSearchPoolClick = () => {
       &-row {
         display: grid;
         grid-template-areas:
-          "media"
-          "body";
+          'media'
+          'body';
         border-radius: 16px;
         box-shadow: 0 8px 22px rgba(2, 8, 23, 0.08);
         overflow: hidden;
@@ -370,15 +386,15 @@ const handleSearchPoolClick = () => {
       }
 
       &-row:nth-child(1) .content-after-how-it-works-media {
-        background: url("../assets/background.jpg") center / cover no-repeat;
+        background: url('../assets/background.jpg') center / cover no-repeat;
       }
 
       &-row:nth-child(2) .content-after-how-it-works-media {
-        background: url("../assets/background.jpg") center / cover no-repeat;
+        background: url('../assets/background.jpg') center / cover no-repeat;
       }
 
       &-row:nth-child(3) .content-after-how-it-works-media {
-        background: url("../assets/background.jpg") center / cover no-repeat;
+        background: url('../assets/background.jpg') center / cover no-repeat;
       }
 
       &-body {
@@ -635,7 +651,7 @@ const handleSearchPoolClick = () => {
       &-after {
         &-how-it-works {
           &-row {
-            grid-template-areas: "body media";
+            grid-template-areas: 'body media';
             grid-template-columns: 1.1fr 1fr;
             align-items: center;
           }

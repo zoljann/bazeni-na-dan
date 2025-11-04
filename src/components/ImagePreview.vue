@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from "vue";
-import isMobile from "is-mobile";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Pagination as SwiperPagination, Keyboard } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import isMobile from 'is-mobile';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Pagination as SwiperPagination, Keyboard } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -12,7 +12,7 @@ const props = defineProps<{
   startIndex?: number;
 }>();
 
-const emit = defineEmits<{ (e: "update:modelValue", v: boolean): void }>();
+const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>();
 
 const isMobileView = isMobile();
 const isOpen = ref(props.modelValue);
@@ -20,13 +20,13 @@ const swiperRef = ref<any>(null);
 const isBeginning = ref(true);
 const isEnd = ref(false);
 
-const onClosePreview = () => emit("update:modelValue", false);
+const onClosePreview = () => emit('update:modelValue', false);
 
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
   isBeginning.value = sw.isBeginning;
   isEnd.value = sw.isEnd;
-  if (typeof props.startIndex === "number") sw.slideTo(props.startIndex, 0);
+  if (typeof props.startIndex === 'number') sw.slideTo(props.startIndex, 0);
 };
 
 const onSlideChange = (sw: any) => {
@@ -35,10 +35,10 @@ const onSlideChange = (sw: any) => {
 };
 
 const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === "Escape") onClosePreview();
+  if (e.key === 'Escape') onClosePreview();
   if (!isMobileView && swiperRef.value) {
-    if (e.key === "ArrowLeft") swiperRef.value.slidePrev();
-    if (e.key === "ArrowRight") swiperRef.value.slideNext();
+    if (e.key === 'ArrowLeft') swiperRef.value.slidePrev();
+    if (e.key === 'ArrowRight') swiperRef.value.slideNext();
   }
 };
 
@@ -46,29 +46,40 @@ watch(
   () => props.modelValue,
   (v) => {
     isOpen.value = v;
-    if (v && typeof props.startIndex === "number") {
+    if (v && typeof props.startIndex === 'number') {
       setTimeout(() => swiperRef.value?.slideTo(props.startIndex!, 0), 0);
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 watch(
   () => props.startIndex,
   (i) => {
-    if (isOpen.value && typeof i === "number") swiperRef.value?.slideTo(i, 0);
-  },
+    if (isOpen.value && typeof i === 'number') swiperRef.value?.slideTo(i, 0);
+  }
 );
 
-onMounted(() => document.addEventListener("keydown", onKeydown));
-onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
+onMounted(() => document.addEventListener('keydown', onKeydown));
+onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
 </script>
 
 <template>
   <teleport to="body">
-    <div v-if="isOpen" class="image-preview" role="dialog" aria-modal="true">
-      <div class="image-preview-backdrop" @click="onClosePreview" />
-      <div class="image-preview-content" @click.stop>
+    <div
+      v-if="isOpen"
+      class="image-preview"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="image-preview-backdrop"
+        @click="onClosePreview"
+      />
+      <div
+        class="image-preview-content"
+        @click.stop
+      >
         <button
           class="image-preview-close"
           @click="onClosePreview"
@@ -100,7 +111,10 @@ onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
           @swiper="onSwiperInit"
           @slideChange="onSlideChange"
         >
-          <SwiperSlide v-for="(img, i) in images" :key="i">
+          <SwiperSlide
+            v-for="(img, i) in images"
+            :key="i"
+          >
             <img
               class="image-preview-img"
               :src="img"
@@ -118,7 +132,12 @@ onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
           @click="swiperRef?.slidePrev()"
           aria-label="Prethodna slika"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="M15 18 9 12l6-6"
               fill="none"
@@ -138,7 +157,12 @@ onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
           @click="swiperRef?.slideNext()"
           aria-label="Sljedeća slika"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="m9 18 6-6-6-6"
               fill="none"

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import isMobile from "is-mobile";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation as SwiperNavigation } from "swiper/modules";
-import "swiper/css";
-import type { Pool } from "src/types";
-import { getPoolById } from "../api";
-import { notificationsStore } from "../stores/notifications";
-import { usePoolsStore } from "../stores/pools";
-import { useFavorites } from "../composables/useFavorites";
-import Navigation from "../components/Navigation.vue";
-import ImagePreview from "../components/ImagePreview.vue";
-import AvailabilityCalendar from "../components/utility/AvailabilityCalendar.vue";
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import isMobile from 'is-mobile';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation as SwiperNavigation } from 'swiper/modules';
+import 'swiper/css';
+import type { Pool } from 'src/types';
+import { getPoolById } from '../api';
+import { notificationsStore } from '../stores/notifications';
+import { usePoolsStore } from '../stores/pools';
+import { useFavorites } from '../composables/useFavorites';
+import Navigation from '../components/Navigation.vue';
+import ImagePreview from '../components/ImagePreview.vue';
+import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -26,14 +26,14 @@ const isEnd = ref(false);
 const isPreviewOpen = ref(false);
 const previewIndex = ref(0);
 const pool = ref<Pool>();
-const contactPhone = "062614300";
+const contactPhone = '062614300';
 
 const selectedPoolId = computed(() => route.query.id as string);
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(pool.value!));
 const hasHeated = computed(() => !!pool.value?.filters?.heated);
 const hasPets = computed(() => !!pool.value?.filters?.petsAllowed);
 const poolDetailsClasses = computed(() => ({
-  [`pool-details--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
 const onContact = () => (window.location.href = `tel:${contactPhone}`);
@@ -61,22 +61,34 @@ onMounted(async () => {
   }
 
   const res = await getPoolById(selectedPoolId.value);
-  if (res.state === "success") {
+  if (res.state === 'success') {
     pool.value = res.pool;
   } else {
-    useNotificationsStore.addNotification("Odabrani bazen ne postoji", "error");
-    router.replace({ name: "PoolsSearchPage" });
+    useNotificationsStore.addNotification('Odabrani bazen ne postoji', 'error');
+    router.replace({ name: 'PoolsSearchPage' });
   }
 });
 </script>
 
 <template>
   <Navigation variant="solid" />
-  <section v-if="pool" class="pool-details" :class="poolDetailsClasses">
+  <section
+    v-if="pool"
+    class="pool-details"
+    :class="poolDetailsClasses"
+  >
     <header>
       <div class="pool-details-titlebar">
-        <button class="pool-details-titlebar-backbtn" @click="router.back()">
-          <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
+        <button
+          class="pool-details-titlebar-backbtn"
+          @click="router.back()"
+        >
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="M15 18l-6-6 6-6"
               fill="none"
@@ -101,7 +113,12 @@ onMounted(async () => {
         @click="toggleFavoritePool(pool)"
         title="Dodaj u favorite"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.35l8.84-8.96a5.5 5.5 0 0 0 0-7.78Z"
             :fill="isPoolAddedToFavorites ? 'currentColor' : 'none'"
@@ -122,7 +139,10 @@ onMounted(async () => {
             @swiper="onSwiperInit"
             @slideChange="onSlideChange"
           >
-            <SwiperSlide v-for="(img, i) in pool.images" :key="i">
+            <SwiperSlide
+              v-for="(img, i) in pool.images"
+              :key="i"
+            >
               <img
                 class="pool-details-media-img"
                 :src="img"
@@ -139,7 +159,12 @@ onMounted(async () => {
             @click.stop="goPrev"
             aria-label="Prethodna slika"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 d="M15 18 9 12l6-6"
                 fill="none"
@@ -158,7 +183,12 @@ onMounted(async () => {
             @click.stop="goNext"
             aria-label="Sljedeća slika"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 d="m9 18 6-6-6-6"
                 fill="none"
@@ -179,7 +209,9 @@ onMounted(async () => {
             <span class="pool-details-smalllabel">Domaćin</span>
             <span class="pool-details-host-name">Ime i prezime</span>
           </div>
-          <a v-if="!isMobileView" class="pool-details-host-phone"
+          <a
+            v-if="!isMobileView"
+            class="pool-details-host-phone"
             >📞 {{ contactPhone }}</a
           >
         </div>
@@ -191,16 +223,15 @@ onMounted(async () => {
             v-if="pool.pricePerDay !== undefined"
             class="pool-details-price-row"
           >
-            <span class="pool-details-price-amount">{{
-              pool.pricePerDay
-            }}</span>
+            <span class="pool-details-price-amount">{{ pool.pricePerDay }}</span>
             <span class="pool-details-price-unit">KM / dan</span>
           </div>
 
-          <div v-else class="pool-details-price-row">
-            <span class="pool-details-price-unit"
-              >Po dogovoru sa domaćinom</span
-            >
+          <div
+            v-else
+            class="pool-details-price-row"
+          >
+            <span class="pool-details-price-unit">Po dogovoru sa domaćinom</span>
           </div>
         </div>
 
@@ -232,9 +263,7 @@ onMounted(async () => {
         <ul class="pool-details-features">
           <li class="pool-details-feature">
             <span class="pool-details-feature-icon is-on">👥</span>
-            <span class="pool-details-feature-text"
-              >do {{ pool.capacity }} osoba</span
-            >
+            <span class="pool-details-feature-text">do {{ pool.capacity }} osoba</span>
           </li>
           <li class="pool-details-feature">
             <span
@@ -243,7 +272,7 @@ onMounted(async () => {
               >🔥</span
             >
             <span class="pool-details-feature-text">{{
-              hasHeated ? "Grijani bazen" : "Bez grijanja"
+              hasHeated ? 'Grijani bazen' : 'Bez grijanja'
             }}</span>
           </li>
           <li class="pool-details-feature">
@@ -253,7 +282,7 @@ onMounted(async () => {
               >🐶</span
             >
             <span class="pool-details-feature-text">{{
-              hasPets ? "Dozvoljeni ljubimci" : "Ljubimci nisu dozvoljeni"
+              hasPets ? 'Dozvoljeni ljubimci' : 'Ljubimci nisu dozvoljeni'
             }}</span>
           </li>
         </ul>
@@ -265,9 +294,12 @@ onMounted(async () => {
         v-if="pool.availableDays !== undefined"
         :available-days="pool.availableDays || []"
       />
-      <p v-else class="pool-details-text">
-        Domaćin nije uključio raspored dostupnosti bazena. Kontaktirajte ga za
-        više informacija na {{ contactPhone }}
+      <p
+        v-else
+        class="pool-details-text"
+      >
+        Domaćin nije uključio raspored dostupnosti bazena. Kontaktirajte ga za više informacija na
+        {{ contactPhone }}
       </p>
     </div>
   </section>

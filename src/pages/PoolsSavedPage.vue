@@ -1,32 +1,43 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRouter } from "vue-router";
-import isMobile from "is-mobile";
-import Navigation from "../components/Navigation.vue";
-import PoolCard from "../components/pools/PoolCard.vue";
-import { useFavorites } from "../composables/useFavorites";
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import isMobile from 'is-mobile';
+import Navigation from '../components/Navigation.vue';
+import PoolCard from '../components/pools/PoolCard.vue';
+import { useFavorites } from '../composables/useFavorites';
 
 const router = useRouter();
 const isMobileView = isMobile();
 const { favoritePools } = useFavorites();
 
 const savedClasses = computed(() => ({
-  [`saved--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`saved--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
 const openPool = (id: string) => {
-  router.push({ name: "PoolDetailsPage", query: { id } });
+  router.push({ name: 'PoolDetailsPage', query: { id } });
 };
 </script>
 
 <template>
   <Navigation variant="solid" />
 
-  <section class="saved" :class="savedClasses">
+  <section
+    class="saved"
+    :class="savedClasses"
+  >
     <header class="saved-header">
       <div class="saved-titlebar">
-        <button class="saved-titlebar-backbtn" @click="router.back()">
-          <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
+        <button
+          class="saved-titlebar-backbtn"
+          @click="router.back()"
+        >
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="M15 18l-6-6 6-6"
               fill="none"
@@ -50,7 +61,10 @@ const openPool = (id: string) => {
         />
       </div>
 
-      <p v-if="favoritePools.length === 0" class="saved-results-empty">
+      <p
+        v-if="favoritePools.length === 0"
+        class="saved-results-empty"
+      >
         Još nema sačuvanih bazena.
       </p>
     </div>

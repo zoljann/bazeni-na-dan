@@ -1,9 +1,9 @@
-import { ref } from "vue";
-import type { Pool } from "src/types";
-import { storage } from "../utility/localStorage";
-import { notificationsStore } from "../stores/notifications";
+import { ref } from 'vue';
+import type { Pool } from 'src/types';
+import { storage } from '../utility/localStorage';
+import { notificationsStore } from '../stores/notifications';
 
-const FAVORITES_STORAGE_KEY = "BND_favorites";
+const FAVORITES_STORAGE_KEY = 'BND_favorites';
 
 const load = () => {
   const stored = storage.getItem(FAVORITES_STORAGE_KEY);
@@ -12,8 +12,7 @@ const load = () => {
 
 const favoritePools = ref<Pool[]>(load());
 
-const isPoolFavorite = (pool: Pool) =>
-  favoritePools.value.some((p) => p.id === pool.id);
+const isPoolFavorite = (pool: Pool) => favoritePools.value.some((p) => p.id === pool.id);
 
 const toggleFavoritePool = (pool: Pool) => {
   const useNotificationsStore = notificationsStore();
@@ -24,8 +23,8 @@ const toggleFavoritePool = (pool: Pool) => {
     : [...favoritePools.value, pool];
 
   useNotificationsStore.addNotification(
-    wasFav ? "Bazen je uklonjen iz sačuvanih" : "Bazen je sačuvan",
-    "success",
+    wasFav ? 'Bazen je uklonjen iz sačuvanih' : 'Bazen je sačuvan',
+    'success'
   );
 
   storage.setItem(FAVORITES_STORAGE_KEY, favoritePools.value);

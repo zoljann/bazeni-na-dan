@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
-import { onClickOutside } from "@vueuse/core";
-import isMobile from "is-mobile";
+import { ref, computed, watch, nextTick } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+import isMobile from 'is-mobile';
 
 type PoolFilters = { petsAllowed: boolean; heated: boolean };
 const DEFAULT_FILTERS: PoolFilters = { petsAllowed: false, heated: false };
@@ -12,8 +12,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  "update:modelValue": [value: boolean];
-  "update:filters": [value: PoolFilters];
+  'update:modelValue': [value: boolean];
+  'update:filters': [value: PoolFilters];
   open: [];
   close: [];
 }>();
@@ -23,7 +23,7 @@ const panelRef = ref<HTMLElement>();
 
 const isOpen = computed({
   get: () => props.modelValue,
-  set: (v: boolean) => emit("update:modelValue", v),
+  set: (v: boolean) => emit('update:modelValue', v)
 });
 
 const local = ref<PoolFilters>({ ...DEFAULT_FILTERS });
@@ -35,7 +35,7 @@ function syncFromProps() {
 function close() {
   if (!isOpen.value) return;
   isOpen.value = false;
-  emit("close");
+  emit('close');
 }
 
 onClickOutside(
@@ -43,7 +43,7 @@ onClickOutside(
   () => {
     if (!isMobileView) close();
   },
-  { ignore: [".search-controls-iconbtn"] },
+  { ignore: ['.search-controls-iconbtn'] }
 );
 
 watch(isOpen, async (open) => {
@@ -51,28 +51,26 @@ watch(isOpen, async (open) => {
     syncFromProps();
     await nextTick();
     panelRef.value?.focus();
-    emit("open");
+    emit('open');
   }
 });
 
 function onClear() {
   local.value = { ...DEFAULT_FILTERS };
-  emit("update:filters", { ...local.value });
+  emit('update:filters', { ...local.value });
   close();
 }
 
 function onApply() {
-  emit("update:filters", { ...local.value });
+  emit('update:filters', { ...local.value });
   close();
 }
 
-const hasSelected = computed(
-  () => local.value.petsAllowed || local.value.heated,
-);
+const hasSelected = computed(() => local.value.petsAllowed || local.value.heated);
 
 const classes = computed(() => ({
-  [`filters--${isMobileView ? "mobile" : "desktop"}`]: true,
-  "filters-open": isOpen.value,
+  [`filters--${isMobileView ? 'mobile' : 'desktop'}`]: true,
+  'filters-open': isOpen.value
 }));
 </script>
 
@@ -103,15 +101,27 @@ const classes = computed(() => ({
           <li class="filters-list-item">
             <label class="filters-check">
               <span class="filters-check-label">Dozvoljeni kućni ljubimci</span>
-              <input type="checkbox" v-model="local.petsAllowed" />
-              <span class="filters-check-box" aria-hidden="true"></span>
+              <input
+                type="checkbox"
+                v-model="local.petsAllowed"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
             </label>
           </li>
           <li class="filters-list-item">
             <label class="filters-check">
               <span class="filters-check-label">Grijani bazen</span>
-              <input type="checkbox" v-model="local.heated" />
-              <span class="filters-check-box" aria-hidden="true"></span>
+              <input
+                type="checkbox"
+                v-model="local.heated"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
             </label>
           </li>
         </ul>
@@ -119,10 +129,19 @@ const classes = computed(() => ({
     </div>
 
     <div class="filters-footer">
-      <button v-if="hasSelected" class="filters-clear" @click="onClear">
+      <button
+        v-if="hasSelected"
+        class="filters-clear"
+        @click="onClear"
+      >
         Očisti
       </button>
-      <button class="filters-apply" @click="onApply">Prikaži oglase</button>
+      <button
+        class="filters-apply"
+        @click="onApply"
+      >
+        Prikaži oglase
+      </button>
     </div>
   </div>
 </template>
@@ -253,7 +272,7 @@ const classes = computed(() => ({
       color: #fff;
     }
     input:checked + .filters-check-box::before {
-      content: "✓";
+      content: '✓';
       line-height: 1;
     }
   }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
-import { onClickOutside } from "@vueuse/core";
-import isMobile from "is-mobile";
+import { ref, computed, watch, nextTick } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+import isMobile from 'is-mobile';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  "update:modelValue": [value: boolean];
+  'update:modelValue': [value: boolean];
   select: [city: string];
   allpools: [];
   open: [];
@@ -18,39 +18,37 @@ const emit = defineEmits<{
 
 const isMobileView = isMobile();
 const dropdownRef = ref<HTMLElement>();
-const searchTerm = ref("");
-const popularCities = ["Mostar", "Sarajevo", "Banja Luka", "Tuzla", "Zenica"];
+const searchTerm = ref('');
+const popularCities = ['Mostar', 'Sarajevo', 'Banja Luka', 'Tuzla', 'Zenica'];
 
 const isShowingDefaults = computed(() => searchTerm.value.trim().length === 0);
 const isDropdownOpen = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit("update:modelValue", value),
+  set: (value: boolean) => emit('update:modelValue', value)
 });
 const matchedCities = computed(() => {
   const q = searchTerm.value.trim().toLowerCase();
   if (!q || !props.allCities?.length) return [];
-  return props.allCities
-    .filter((c) => c.toLowerCase().includes(q))
-    .slice(0, 100);
+  return props.allCities.filter((c) => c.toLowerCase().includes(q)).slice(0, 100);
 });
 const dropdownClasses = computed(() => ({
-  [`location-dropdown--${isMobileView ? "mobile" : "desktop"}`]: true,
-  "location-dropdown-open": isDropdownOpen.value,
+  [`location-dropdown--${isMobileView ? 'mobile' : 'desktop'}`]: true,
+  'location-dropdown-open': isDropdownOpen.value
 }));
 
 const closeDropdown = () => {
   if (!isDropdownOpen.value) return;
   isDropdownOpen.value = false;
-  emit("close");
+  emit('close');
 };
 
 const handleAllPoolsClick = () => {
-  emit("allpools");
+  emit('allpools');
   closeDropdown();
 };
 
 const handleCitySelect = (city: string) => {
-  emit("select", city);
+  emit('select', city);
   closeDropdown();
 };
 
@@ -59,12 +57,10 @@ onClickOutside(dropdownRef, () => closeDropdown());
 watch(isDropdownOpen, async (open) => {
   if (open) {
     await nextTick();
-    dropdownRef.value
-      ?.querySelector<HTMLInputElement>(".location-dropdown-input")
-      ?.focus();
-    emit("open");
+    dropdownRef.value?.querySelector<HTMLInputElement>('.location-dropdown-input')?.focus();
+    emit('open');
   } else {
-    searchTerm.value = "";
+    searchTerm.value = '';
   }
 });
 </script>
@@ -73,7 +69,7 @@ watch(isDropdownOpen, async (open) => {
   <div
     class="location-dropdown-backdrop"
     :class="{
-      'location-dropdown-backdrop-open': isDropdownOpen && isMobileView,
+      'location-dropdown-backdrop-open': isDropdownOpen && isMobileView
     }"
     @click="closeDropdown"
   />
@@ -126,10 +122,16 @@ watch(isDropdownOpen, async (open) => {
       </template>
 
       <template v-else>
-        <div v-if="matchedCities.length === 0" class="location-dropdown-empty">
+        <div
+          v-if="matchedCities.length === 0"
+          class="location-dropdown-empty"
+        >
           Nema rezultata za “{{ searchTerm }}”.
         </div>
-        <ul v-else class="location-dropdown-list">
+        <ul
+          v-else
+          class="location-dropdown-list"
+        >
           <li
             v-for="city in matchedCities"
             :key="city"

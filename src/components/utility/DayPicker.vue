@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import isMobile from "is-mobile";
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import isMobile from 'is-mobile';
 
 const props = defineProps<{
   modelValue: boolean;
   selected?: string;
 }>();
 const emit = defineEmits<{
-  (e: "update:modelValue", v: boolean): void;
-  (e: "select", iso: string | null): void;
+  (e: 'update:modelValue', v: boolean): void;
+  (e: 'select', iso: string | null): void;
 }>();
 
 const isMobileView = isMobile();
 const panelRef = ref<HTMLElement>();
 const open = computed({
   get: () => props.modelValue,
-  set: (v: boolean) => emit("update:modelValue", v),
+  set: (v: boolean) => emit('update:modelValue', v)
 });
 
 const todayIso = new Date().toISOString().slice(0, 10);
@@ -23,26 +23,26 @@ const viewDate = ref(new Date());
 
 function monthLabel(d: Date) {
   try {
-    const s = new Intl.DateTimeFormat("bs-BA", {
-      month: "long",
-      year: "numeric",
+    const s = new Intl.DateTimeFormat('bs-BA', {
+      month: 'long',
+      year: 'numeric'
     }).format(d);
-    if (/M\d+|\d+[\/\-.]\d+/.test(s)) throw new Error("bad locale");
+    if (/M\d+|\d+[\/\-.]\d+/.test(s)) throw new Error('bad locale');
     return s.charAt(0).toUpperCase() + s.slice(1);
   } catch {
     const BS_MONTHS = [
-      "Januar",
-      "Februar",
-      "Mart",
-      "April",
-      "Maj",
-      "Juni",
-      "Juli",
-      "August",
-      "Septembar",
-      "Oktobar",
-      "Novembar",
-      "Decembar",
+      'Januar',
+      'Februar',
+      'Mart',
+      'April',
+      'Maj',
+      'Juni',
+      'Juli',
+      'August',
+      'Septembar',
+      'Oktobar',
+      'Novembar',
+      'Decembar'
     ];
     return `${BS_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   }
@@ -61,11 +61,7 @@ function mondayIndex(jsDay: number) {
 }
 
 const grid = computed(() => {
-  const first = new Date(
-    viewDate.value.getFullYear(),
-    viewDate.value.getMonth(),
-    1,
-  );
+  const first = new Date(viewDate.value.getFullYear(), viewDate.value.getMonth(), 1);
   const startOffset = mondayIndex(first.getDay());
   const total = daysInMonth(viewDate.value);
   const cells: Array<{
@@ -76,17 +72,13 @@ const grid = computed(() => {
   }> = [];
   for (let i = 0; i < startOffset; i++) cells.push({});
   for (let d = 1; d <= total; d++) {
-    const date = new Date(
-      viewDate.value.getFullYear(),
-      viewDate.value.getMonth(),
-      d,
-    );
+    const date = new Date(viewDate.value.getFullYear(), viewDate.value.getMonth(), d);
     const iso = toISO(date);
     cells.push({
       iso,
       label: d,
       isPast: iso < todayIso,
-      isSelected: props.selected === iso,
+      isSelected: props.selected === iso
     });
   }
   while (cells.length % 7 !== 0) cells.push({});
@@ -105,12 +97,12 @@ function nextMonth() {
 }
 function selectDay(iso?: string, isPast?: boolean) {
   if (!iso || isPast) return;
-  emit("select", iso);
+  emit('select', iso);
   open.value = false;
 }
 function clearDate() {
   viewDate.value = new Date();
-  emit("select", null);
+  emit('select', null);
   open.value = false;
 }
 
@@ -121,10 +113,8 @@ function handleClickOutside(e: MouseEvent) {
   if (!open.value || !panelRef.value) return;
   if (!panelRef.value.contains(e.target as Node)) close();
 }
-onMounted(() => document.addEventListener("click", handleClickOutside));
-onBeforeUnmount(() =>
-  document.removeEventListener("click", handleClickOutside),
-);
+onMounted(() => document.addEventListener('click', handleClickOutside));
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 </script>
 
 <template>
@@ -133,7 +123,7 @@ onBeforeUnmount(() =>
     class="daypicker"
     :class="{
       'daypicker--mobile': isMobileView,
-      'daypicker--desktop': !isMobileView,
+      'daypicker--desktop': !isMobileView
     }"
   >
     <div
@@ -142,7 +132,11 @@ onBeforeUnmount(() =>
       @click.stop="close"
     ></div>
 
-    <div class="daypicker-panel" ref="panelRef" @click.stop>
+    <div
+      class="daypicker-panel"
+      ref="panelRef"
+      @click.stop
+    >
       <div class="daypicker-header">
         <button
           class="daypicker-navbtn"
@@ -179,7 +173,7 @@ onBeforeUnmount(() =>
           :class="{
             'is-blank': !c.iso,
             'is-disabled': c.isPast && c.iso,
-            'is-selected': c.isSelected,
+            'is-selected': c.isSelected
           }"
           :disabled="!c.iso || c.isPast"
           @click="selectDay(c.iso, c.isPast)"
@@ -189,7 +183,12 @@ onBeforeUnmount(() =>
       </div>
 
       <div class="daypicker-footer">
-        <button class="daypicker-clear" @click="clearDate">Ukloni datum</button>
+        <button
+          class="daypicker-clear"
+          @click="clearDate"
+        >
+          Ukloni datum
+        </button>
       </div>
     </div>
   </div>

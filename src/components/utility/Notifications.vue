@@ -1,28 +1,34 @@
 <script setup lang="ts">
-import isMobile from "is-mobile";
-import { computed } from "vue";
-import { notificationsStore } from "../../stores/notifications";
+import isMobile from 'is-mobile';
+import { computed } from 'vue';
+import { notificationsStore } from '../../stores/notifications';
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
 
 const classes = computed(() => ({
-  [`notifications--${isMobileView ? "mobile" : "desktop"}`]: true,
+  [`notifications--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 </script>
 
 <template>
-  <div class="notifications" :class="classes">
+  <div
+    class="notifications"
+    :class="classes"
+  >
     <div
       v-for="(n, i) in useNotificationsStore.notifications"
       :key="i"
       class="notifications-item"
       :class="{
         'is-success': n.type === 'success',
-        'is-error': n.type === 'error',
+        'is-error': n.type === 'error'
       }"
     >
-      <span class="notifications-item-icon" aria-hidden="true">
+      <span
+        class="notifications-item-icon"
+        aria-hidden="true"
+      >
         <svg
           v-if="n.type === 'success'"
           width="16"
@@ -38,7 +44,12 @@ const classes = computed(() => ({
             stroke-linejoin="round"
           />
         </svg>
-        <svg v-else width="16" height="16" viewBox="0 0 24 24">
+        <svg
+          v-else
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
           <path
             d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"
             stroke="currentColor"
@@ -51,14 +62,18 @@ const classes = computed(() => ({
       </span>
 
       <span class="notifications-item-text">
-        {{ Array.isArray(n.text) ? n.text.join(" ") : n.text }}
+        {{ Array.isArray(n.text) ? n.text.join(' ') : n.text }}
       </span>
 
       <button
         class="notifications-item-close"
         @click="useNotificationsStore.removeNotification(i)"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+        >
           <path
             d="M18 6 6 18M6 6l12 12"
             stroke="currentColor"
