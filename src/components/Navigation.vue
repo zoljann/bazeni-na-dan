@@ -2,17 +2,20 @@
 import isMobile from 'is-mobile';
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/user';
 
 const props = defineProps<{
   variant?: 'transparent' | 'solid';
 }>();
 
 const router = useRouter();
+const userStore = useUserStore();
 const scrolledNavigation = ref(false);
 const isMobileView = isMobile();
 const isDropdownOpen = ref(false);
 const dropdownRef = ref<HTMLElement>();
 
+const menuLabel = computed(() => (userStore.isAuthenticated ? userStore.user?.firstName : 'Meni'));
 const navigationClasses = computed(() => ({
   'navigation-scrolled': scrolledNavigation.value || props.variant === 'solid',
   [`navigation--${isMobileView ? 'mobile' : 'desktop'}`]: true
@@ -22,13 +25,8 @@ const onScroll = () => (scrolledNavigation.value = window.scrollY > 10);
 const closeDropdown = () => (isDropdownOpen.value = false);
 const toggleDropdown = () => (isDropdownOpen.value = !isDropdownOpen.value);
 const handleClickOutside = (event: MouseEvent) => {
-  if (!dropdownRef.value) {
-    return;
-  }
-
-  if (!dropdownRef.value.contains(event.target as Node)) {
-    closeDropdown();
-  }
+  if (!dropdownRef.value) return;
+  if (!dropdownRef.value.contains(event.target as Node)) closeDropdown();
 };
 const goToFaqSection = async () => {
   const el = document.getElementById('faq');
@@ -43,9 +41,15 @@ const goToFaqSection = async () => {
     closeDropdown();
   });
 };
+const logout = () => {
+  userStore.logout();
+  router.push({ name: 'PoolsHomePage' });
+};
+
 const goHome = () => router.push({ name: 'PoolsHomePage' });
 const goToSavedPools = () => router.push({ name: 'PoolsSavedPage' });
 const goToLoginRegisterPage = () => router.push({ name: 'LoginRegisterPage' });
+const goToProfile = () => router.push({ name: 'UserProfilePage' });
 
 onMounted(() => {
   onScroll();
@@ -81,6 +85,7 @@ onBeforeUnmount(() => {
           Bazeni na dan
         </h3>
       </div>
+
       <div class="navigation-right">
         <button
           v-if="!isMobileView"
@@ -88,6 +93,7 @@ onBeforeUnmount(() => {
         >
           Objavi svoj bazen
         </button>
+
         <div
           class="navigation-right-container"
           ref="dropdownRef"
@@ -97,6 +103,7 @@ onBeforeUnmount(() => {
             class="navigation-right-button"
             @click="toggleDropdown"
           >
+            {{ menuLabel }}
             <svg
               class="icon"
               width="20"
@@ -109,7 +116,6 @@ onBeforeUnmount(() => {
                 fill="currentColor"
               />
             </svg>
-            Meni
           </button>
 
           <div
@@ -118,11 +124,21 @@ onBeforeUnmount(() => {
           >
             <button
               class="navigation-right-dropdown-signin-button"
+              v-if="!userStore.isAuthenticated"
               @click="goToLoginRegisterPage"
             >
               Prijava ili registracija
             </button>
+            <button
+              class="navigation-right-dropdown-signin-button"
+              v-else
+              @click="goToProfile"
+            >
+              Moj profil
+            </button>
+
             <span class="navigation-right-dropdown-divider"></span>
+
             <nav class="navigation-right-dropdown-links">
               <a
                 class="navigation-right-dropdown-links-item"
@@ -141,6 +157,13 @@ onBeforeUnmount(() => {
                 @click.prevent="goToFaqSection"
               >
                 Pomoć
+              </a>
+              <a
+                v-if="userStore.isAuthenticated"
+                class="navigation-right-dropdown-links-item logout"
+                @click.prevent="logout"
+              >
+                Odjava
               </a>
             </nav>
           </div>
@@ -245,6 +268,15 @@ onBeforeUnmount(() => {
           color: var(--text-color-black);
           font-weight: 500;
           padding: 10px 12px;
+
+          &:hover {
+            color: rgba(0, 0, 0, 0.541);
+          }
+        }
+
+        &-item.logout {
+          color: #e11d48;
+          font-weight: 700;
         }
       }
     }

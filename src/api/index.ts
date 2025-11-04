@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import env from '../utility/env';
-import type { Pool } from 'src/types';
+import type { Pool, User } from 'src/types';
 
 const api = axios.create({
   baseURL: env.apiUrl
@@ -153,6 +153,76 @@ export async function getPoolById(id: string): Promise<PoolByIdSuccess | ApiErro
     await new Promise((r) => setTimeout(r, 10));
 
     return { state: 'success', pool: found };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+type AuthSuccess = { state: 'success'; user: User };
+
+function demoUser(overrides?: Partial<User>): User {
+  return {
+    id: 'demo-1',
+    firstName: 'Demo',
+    lastName: 'Korisnik',
+    email: 'demo@bazeni.com',
+    avatarUrl: undefined, // front postavlja default
+    mobileNumber: '061234567',
+    role: 'host',
+    pools: [],
+    ...overrides
+  };
+}
+
+export async function loginUser(payload: {
+  email: string;
+  password: string;
+}): Promise<AuthSuccess | ApiError> {
+  try {
+    // ******* REAL API *******
+    // const { data } = await api.post('/auth/login', payload);
+    // return { state: 'success', user: data.user };
+
+    // ****** DEMO MOCK ******
+    await new Promise((r) => setTimeout(r, 400));
+    const { email, password } = payload;
+    const valid =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && password.length >= 6 && password.length <= 25;
+    if (!valid) return { state: 'error', message: 'Neispravni kredencijali.' };
+    return { state: 'success', user: demoUser({ email }) };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function registerUser(payload: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string; // samo brojevi
+  password: string;
+}): Promise<AuthSuccess | ApiError> {
+  try {
+    // ******* REAL API *******
+    // const { data } = await api.post('/auth/register', payload);
+    // return { state: 'success', user: data.user };
+
+    // ****** DEMO MOCK ******
+    await new Promise((r) => setTimeout(r, 500));
+    const phoneOk = payload.mobileNumber.replace(/\D+/g, '');
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email);
+    const passOk = payload.password.length >= 6 && payload.password.length <= 25;
+    const namesOk = !!payload.firstName.trim() && !!payload.lastName.trim();
+    if (!emailOk || !passOk || !namesOk || phoneOk.length < 9 || phoneOk.length > 15) {
+      return { state: 'error', message: 'Nevažeći podaci za registraciju.' };
+    }
+    const user = demoUser({
+      firstName: payload.firstName.trim(),
+      lastName: payload.lastName.trim(),
+      email: payload.email.trim(),
+      mobileNumber: phoneOk
+    });
+    return { state: 'success', user };
   } catch (e) {
     return handleApiError(e);
   }

@@ -25,6 +25,10 @@ const routes = [
     path: '/prijava',
     name: 'LoginRegisterPage',
     component: () => import('../pages/login-register/LoginRegisterPage.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'PoolsHomePage' }
   }
 ];
 
