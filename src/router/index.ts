@@ -22,19 +22,24 @@ const routes = [
     component: () => import('../pages/PoolsSavedPage.vue')
   },
   {
-    path: '/prijava',
-    name: 'LoginRegisterPage',
-    component: () => import('../pages/login-register/LoginRegisterPage.vue')
-  },
-    {
-    path: '/profil',
-    name: 'UserProfilePage',
-    component: () => import('../pages/UserProfilePage.vue')
+    path: '/objavi-bazen',
+    name: 'PoolsEditPublishPage',
+    component: () => import('../pages/PoolsEditPublishPage.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/:pathMatch(.*)*',
-    redirect: { name: 'PoolsHomePage' }
-  }
+    path: '/prijava',
+    name: 'LoginRegisterPage',
+    component: () => import('../pages/login-register/LoginRegisterPage.vue'),
+    meta: { guestOnly: true }
+  },
+  {
+    path: '/profil',
+    name: 'UserProfilePage',
+    component: () => import('../pages/UserProfilePage.vue'),
+    meta: { requiresAuth: true }
+  },
+  { path: '/:pathMatch(.*)*', redirect: { name: 'PoolsHomePage' } }
 ];
 
 const router = createRouter({

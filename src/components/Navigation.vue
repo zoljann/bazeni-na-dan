@@ -51,6 +51,7 @@ const goHome = () => router.push({ name: 'PoolsHomePage' });
 const goToSavedPools = () => router.push({ name: 'PoolsSavedPage' });
 const goToLoginRegisterPage = () => router.push({ name: 'LoginRegisterPage' });
 const goToProfile = () => router.push({ name: 'UserProfilePage' });
+const goToPoolsEditPublishPage = () => router.push({ name: 'PoolsEditPublishPage' });
 
 onMounted(() => {
   onScroll();
@@ -91,6 +92,7 @@ onBeforeUnmount(() => {
         <button
           v-if="!isMobileView"
           class="navigation-right-button"
+          @click="goToPoolsEditPublishPage"
         >
           Objavi svoj bazen
         </button>
@@ -104,7 +106,6 @@ onBeforeUnmount(() => {
             class="navigation-right-button"
             @click="toggleDropdown"
           >
-            {{ menuLabel }}
             <svg
               class="icon"
               width="20"
@@ -117,6 +118,7 @@ onBeforeUnmount(() => {
                 fill="currentColor"
               />
             </svg>
+            {{ menuLabel }}
           </button>
 
           <div
@@ -340,7 +342,6 @@ onBeforeUnmount(() => {
     .navigation-left {
       display: flex;
       align-items: center;
-      gap: 12px;
       cursor: pointer;
 
       &-logo {

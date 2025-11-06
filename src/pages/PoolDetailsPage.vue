@@ -298,7 +298,7 @@ onMounted(async () => {
         v-else
         class="pool-details-text"
       >
-        Domaćin nije uključio raspored dostupnosti bazena. Kontaktirajte ga za više informacija na
+        Domaćin nije uključio kalendar dostupnosti. Kontaktirajte ga za više informacija na
         {{ contactPhone }}
       </p>
     </div>

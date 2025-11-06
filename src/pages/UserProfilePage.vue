@@ -7,7 +7,6 @@ import { useUserStore } from '.././stores/user';
 
 const router = useRouter();
 const userStore = useUserStore();
-if (!userStore.isAuthenticated) router.replace({ name: 'LoginRegisterPage' });
 const isMobileView = isMobile();
 const showPwd = ref(false);
 const pwd = ref({ currentPassword: '', newPassword: '' });
@@ -47,7 +46,7 @@ const onAvatarChange = (e: Event) => {
   reader.onload = () => (form.value.avatarPreview = String(reader.result || ''));
   reader.readAsDataURL(f);
 };
-const resetFromStore = () => {
+const fillFromStore = () => {
   const u = userStore.user!;
   form.value.firstName = u.firstName || '';
   form.value.lastName = u.lastName || '';
@@ -107,7 +106,7 @@ const submit = async () => {
 };
 
 onMounted(() => {
-  if (userStore.isAuthenticated) resetFromStore();
+  if (userStore.isAuthenticated) fillFromStore();
 });
 </script>
 
