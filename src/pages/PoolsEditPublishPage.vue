@@ -9,6 +9,7 @@ import { usePoolsStore } from '../stores/pools';
 import { createPool, getPoolById } from '../api';
 import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue';
 import allCities from '../helpers/bih-cities.json';
+import type { Pool } from 'src/types';
 
 const route = useRoute();
 const router = useRouter();
@@ -16,7 +17,9 @@ const userStore = useUserStore();
 const poolsStore = usePoolsStore();
 const useNotificationsStore = notificationsStore();
 const isMobileView = isMobile();
-
+const imgInputRef = ref<HTMLInputElement | null>(null);
+const showCityDropdown = ref(false);
+const cityQuery = ref('');
 const form = ref({
   title: '',
   city: '',
@@ -28,7 +31,6 @@ const form = ref({
   busyDays: [] as string[],
   images: [] as string[]
 });
-
 const errors = ref<{
   title?: string;
   city?: string;
@@ -37,9 +39,6 @@ const errors = ref<{
   description?: string;
   images?: string;
 }>({});
-const imgInputRef = ref<HTMLInputElement | null>(null);
-const showCityDropdown = ref(false);
-const cityQuery = ref('');
 
 const filteredCities = computed(() => {
   const q = cityQuery.value.trim().toLowerCase();
@@ -47,15 +46,14 @@ const filteredCities = computed(() => {
 });
 const bazenId = computed(() => (route.query.bazenId ? String(route.query.bazenId) : ''));
 const isEdit = computed(() => !!bazenId.value);
-const pageClasses = computed(() => ({ [`auth--${isMobileView ? 'mobile' : 'desktop'}`]: true }));
 const pageTitle = computed(() => (isEdit.value ? 'Uredi bazen' : 'Objavi bazen'));
+const pageClasses = computed(() => ({ [`auth--${isMobileView ? 'mobile' : 'desktop'}`]: true }));
 
 const pickCity = (c: string) => {
   form.value.city = c;
   showCityDropdown.value = false;
 };
 const sanitizeInt = (v: string, maxLen = 6) => v.replace(/\D+/g, '').slice(0, maxLen);
-const openImgPicker = () => imgInputRef.value?.click();
 const onImagesPicked = async (e: Event) => {
   const files = Array.from((e.target as HTMLInputElement).files || []);
   if (!files.length) return;
@@ -94,7 +92,7 @@ const validate = () => {
     errors.value.images = 'Dodajte 1–7 slika.';
   return Object.keys(errors.value).length === 0;
 };
-const fillFromPool = (p: any) => {
+const fillFromPool = (p: Pool) => {
   form.value.title = p.title || '';
   form.value.city = p.city || '';
   form.value.capacity = String(p.capacity || '');
@@ -108,12 +106,8 @@ const fillFromPool = (p: any) => {
 };
 const submit = async () => {
   if (!validate()) return;
-  if (!userStore.user) {
-    useNotificationsStore.addNotification('Morate biti prijavljeni.', 'error');
-    return;
-  }
   const payload = {
-    user: userStore.user,
+    user: userStore.user!,
     pool: {
       id: isEdit.value ? bazenId.value : undefined,
       title: form.value.title.trim(),
@@ -132,7 +126,8 @@ const submit = async () => {
     useNotificationsStore.addNotification(res.message || 'Objava nije uspjela.', 'error');
     return;
   }
-  console.log('goto published pools');
+
+  router.push({ name: 'PoolsPublishedPage' });
 };
 
 onMounted(async () => {
@@ -145,11 +140,12 @@ onMounted(async () => {
 
   const res = await getPoolById(bazenId.value);
   if (res.state === 'success') {
-    fillFromPool(res.pool as any);
+    fillFromPool(res.pool);
     return;
   }
-  useNotificationsStore.addNotification('Nešto je pošlo po zlu.', 'error');
-  router.replace({ name: 'PoolsHomepage' });
+
+  useNotificationsStore.addNotification('Došlo je do greške .', 'error');
+  router.replace({ name: 'PoolsHomePage' });
 });
 </script>
 
@@ -423,7 +419,7 @@ onMounted(async () => {
             <button
               type="button"
               class="imgadd"
-              @click="openImgPicker"
+              @click="imgInputRef?.click()"
               :disabled="form.images.length >= 7"
             >
               <span class="imgadd-plus">+</span>
@@ -632,7 +628,6 @@ onMounted(async () => {
 }
 .citydrop-item {
   height: 40px;
-  border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fff;
   color: var(--text-color-black);

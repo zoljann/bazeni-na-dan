@@ -13,7 +13,7 @@ app.use(router);
 const userStore = useUserStore(pinia);
 router.beforeEach((to) => {
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    return { name: 'LoginRegisterPage', query: { redirect: to.fullPath } };
+    return { name: 'LoginRegisterPage' };
   }
 
   if (to.meta.guestOnly && userStore.isAuthenticated) {

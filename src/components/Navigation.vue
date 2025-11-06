@@ -52,6 +52,7 @@ const goToSavedPools = () => router.push({ name: 'PoolsSavedPage' });
 const goToLoginRegisterPage = () => router.push({ name: 'LoginRegisterPage' });
 const goToProfile = () => router.push({ name: 'UserProfilePage' });
 const goToPoolsEditPublishPage = () => router.push({ name: 'PoolsEditPublishPage' });
+const goToPoolsPublishedPage = () => router.push({ name: 'PoolsPublishedPage' });
 
 onMounted(() => {
   onScroll();
@@ -145,9 +146,9 @@ onBeforeUnmount(() => {
             <nav class="navigation-right-dropdown-links">
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="closeDropdown"
+                @click.prevent="goToPoolsPublishedPage"
               >
-                {{ userStore.isAuthenticated ? 'Objavljeni bazeni' : 'Objavi svoj bazen' }}
+                {{ userStore.isAuthenticated ? 'Moji bazeni' : 'Objavi svoj bazen' }}
               </a>
               <a
                 class="navigation-right-dropdown-links-item"

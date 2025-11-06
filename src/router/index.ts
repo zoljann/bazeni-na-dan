@@ -28,6 +28,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/objavljeni-bazeni',
+    name: 'PoolsPublishedPage',
+    component: () => import('../pages/PoolsPublishedPage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/prijava',
     name: 'LoginRegisterPage',
     component: () => import('../pages/login-register/LoginRegisterPage.vue'),
