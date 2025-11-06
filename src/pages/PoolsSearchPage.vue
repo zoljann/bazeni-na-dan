@@ -31,7 +31,7 @@ const filteredPools = computed(() => {
   return poolsStore.pools?.filter(
     (p) =>
       (city === 'sve lokacije' || !city || p.city.toLowerCase() === city) &&
-      (!iso || p.availableDays?.includes(iso)) &&
+      (!iso || (Array.isArray(p.busyDays) && !p.busyDays.includes(iso))) &&
       (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
       (!filters.value.heated || !!p.filters?.heated)
   );

@@ -441,7 +441,7 @@ const submitLogin = async () => {
 
   &-card {
     width: 100%;
-    max-width: 630px;
+    max-width: 800px;
     border-radius: 16px;
     background: #fff;
     display: grid;

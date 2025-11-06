@@ -29,13 +29,12 @@ const poolCardClasses = computed(() => ({
 }));
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(props.pool));
 const isPoolAvailableTomorrow = computed(() => {
-  const days = props.pool.availableDays;
-  if (!days?.length) return false;
+  const busy = props.pool.busyDays;
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + 1);
-  const tomorrowIso = d.toISOString().slice(0, 10);
-  return days.includes(tomorrowIso);
+  const iso = d.toISOString().slice(0, 10);
+  return Array.isArray(busy) && !busy.includes(iso);
 });
 
 const onPoolClick = () => emit('openPool', props.pool.id);

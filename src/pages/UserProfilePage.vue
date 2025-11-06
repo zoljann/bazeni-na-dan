@@ -408,7 +408,7 @@ onMounted(() => {
 
   &-card {
     width: 100%;
-    max-width: 630px;
+    max-width: 800px;
     border-radius: 16px;
     background: #fff;
     display: grid;
@@ -531,6 +531,7 @@ onMounted(() => {
     svg {
       transition: transform 160ms ease;
     }
+    
     svg.is-open {
       transform: rotate(180deg);
     }

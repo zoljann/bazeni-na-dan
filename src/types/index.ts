@@ -4,15 +4,14 @@ export type Pool = {
   city: string;
   capacity: number;
   images: string[];
-  pricePerDay?: number | undefined;
+  pricePerDay?: number | undefined; //ako je undefined cijena znaci da je po dogovoru ono
   description?: string | undefined;
-  availableDays?: string[] | undefined;
+  busyDays?: string[] | undefined; //ako undefined dodje znaci nema ukljucen kalenmdar dostupnosti
   filters?: {
     heated: boolean;
     petsAllowed: boolean;
   };
 };
-//stvari koje dodju undefined znaci da ih nema tj. ne koriste se
 
 export type User = {
   id: string;

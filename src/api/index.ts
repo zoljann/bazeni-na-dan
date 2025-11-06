@@ -77,7 +77,7 @@ export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiEr
             demoImg,
             'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'
           ],
-          availableDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
+          busyDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
           filters: {
             heated: true,
             petsAllowed: true
@@ -92,7 +92,7 @@ export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiEr
           capacity: 6,
           pricePerDay: 200,
           images: [demoImg],
-          availableDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
+          busyDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
           filters: {
             heated: true,
             petsAllowed: true
@@ -105,7 +105,7 @@ export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiEr
           capacity: 10,
           pricePerDay: 280,
           images: [demoImg],
-          availableDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
+          busyDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
         },
         {
           id: '4',
@@ -114,7 +114,7 @@ export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiEr
           capacity: 14,
           pricePerDay: 240,
           images: [demoImg],
-          availableDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
+          busyDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
           filters: {
             heated: true,
             petsAllowed: true
@@ -127,7 +127,7 @@ export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiEr
           capacity: 9,
           pricePerDay: 190,
           images: [demoImg],
-          availableDays: [addDays(3), addDays(4), addDays(11)]
+          busyDays: [addDays(3), addDays(4), addDays(11)]
         }
       ]
     };
@@ -243,12 +243,13 @@ export async function registerUser(payload: {
   }
 }
 
-export async function updateUser(payload: UpdateUserPayload): Promise<UpdateUserSuccess | ApiError> {
+export async function updateUser(
+  payload: UpdateUserPayload
+): Promise<UpdateUserSuccess | ApiError> {
   try {
     // const { data } = await api.put('/user', payload); return { state:'success', user: data };
     await new Promise((r) => setTimeout(r, 500));
 
-    // Mock: fabricate updated user from payload; if avatarBase64 present, use it as avatarUrl.
     const updated: User = {
       id: payload.id,
       firstName: payload.firstName,
@@ -262,6 +263,80 @@ export async function updateUser(payload: UpdateUserPayload): Promise<UpdateUser
 
     // PasswordChange is ignored in mock, but kept to mirror final contract.
     return { state: 'success', user: updated };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+type CreatePoolPayload = {
+  user: User;
+  pool: {
+    title: string;
+    city: string;
+    capacity: number;
+    images: string[];
+    pricePerDay?: number;
+    description?: string;
+    filters?: { heated: boolean; petsAllowed: boolean };
+    busyDays?: string[];
+  };
+};
+
+type CreatePoolSuccess = {
+  state: 'success';
+  pool: Pool;
+};
+
+export async function createPool(
+  payload: CreatePoolPayload
+): Promise<CreatePoolSuccess | ApiError> {
+  try {
+    // ******* REAL API *******
+    // const { data } = await api.post('/pools', payload);
+    // return { state: 'success', pool: data.pool ?? data };
+
+    // ****** DEMO MOCK ******
+    await new Promise((r) => setTimeout(r, 500));
+
+    const { user, pool } = payload;
+
+    console.log('[API] createPool -> user:', user);
+    console.log('[API] createPool -> pool:', pool);
+
+    const titleOk =
+      typeof pool.title === 'string' &&
+      pool.title.trim().length >= 3 &&
+      pool.title.trim().length <= 40;
+    const cityOk = typeof pool.city === 'string' && !!pool.city.trim();
+    const capacityOk = Number.isFinite(pool.capacity) && pool.capacity >= 1 && pool.capacity <= 100;
+    const imagesOk =
+      Array.isArray(pool.images) && pool.images.length >= 1 && pool.images.length <= 7;
+    const priceOk =
+      pool.pricePerDay === undefined ||
+      (Number.isFinite(pool.pricePerDay) && pool.pricePerDay >= 1 && pool.pricePerDay <= 10000);
+    const descOk =
+      pool.description === undefined ||
+      (typeof pool.description === 'string' &&
+        pool.description.trim().length >= 1 &&
+        pool.description.trim().length <= 300);
+
+    if (!user || !titleOk || !cityOk || !capacityOk || !imagesOk || !priceOk || !descOk) {
+      return { state: 'error', message: 'Nevažeći podaci za objavu.' };
+    }
+
+    const created: Pool = {
+      id: 'new-' + Math.random().toString(36).slice(2, 9),
+      title: pool.title.trim(),
+      city: pool.city.trim(),
+      capacity: pool.capacity,
+      images: pool.images.slice(0, 7),
+      pricePerDay: pool.pricePerDay,
+      description: pool.description?.trim() || undefined,
+      busyDays: undefined,
+      filters: pool.filters
+    };
+
+    return { state: 'success', pool: created };
   } catch (e) {
     return handleApiError(e);
   }
