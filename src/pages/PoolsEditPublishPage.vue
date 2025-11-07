@@ -89,7 +89,7 @@ const validate = () => {
   const d = form.value.description.trim();
   if (d && (d.length < 1 || d.length > 300)) errors.value.description = '1–300 znakova.';
   if (form.value.images.length < 1 || form.value.images.length > 7)
-    errors.value.images = 'Dodajte 1–7 slika.';
+    errors.value.images = 'Dodajte minimalno 1 a maksimalno 7 slika.';
   return Object.keys(errors.value).length === 0;
 };
 const fillFromPool = (p: Pool) => {
@@ -303,7 +303,7 @@ onMounted(async () => {
           <label
             for="price"
             class="auth-label"
-            >Cijena po danu</label
+            >Cijena po danu (opcionalno)</label
           >
           <input
             id="price"
@@ -370,14 +370,14 @@ onMounted(async () => {
               type="checkbox"
               v-model="form.enableAvailability"
             />
-            <span class="optcheck-label">🗓️ Uključiti kalendar</span>
+            <span class="optcheck-label">🗓️ Kalendar dostupnosti</span>
           </label>
 
           <div
             v-if="form.enableAvailability"
             class="hint"
           >
-            Označite zauzete datume. Kasnije možete uređivati.
+            Označite zauzete datume, ili to možete uraditi kasnije.
           </div>
 
           <AvailabilityCalendar
@@ -422,7 +422,6 @@ onMounted(async () => {
               @click="imgInputRef?.click()"
               :disabled="form.images.length >= 7"
             >
-              <span class="imgadd-plus">+</span>
               <span class="imgadd-text">Dodaj sliku</span>
             </button>
 
@@ -472,14 +471,14 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 12px;
+
     &-backbtn {
       padding: 0;
       display: inline-flex;
       cursor: pointer;
       color: var(--text-color-black);
-      background: transparent;
-      border: 0;
     }
+
     &-title {
       color: var(--text-color-black);
       line-height: 1.1rem;
@@ -490,15 +489,14 @@ onMounted(async () => {
     width: 100%;
     max-width: 800px;
     border-radius: 16px;
-    background: #fff;
-    display: grid;
-    gap: 14px;
     justify-self: center;
   }
+
   &-form {
     display: grid;
     gap: 12px;
   }
+
   &-field {
     display: grid;
     gap: 6px;
@@ -511,6 +509,7 @@ onMounted(async () => {
     text-transform: uppercase;
     font-weight: 800;
   }
+
   &-labelrow {
     display: flex;
     align-items: center;
@@ -533,6 +532,7 @@ onMounted(async () => {
     font-weight: 700;
     font-size: 13px;
   }
+
   .has-error .auth-input {
     border-color: #ffb3b3;
     background: #fff4f4;
@@ -554,6 +554,7 @@ onMounted(async () => {
       &-titlebar-title {
         font-size: 26px;
       }
+
       &-submit {
         width: 100%;
       }
@@ -565,11 +566,13 @@ onMounted(async () => {
       &-titlebar-title {
         font-size: 32px;
       }
+
       &-card {
         padding: 14px;
         border: 1px solid #e5e7eb;
         box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
       }
+
       &-submit {
         width: 50%;
         justify-self: center;
@@ -582,22 +585,21 @@ onMounted(async () => {
   color: #a31515;
   font-weight: 900;
 }
+
 .textarea {
   min-height: 110px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-/* City dropdown */
 .citybtn {
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-align: left;
-  transition:
-    background 160ms ease,
-    border-color 160ms ease;
+  cursor: pointer;
 }
+
 .citybtn.is-open {
   background: #fbfdff;
   border-color: #dbeafe;
@@ -607,45 +609,46 @@ onMounted(async () => {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% + 6px);
+  top: calc(100%);
   z-index: 20;
-  display: grid;
   gap: 8px;
-}
-.citydrop-search {
-  height: 42px;
-}
-.citydrop-list {
-  max-height: 240px;
-  overflow: auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fcfeff;
-  padding: 6px;
-  display: grid;
-  gap: 6px;
-  box-shadow: 0 10px 24px rgba(2, 8, 23, 0.12);
-}
-.citydrop-item {
-  height: 40px;
-  border-radius: 10px;
-  background: #fff;
-  color: var(--text-color-black);
-  font-weight: 700;
-  text-align: left;
-  padding: 0 10px;
-  cursor: pointer;
-}
-.citydrop-item:hover {
-  background: #f3f8ff;
-  border-color: #dbeafe;
-}
-.citydrop-item.is-selected {
-  background: #eaf2ff;
-  border-color: #bfdbfe;
+
+  &-search {
+    height: 42px;
+  }
+
+  &-list {
+    max-height: 240px;
+    overflow: auto;
+    border-radius: 12px;
+    background: #fcfeff;
+    padding: 6px;
+    display: grid;
+    box-shadow: 0 10px 24px rgba(2, 8, 23, 0.3);
+  }
+
+  &-item {
+    height: 40px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-color-black);
+    font-weight: 600;
+    text-align: left;
+    padding: 0 10px;
+    cursor: pointer;
+  }
+
+  &:hover {
+    background: #f3f8ff;
+    border-color: #dbeafe;
+  }
+
+  .is-selected {
+    background: #eaf2ff;
+    border-color: #bfdbfe;
+  }
 }
 
-/* Click-outside overlay */
 .drop-overlay {
   position: fixed;
   inset: 0;
@@ -653,7 +656,6 @@ onMounted(async () => {
   background: transparent;
 }
 
-/* Checkboxes */
 .optcheck {
   display: grid;
   grid-template-columns: 22px 1fr;
@@ -663,24 +665,24 @@ onMounted(async () => {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 10px 12px;
-  font-weight: 800;
   color: var(--text-color-black);
   cursor: pointer;
-  user-select: none;
 }
+
 .optcheck input {
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #9ca3af;
+  border: 1px solid #9ca3af;
   border-radius: 4px;
-  background: #fff;
   position: relative;
 }
+
 .optcheck input:checked {
   border-color: var(--primary-color);
   background: var(--primary-color);
 }
+
 .optcheck input:checked::after {
   content: '';
   position: absolute;
@@ -692,49 +694,52 @@ onMounted(async () => {
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
 .optcheck-label {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .hint {
   color: #6b7280;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .imggrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
 }
+
 .imggrid input[type='file'] {
   display: none;
 }
+
 .imgtile {
   position: relative;
-  border: 1px solid #e5e7eb;
   border-radius: 12px;
   height: 100px;
   overflow: hidden;
-  background: #f8fafc;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &-del {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #ffffffcc;
+    color: var(--text-color-black);
+    cursor: pointer;
+  }
 }
-.imgtile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.imgtile-del {
-  position: absolute;
-  right: 6px;
-  top: 6px;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #ffffffcc;
-  color: var(--text-color-black);
-  cursor: pointer;
-}
+
 .imgcount {
   font-size: 13px;
   font-weight: 800;
@@ -743,28 +748,24 @@ onMounted(async () => {
   border-radius: 999px;
   background: #f3f4f6;
 }
+
 .imgadd {
   height: 100px;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  background: #fff;
-  font-weight: 800;
   cursor: pointer;
   display: grid;
   place-items: center;
-  gap: 6px;
   color: var(--text-color-black);
+
+  &-text {
+    font-weight: 700;
+    font-size: 14px;
+  }
 }
+
 .imgadd:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
-}
-.imgadd-plus {
-  font-size: 26px;
-  line-height: 1;
-}
-.imgadd-text {
-  font-weight: 900;
-  font-size: 14px;
 }
 </style>
