@@ -46,13 +46,10 @@ const logout = () => {
   closeDropdown();
   router.push({ name: 'PoolsHomePage' });
 };
-
-const goHome = () => router.push({ name: 'PoolsHomePage' });
-const goToSavedPools = () => router.push({ name: 'PoolsSavedPage' });
-const goToLoginRegisterPage = () => router.push({ name: 'LoginRegisterPage' });
-const goToProfile = () => router.push({ name: 'UserProfilePage' });
-const goToPoolsEditPublishPage = () => router.push({ name: 'PoolsEditPublishPage' });
-const goToPoolsPublishedPage = () => router.push({ name: 'PoolsPublishedPage' });
+const goToRoute = (route: string) => {
+  router.push({ name: route });
+  closeDropdown();
+};
 
 onMounted(() => {
   onScroll();
@@ -74,7 +71,7 @@ onBeforeUnmount(() => {
     <div class="navigation-inner">
       <div
         class="navigation-left"
-        @click="goHome"
+        @click="goToRoute('PoolsHomePage')"
       >
         <img
           class="navigation-left-logo"
@@ -93,7 +90,7 @@ onBeforeUnmount(() => {
         <button
           v-if="!isMobileView"
           class="navigation-right-button"
-          @click="goToPoolsEditPublishPage"
+          @click="goToRoute('PoolsEditPublishPage')"
         >
           Objavi svoj bazen
         </button>
@@ -129,14 +126,14 @@ onBeforeUnmount(() => {
             <button
               class="navigation-right-dropdown-signin-button"
               v-if="!userStore.isAuthenticated"
-              @click="goToLoginRegisterPage"
+              @click="goToRoute('LoginRegisterPage')"
             >
               Prijava ili registracija
             </button>
             <button
               class="navigation-right-dropdown-signin-button"
               v-else
-              @click="goToProfile"
+              @click="goToRoute('UserProfilePage')"
             >
               Moj profil
             </button>
@@ -146,13 +143,13 @@ onBeforeUnmount(() => {
             <nav class="navigation-right-dropdown-links">
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="goToPoolsPublishedPage"
+                @click.prevent="goToRoute('PoolsPublishedPage')"
               >
-                {{ userStore.isAuthenticated ? 'Moji bazeni' : 'Objavi svoj bazen' }}
+                {{ userStore.isAuthenticated ? 'Objavljeni bazeni' : 'Objavi svoj bazen' }}
               </a>
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="goToSavedPools"
+                @click.prevent="goToRoute('PoolsSavedPage')"
               >
                 Sačuvani bazeni
               </a>

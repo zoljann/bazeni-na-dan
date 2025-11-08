@@ -1,0 +1,322 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import isMobile from 'is-mobile';
+import { useUserStore } from '../stores/user';
+import Navigation from '../components/Navigation.vue';
+import PoolCard from '../components/pools/PoolCard.vue';
+import type { Pool } from 'src/types';
+import { getAvailablePools } from '../api/index';
+
+const router = useRouter();
+const isMobileView = isMobile();
+const userStore = useUserStore();
+const pools = ref<Pool[]>([]);
+
+const publishedClasses = computed(() => ({
+  [`published--${isMobileView ? 'mobile' : 'desktop'}`]: true
+}));
+
+const editPool = (id: string) => {
+  router.push({ name: 'PoolsEditPublishPage', query: { bazenId: id } });
+};
+const createNewPool = () => {
+  router.push({ name: 'PoolsEditPublishPage' });
+};
+
+onMounted(async () => {
+  const res = await getAvailablePools(userStore.user?.id);
+
+  if (res.state === 'success') pools.value = res.pools;
+});
+</script>
+
+<template>
+  <Navigation variant="solid" />
+
+  <section
+    class="published"
+    :class="publishedClasses"
+  >
+    <header class="published-header">
+      <div class="published-titlebar">
+        <button
+          class="published-titlebar-backbtn"
+          @click="router.back()"
+        >
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M15 18l-6-6 6-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <h1 class="published-titlebar-title">Objavljeni bazeni</h1>
+      </div>
+    </header>
+
+    <div
+      v-if="pools.length === 0"
+      class="published-results"
+    >
+      <div
+        v-if="isMobileView"
+        class="published-addbtnwrap"
+      >
+        <button
+          type="button"
+          class="published-addbtn"
+          @click="createNewPool"
+          aria-label="Dodaj novi bazen"
+        >
+          Dodaj novi bazen
+        </button>
+        <div class="published-addhint">
+          Dodajte slike, lokaciju i kratak opis bazena — objavite za par minuta.
+        </div>
+      </div>
+      <div
+        v-else
+        class="published-results-grid"
+      >
+        <div class="published-addcard">
+          <div class="published-addcard-media">
+            <div
+              class="published-addcard-plus"
+              @click="createNewPool"
+            >
+              +
+            </div>
+          </div>
+          <div class="published-addcard-body">
+            <div class="published-addcard-title">Dodaj novi bazen</div>
+            <div class="published-addcard-sub">Dodajte slike, lokaciju i opis u par koraka.</div>
+            <button
+              type="button"
+              class="published-addbtn"
+              @click="createNewPool"
+              aria-label="Dodaj novi bazen"
+            >
+              Dodaj novi bazen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="published-results"
+    >
+      <div
+        v-if="isMobileView"
+        class="published-addbtnwrap"
+      >
+        <button
+          type="button"
+          class="published-addbtn"
+          @click="createNewPool"
+          aria-label="Dodaj novi bazen"
+        >
+          Dodaj novi bazen
+        </button>
+      </div>
+
+      <div class="published-results-grid">
+        <div
+          v-if="!isMobileView"
+          class="published-addcard"
+        >
+          <div class="published-addcard-media">
+            <div
+              class="published-addcard-plus"
+              @click="createNewPool"
+            >
+              +
+            </div>
+          </div>
+          <div class="published-addcard-body">
+            <div class="published-addcard-title">Dodaj novi bazen</div>
+            <div class="published-addcard-sub">Dodajte slike, lokaciju i opis u par koraka.</div>
+            <button
+              type="button"
+              class="published-addbtn"
+              @click="createNewPool"
+              aria-label="Dodaj novi bazen"
+            >
+              Dodaj novi bazen
+            </button>
+          </div>
+        </div>
+
+        <PoolCard
+          v-for="p in pools"
+          :key="p.id"
+          :pool="p"
+          :editable="true"
+          @open-pool="editPool"
+        />
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped lang="scss">
+.published {
+  width: 100%;
+  padding: 16px;
+
+  &-header {
+    max-width: 1100px;
+    margin: 0 auto 12px;
+  }
+
+  &-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &-backbtn {
+      padding: 0;
+      display: inline-flex;
+      cursor: pointer;
+      color: var(--text-color-black);
+      background: transparent;
+      border: 0;
+    }
+
+    &-title {
+      line-height: 1.1;
+      color: var(--text-color-black);
+    }
+  }
+
+  &-addbtn {
+    height: 42px;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: var(--text-color-white);
+    font-weight: 700;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
+    cursor: pointer;
+    padding: 0 14px;
+  }
+
+  &-addhint {
+    margin-top: 8px;
+    color: #6b7280;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &-addbtnwrap {
+    max-width: 1100px;
+    margin: 0 auto 12px;
+    display: grid;
+  }
+
+  &-results {
+    max-width: 1100px;
+    margin: 0 auto;
+
+    &-grid {
+      display: grid;
+      gap: 14px;
+    }
+  }
+
+  &-addcard {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(2, 8, 23, 0.08);
+    overflow: hidden;
+    background: #fff;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  &-addcard-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #fbfdff;
+    border-bottom: 1px solid #e5e7eb;
+    display: grid;
+    place-items: center;
+  }
+
+  &-addcard-plus {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--text-color-white);
+    background: var(--primary-color);
+    box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
+    cursor: pointer;
+  }
+
+  &-addcard-body {
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  &-addcard-title {
+    font-weight: 800;
+    color: var(--text-color-black);
+  }
+
+  &-addcard-sub {
+    color: #6b7280;
+    font-weight: 700;
+  }
+
+  &--mobile {
+    .published {
+      &-titlebar-title {
+        font-size: 26px;
+      }
+
+      &-results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      &-addbtn {
+        width: 100%;
+      }
+    }
+  }
+
+  &--desktop {
+    .published {
+      padding-top: 92px;
+
+      &-titlebar-title {
+        font-size: 32px;
+      }
+
+      &-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      &-addbtn {
+        width: auto;
+      }
+    }
+  }
+}
+</style>

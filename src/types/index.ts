@@ -1,5 +1,6 @@
 export type Pool = {
   id: string;
+  userId: string;
   title: string;
   city: string;
   capacity: number;

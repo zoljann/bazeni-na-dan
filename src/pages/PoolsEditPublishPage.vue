@@ -129,22 +129,34 @@ const submit = async () => {
 
   router.push({ name: 'PoolsPublishedPage' });
 };
+const ensureOwnership = (p: Pool) => {
+  if (!userStore.user?.id || p.userId !== userStore.user?.id) {
+    console.log(userStore.user);
+    useNotificationsStore.addNotification('Nemate dozvolu za uređivanje ovog bazena.', 'error');
+    router.replace({ name: 'PoolsHomePage' });
+    return false;
+  }
+  return true;
+};
 
 onMounted(async () => {
   if (!isEdit.value) return;
+
   const stored = poolsStore.findPoolById(bazenId.value);
   if (stored) {
+    if (!ensureOwnership(stored)) return;
     fillFromPool(stored);
     return;
   }
 
   const res = await getPoolById(bazenId.value);
   if (res.state === 'success') {
+    if (!ensureOwnership(res.pool)) return;
     fillFromPool(res.pool);
     return;
   }
 
-  useNotificationsStore.addNotification('Došlo je do greške .', 'error');
+  useNotificationsStore.addNotification('Došlo je do greške.', 'error');
   router.replace({ name: 'PoolsHomePage' });
 });
 </script>

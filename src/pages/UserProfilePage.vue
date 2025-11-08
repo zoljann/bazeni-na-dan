@@ -531,7 +531,7 @@ onMounted(() => {
     svg {
       transition: transform 160ms ease;
     }
-    
+
     svg.is-open {
       transform: rotate(180deg);
     }

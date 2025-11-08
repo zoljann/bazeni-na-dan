@@ -9,6 +9,7 @@ import { useFavorites } from '../../composables/useFavorites';
 
 const props = defineProps<{
   pool: Pool;
+  editable?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -51,6 +52,7 @@ const goPrev = () => swiperRef.value?.slidePrev();
 const goNext = () => swiperRef.value?.slideNext();
 const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
+
 <template>
   <div
     class="pool-card"
@@ -94,7 +96,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
-            stroke-linejoin="round"
           />
         </svg>
       </button>
@@ -116,7 +117,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
-            stroke-linejoin="round"
           />
         </svg>
       </button>
@@ -223,6 +223,18 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         </svg>
         Dostupno već od sutra
       </div>
+    </div>
+    <div
+      v-if="editable"
+      class="pool-card-editbar"
+      @click.stop="emit('openPool', pool.id)"
+    >
+      <button
+        type="button"
+        class="pool-card-editbtn"
+      >
+        Uredi bazen
+      </button>
     </div>
   </div>
 </template>
@@ -377,6 +389,26 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+    }
+  }
+
+  &-editbar {
+    padding: 8px;
+    display: grid;
+  }
+
+  &-editbtn {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f4f9ff;
+    color: var(--text-color-black);
+    font-weight: 800;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 14px rgba(2, 8, 23, 0.06);
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(0.95);
     }
   }
 

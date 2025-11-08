@@ -45,92 +45,95 @@ function addDays(n: number) {
   return fmt(d);
 }
 
-export async function getAvailablePools(): Promise<AvailablePoolsSuccess | ApiError> {
+export async function getAvailablePools(
+  userId?: string
+): Promise<AvailablePoolsSuccess | ApiError> {
   try {
-    /*     const { data } = await api.get("/pools", {
-      params: city ? { city } : undefined,
-    });
+    // ******* REAL API *******
+    // const { data } = await api.get('/pools', { params: userId ? { userId } : undefined });
+    // return { state: 'success', pools: data.pools };
 
-    return {
-      state: "success",
-      pools: data.pools,
-    }; */
-
+    // ****** DEMO MOCK *******
     const demoImg =
       'https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg';
 
     await new Promise((r) => setTimeout(r, 500));
 
-    return {
-      state: 'success',
-      pools: [
-        {
-          id: '1',
-          title: 'Vila Sunce',
-          city: 'Mostar',
-          capacity: 8,
-          pricePerDay: 150,
-          images: [
-            demoImg,
-            demoImg,
-            demoImg,
-            demoImg,
-            'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'
-          ],
-          busyDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
-          filters: {
-            heated: true,
-            petsAllowed: true
-          },
-          description:
-            'Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bda detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje ida detaljniji ali nek ga ima da se zna staje i kakoje. Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje iazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.Ovo je opis bazena mozda detaljniji ali nek ga ima da se zna staje i kakoje.'
-        },
-        {
-          id: '2',
-          title: 'Plavi Raj',
-          city: 'Sarajevo',
-          capacity: 6,
-          pricePerDay: 200,
-          images: [demoImg],
-          busyDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
-          filters: {
-            heated: true,
-            petsAllowed: true
-          }
-        },
-        {
-          id: '3',
-          title: 'Jadranska Laguna',
-          city: 'Neum',
-          capacity: 10,
-          pricePerDay: 280,
-          images: [demoImg],
-          busyDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
-        },
-        {
-          id: '4',
-          title: 'Zeleni Brežuljak',
-          city: 'Banja Luka',
-          capacity: 14,
-          pricePerDay: 240,
-          images: [demoImg],
-          busyDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
-          filters: {
-            heated: true,
-            petsAllowed: true
-          }
-        },
-        {
-          id: '5',
-          title: 'Mostarska Terasa',
-          city: 'Mostar',
-          capacity: 9,
-          pricePerDay: 190,
-          images: [demoImg],
-          busyDays: [addDays(3), addDays(4), addDays(11)]
-        }
-      ]
-    };
+    const pools: Pool[] = [
+      {
+        id: '1',
+        userId: 'demo-1',
+        title: 'Vila Sunce',
+        city: 'Mostar',
+        capacity: 8,
+        pricePerDay: 150,
+        images: [
+          demoImg,
+          demoImg,
+          demoImg,
+          demoImg,
+          'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'
+        ],
+        busyDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
+        filters: { heated: true, petsAllowed: true },
+        description: 'Ovo je opis bazena mozda detaljniji...'
+      },
+      {
+        id: '2',
+        userId: '5',
+        title: 'Plavi Raj',
+        city: 'Sarajevo',
+        capacity: 6,
+        pricePerDay: 200,
+        images: [demoImg],
+        busyDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
+        filters: { heated: true, petsAllowed: true }
+      },
+      {
+        id: '3',
+        userId: '5',
+
+        title: 'Jadranska Laguna',
+        city: 'Neum',
+        capacity: 10,
+        pricePerDay: 280,
+        images: [demoImg],
+        busyDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
+      },
+      {
+        id: '4',
+        userId: '5',
+
+        title: 'Zeleni Brežuljak',
+        city: 'Banja Luka',
+        capacity: 14,
+        pricePerDay: 240,
+        images: [demoImg],
+        busyDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
+        filters: { heated: true, petsAllowed: true }
+      },
+      {
+        id: '5',
+        userId: 'demo-1',
+        title: 'Mostarska Terasa',
+        city: 'Mostar',
+        capacity: 9,
+        pricePerDay: 190,
+        images: [demoImg],
+        busyDays: [addDays(3), addDays(4), addDays(11)]
+      }
+    ];
+
+    if (userId) {
+      const OWNERS: Record<string, string[]> = {
+        'demo-1': ['1', '5'],
+        'host-2': ['2']
+      };
+      const owned = new Set(OWNERS[userId] || []);
+      return { state: 'success', pools: owned.size ? pools.filter((p) => owned.has(p.id)) : [] };
+    }
+
+    return { state: 'success', pools };
   } catch (e) {
     return handleApiError(e);
   }
@@ -326,6 +329,7 @@ export async function createPool(
 
     const created: Pool = {
       id: 'new-' + Math.random().toString(36).slice(2, 9),
+      userId: '5',
       title: pool.title.trim(),
       city: pool.city.trim(),
       capacity: pool.capacity,
