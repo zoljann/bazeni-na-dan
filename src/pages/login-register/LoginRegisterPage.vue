@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import isMobile from 'is-mobile';
 import Navigation from '../../components/Navigation.vue';
 import { useUserStore } from '../../stores/user';
+import TitleBar from '../../components/TitleBar.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -70,33 +71,7 @@ const submitLogin = async () => {
     class="auth"
     :class="authClasses"
   >
-    <header class="auth-header">
-      <div class="auth-titlebar">
-        <button
-          class="auth-titlebar-backbtn"
-          @click="router.back()"
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-        <h1 class="auth-titlebar-title">
-          {{ mode === 'register' ? 'Registracija' : 'Prijava' }}
-        </h1>
-      </div>
-    </header>
-
+    <TitleBar :title="mode === 'register' ? 'Registracija' : 'Prijava'" />
     <div class="auth-card">
       <div class="auth-tabs">
         <button
@@ -417,28 +392,6 @@ const submitLogin = async () => {
 .auth {
   padding: 16px;
 
-  &-header {
-    margin: 0 auto 12px;
-  }
-
-  &-titlebar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    &-backbtn {
-      padding: 0;
-      display: inline-flex;
-      cursor: pointer;
-      color: var(--text-color-black);
-    }
-
-    &-title {
-      color: var(--text-color-black);
-      line-height: 1.1rem;
-    }
-  }
-
   &-card {
     width: 100%;
     max-width: 800px;
@@ -536,10 +489,6 @@ const submitLogin = async () => {
   }
 
   &--mobile {
-    .auth-titlebar-title {
-      font-size: 26px;
-    }
-
     .auth-submit {
       width: 100%;
     }
@@ -550,10 +499,6 @@ const submitLogin = async () => {
       padding: 14px;
       border: 1px solid #e5e7eb;
       box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
-    }
-
-    .auth-titlebar-title {
-      font-size: 32px;
     }
 
     .auth-submit {

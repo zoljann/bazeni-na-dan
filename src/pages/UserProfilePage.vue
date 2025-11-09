@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import isMobile from 'is-mobile';
 import Navigation from '.././components/Navigation.vue';
 import { useUserStore } from '.././stores/user';
+import TitleBar from '../components/TitleBar.vue';
 
-const router = useRouter();
 const userStore = useUserStore();
 const isMobileView = isMobile();
 const showPwd = ref(false);
@@ -117,31 +116,7 @@ onMounted(() => {
     class="auth"
     :class="authClasses"
   >
-    <header class="auth-header">
-      <div class="auth-titlebar">
-        <button
-          class="auth-titlebar-backbtn"
-          @click="router.back()"
-          aria-label="Nazad"
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-        <h1 class="auth-titlebar-title">Moj profil</h1>
-      </div>
-    </header>
+    <TitleBar title="Moj profil" />
 
     <div class="auth-card">
       <div class="auth-avatar">
@@ -388,24 +363,6 @@ onMounted(() => {
     margin: 0 auto 12px;
   }
 
-  &-titlebar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    &-backbtn {
-      padding: 0;
-      display: inline-flex;
-      cursor: pointer;
-      color: var(--text-color-black);
-    }
-
-    &-title {
-      color: var(--text-color-black);
-      line-height: 1.1rem;
-    }
-  }
-
   &-card {
     width: 100%;
     max-width: 800px;
@@ -544,10 +501,6 @@ onMounted(() => {
 
   &--mobile {
     .auth {
-      &-titlebar-title {
-        font-size: 26px;
-      }
-
       &-submit {
         width: 100%;
       }
@@ -556,10 +509,6 @@ onMounted(() => {
 
   &--desktop {
     .auth {
-      &-titlebar-title {
-        font-size: 32px;
-      }
-
       &-card {
         padding: 14px;
         border: 1px solid #e5e7eb;

@@ -13,6 +13,7 @@ import { useFavorites } from '../composables/useFavorites';
 import Navigation from '../components/Navigation.vue';
 import ImagePreview from '../components/ImagePreview.vue';
 import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue';
+import TitleBar from '.././components/TitleBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -78,28 +79,7 @@ onMounted(async () => {
     :class="poolDetailsClasses"
   >
     <header>
-      <div class="pool-details-titlebar">
-        <button
-          class="pool-details-titlebar-backbtn"
-          @click="router.back()"
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-        <h1 class="pool-details-titlebar-title">{{ pool.title }}</h1>
-      </div>
+      <TitleBar :title="pool.title" />
 
       <p class="pool-details-meta">
         📍 {{ pool.city }}
@@ -317,26 +297,6 @@ onMounted(async () => {
   max-width: 1100px;
   margin: 0 auto;
   padding: 16px;
-
-  &-titlebar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    &-backbtn {
-      padding: 0;
-      display: inline-flex;
-      cursor: pointer;
-      color: var(--text-color-black);
-      background: transparent;
-      border: 0;
-    }
-
-    &-title {
-      line-height: 1.1;
-      color: var(--text-color-black);
-    }
-  }
 
   &-meta {
     margin-top: 8px;
@@ -599,10 +559,6 @@ onMounted(async () => {
 
   &--mobile {
     .pool-details {
-      &-titlebar-title {
-        font-size: 26px;
-      }
-
       &-meta {
         font-size: 14px;
       }

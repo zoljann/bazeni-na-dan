@@ -10,6 +10,7 @@ import { createPool, getPoolById } from '../api';
 import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue';
 import allCities from '../helpers/bih-cities.json';
 import type { Pool } from 'src/types';
+import TitleBar from '.././components/TitleBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -168,31 +169,7 @@ onMounted(async () => {
     class="auth"
     :class="pageClasses"
   >
-    <header class="auth-header">
-      <div class="auth-titlebar">
-        <button
-          class="auth-titlebar-backbtn"
-          @click="router.back()"
-          aria-label="Nazad"
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-        <h1 class="auth-titlebar-title">{{ pageTitle }}</h1>
-      </div>
-    </header>
+    <TitleBar :title="pageTitle" />
 
     <div class="auth-card">
       <form
@@ -475,28 +452,6 @@ onMounted(async () => {
 .auth {
   padding: 16px;
 
-  &-header {
-    margin: 0 auto 12px;
-  }
-
-  &-titlebar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    &-backbtn {
-      padding: 0;
-      display: inline-flex;
-      cursor: pointer;
-      color: var(--text-color-black);
-    }
-
-    &-title {
-      color: var(--text-color-black);
-      line-height: 1.1rem;
-    }
-  }
-
   &-card {
     width: 100%;
     max-width: 800px;
@@ -563,10 +518,6 @@ onMounted(async () => {
 
   &--mobile {
     .auth {
-      &-titlebar-title {
-        font-size: 26px;
-      }
-
       &-submit {
         width: 100%;
       }
@@ -575,10 +526,6 @@ onMounted(async () => {
 
   &--desktop {
     .auth {
-      &-titlebar-title {
-        font-size: 32px;
-      }
-
       &-card {
         padding: 14px;
         border: 1px solid #e5e7eb;

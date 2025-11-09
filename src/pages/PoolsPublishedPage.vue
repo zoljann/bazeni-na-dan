@@ -7,6 +7,7 @@ import Navigation from '../components/Navigation.vue';
 import PoolCard from '../components/pools/PoolCard.vue';
 import type { Pool } from 'src/types';
 import { getAvailablePools } from '../api/index';
+import TitleBar from '.././components/TitleBar.vue';
 
 const router = useRouter();
 const isMobileView = isMobile();
@@ -38,31 +39,7 @@ onMounted(async () => {
     class="published"
     :class="publishedClasses"
   >
-    <header class="published-header">
-      <div class="published-titlebar">
-        <button
-          class="published-titlebar-backbtn"
-          @click="router.back()"
-        >
-          <svg
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-        <h1 class="published-titlebar-title">Objavljeni bazeni</h1>
-      </div>
-    </header>
-
+    <TitleBar title="Objavljeni bazeni" />
     <div
       v-if="pools.length === 0"
       class="published-results"
@@ -174,31 +151,6 @@ onMounted(async () => {
   width: 100%;
   padding: 16px;
 
-  &-header {
-    max-width: 1100px;
-    margin: 0 auto 12px;
-  }
-
-  &-titlebar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    &-backbtn {
-      padding: 0;
-      display: inline-flex;
-      cursor: pointer;
-      color: var(--text-color-black);
-      background: transparent;
-      border: 0;
-    }
-
-    &-title {
-      line-height: 1.1;
-      color: var(--text-color-black);
-    }
-  }
-
   &-addbtn {
     height: 42px;
     border-radius: 999px;
@@ -287,10 +239,6 @@ onMounted(async () => {
 
   &--mobile {
     .published {
-      &-titlebar-title {
-        font-size: 26px;
-      }
-
       &-results-grid {
         grid-template-columns: 1fr;
       }
@@ -304,10 +252,6 @@ onMounted(async () => {
   &--desktop {
     .published {
       padding-top: 92px;
-
-      &-titlebar-title {
-        font-size: 32px;
-      }
 
       &-results-grid {
         grid-template-columns: repeat(3, 1fr);
