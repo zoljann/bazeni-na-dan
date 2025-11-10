@@ -394,7 +394,7 @@ const submitLogin = async () => {
 
   &-card {
     width: 100%;
-    max-width: 800px;
+    max-width: 1100px;
     border-radius: 16px;
     background: #fff;
     display: grid;
@@ -497,8 +497,6 @@ const submitLogin = async () => {
   &--desktop {
     .auth-card {
       padding: 14px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
     }
 
     .auth-submit {

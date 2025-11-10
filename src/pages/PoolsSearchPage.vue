@@ -62,12 +62,13 @@ const resultsText = computed(() => {
 
   const parts = [base];
   if (displayDate.value)
-    parts.push(
-      `na datum ${displayDate.value}(bazeni koji nemaju kalendar dostupnosti neće biti prikazani)`
-    );
-  if (filtersCount.value) parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
+    parts.push(` (bazeni koji nemaju kalendar dostupnosti neće biti prikazani)`);
+  if (filtersCount.value) {
+    //parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
+    //ovdje mozda nekad ovo ukljuciti al remeti dizajn
+  }
 
-  return parts.join(', ');
+  return parts.join('');
 });
 
 const filtersCount = computed(() => Object.values(filters.value).filter(Boolean).length);

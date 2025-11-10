@@ -79,7 +79,7 @@ onMounted(async () => {
     :class="poolDetailsClasses"
   >
     <header>
-      <TitleBar :title="pool.title" />
+      <TitleBar :title="`Bazen ${pool.title}`" />
 
       <p class="pool-details-meta">
         📍 {{ pool.city }}
@@ -299,7 +299,6 @@ onMounted(async () => {
   padding: 16px;
 
   &-meta {
-    margin-top: 8px;
     color: #6b7280;
     display: flex;
     gap: 6px;
@@ -678,4 +677,15 @@ onMounted(async () => {
     }
   }
 }
+
+.pool-details :deep(.auth-header) {
+  position: relative;
+  left: calc(50% - 50vw) !important;
+  padding-left: 16px;
+}
+
+.pool-details--desktop :deep(.auth-header) {
+  padding-left: 23px; 
+}
+
 </style>

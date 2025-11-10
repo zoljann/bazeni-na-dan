@@ -260,6 +260,10 @@ onMounted(async () => {
       &-addbtn {
         width: auto;
       }
+
+      &-addcard {
+        height: 390px;
+      }
     }
   }
 }

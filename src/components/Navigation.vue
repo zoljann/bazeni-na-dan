@@ -3,6 +3,7 @@ import isMobile from 'is-mobile';
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
+import { notificationsStore } from '.././stores/notifications';
 
 const props = defineProps<{
   variant?: 'transparent' | 'solid';
@@ -10,6 +11,7 @@ const props = defineProps<{
 
 const router = useRouter();
 const userStore = useUserStore();
+const useNotificationsStore = notificationsStore();
 const scrolledNavigation = ref(false);
 const isMobileView = isMobile();
 const isDropdownOpen = ref(false);
@@ -48,6 +50,14 @@ const logout = () => {
 };
 const goToRoute = (route: string) => {
   router.push({ name: route });
+  closeDropdown();
+};
+
+const goToPoolsPublishedPage = () => {
+  if (!userStore.isAuthenticated) {
+    useNotificationsStore.addNotification('Morate biti prijavljeni', 'error');
+  }
+  router.push({ name: 'PoolsPublishedPage' });
   closeDropdown();
 };
 
@@ -90,7 +100,7 @@ onBeforeUnmount(() => {
         <button
           v-if="!isMobileView"
           class="navigation-right-button"
-          @click="goToRoute('PoolsEditPublishPage')"
+          @click="goToPoolsPublishedPage"
         >
           Objavi svoj bazen
         </button>
@@ -143,7 +153,13 @@ onBeforeUnmount(() => {
             <nav class="navigation-right-dropdown-links">
               <a
                 class="navigation-right-dropdown-links-item"
-                @click.prevent="goToRoute('PoolsPublishedPage')"
+                @click.prevent="goToRoute('PoolsHomePage')"
+              >
+                Početna
+              </a>
+              <a
+                class="navigation-right-dropdown-links-item"
+                @click.prevent="goToPoolsPublishedPage"
               >
                 {{ userStore.isAuthenticated ? 'Objavljeni bazeni' : 'Objavi svoj bazen' }}
               </a>
