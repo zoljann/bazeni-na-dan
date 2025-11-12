@@ -685,7 +685,6 @@ onMounted(async () => {
 }
 
 .pool-details--desktop :deep(.auth-header) {
-  padding-left: 23px; 
+  padding-left: 23px;
 }
-
 </style>

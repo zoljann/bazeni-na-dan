@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import env from '../utility/env';
 import type { Pool, User } from 'src/types';
-import { getAccessToken, setAccessToken } from 'src/utility/token';
+import { getAccessToken, setAccessToken } from '../utility/token';
 
 const api = axios.create({
   baseURL: env.apiUrl
@@ -64,7 +64,7 @@ export async function loginUser(payload: {
   try {
     const { data } = await api.post('/auth/login', payload);
     setAccessToken(data.accessToken);
-    
+
     return { state: 'success', user: data.user as User };
   } catch (e) {
     return handleApiError(e);
