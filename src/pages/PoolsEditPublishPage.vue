@@ -124,7 +124,7 @@ const submit = async () => {
 
   const res = await createPool(payload);
   if (res.state === 'error') {
-    useNotificationsStore.addNotification(res.message || 'Objava nije uspjela.', 'error');
+    useNotificationsStore.addNotification('Objava nije uspjela.', 'error');
     return;
   }
 

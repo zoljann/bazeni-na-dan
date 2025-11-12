@@ -29,7 +29,7 @@ export const useUserStore = defineStore('userStore', () => {
   const login = async (email: string, password: string) => {
     const res = await loginUser({ email, password });
     if (res.state === 'error') {
-      useNotificationsStore.addNotification(res.message || 'Neispravni kredencijali.', 'error');
+      useNotificationsStore.addNotification('Neispravni kredencijali.', 'error');
       return 'error' as const;
     }
 
@@ -47,7 +47,7 @@ export const useUserStore = defineStore('userStore', () => {
   }) => {
     const res = await registerUser(payload);
     if (res.state === 'error') {
-      useNotificationsStore.addNotification(res.message || 'Registracija nije uspjela.', 'error');
+      useNotificationsStore.addNotification('Registracija nije uspjela.', 'error');
       return 'error' as const;
     }
 
@@ -66,9 +66,9 @@ export const useUserStore = defineStore('userStore', () => {
   }) => {
     if (!user.value) return 'error' as const;
 
-    const res = await updateUser({ id: user.value.id, ...payload });
+    const res = await updateUser({ ...payload });
     if (res.state === 'error') {
-      useNotificationsStore.addNotification(res.message || 'Ažuriranje nije uspjelo.', 'error');
+      useNotificationsStore.addNotification('Ažuriranje nije uspjelo.', 'error');
       return 'error' as const;
     }
 
