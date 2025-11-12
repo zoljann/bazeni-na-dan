@@ -1,10 +1,35 @@
 import axios, { AxiosError } from 'axios';
 import env from '../utility/env';
 import type { Pool, User } from 'src/types';
+import { getAccessToken, setAccessToken } from 'src/utility/token';
 
 const api = axios.create({
   baseURL: env.apiUrl
 });
+
+api.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+api.interceptors.response.use(
+  (r) => r,
+  (err) => {
+    const status = err?.response?.status;
+    const code = err?.response?.data?.code;
+    const hadAuth = !!err?.config?.headers?.Authorization;
+
+    if (
+      status === 401 &&
+      hadAuth &&
+      (code === 'TOKEN_EXPIRED' || code === 'TOKEN_INVALID' || code === 'AUTH_REQUIRED')
+    ) {
+      setAccessToken(null);
+      // optional: route to /login or show toast here
+    }
+    return Promise.reject(err);
+  }
+);
 
 function handleApiError(e: unknown): ApiError {
   const error = (e instanceof AxiosError && e?.response?.data) || e;
@@ -13,7 +38,7 @@ function handleApiError(e: unknown): ApiError {
   return {
     state: 'error',
     message:
-      (error.code === 'ERR_NETWORK' && 'Network error') ||
+      (error?.code === 'ERR_NETWORK' && 'Network error') ||
       (httpCode && httpCode >= 400 && httpCode < 600 && 'Server error') ||
       error?.details ||
       error?.message
@@ -21,193 +46,26 @@ function handleApiError(e: unknown): ApiError {
 }
 
 interface ApiError {
-  message: string;
   state: 'error';
-}
-
-type AvailablePoolsSuccess = {
-  state: 'success';
-  pools: Pool[];
-};
-
-type PoolByIdSuccess = {
-  state: 'success';
-  pool: Pool;
-};
-
-function fmt(d: Date) {
-  return d.toISOString().slice(0, 10);
-}
-function addDays(n: number) {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + n);
-  return fmt(d);
-}
-
-export async function getAvailablePools(
-  userId?: string
-): Promise<AvailablePoolsSuccess | ApiError> {
-  try {
-    // ******* REAL API *******
-    // const { data } = await api.get('/pools', { params: userId ? { userId } : undefined });
-    // return { state: 'success', pools: data.pools };
-
-    // ****** DEMO MOCK *******
-    const demoImg =
-      'https://t3.ftcdn.net/jpg/02/80/11/26/360_F_280112608_32mLVErazmuz6OLyrz2dK4MgBULBUCSO.jpg';
-
-    await new Promise((r) => setTimeout(r, 500));
-
-    const pools: Pool[] = [
-      {
-        id: '1',
-        userId: 'demo-1',
-        title: 'Vila Sunce',
-        city: 'Mostar',
-        capacity: 8,
-        pricePerDay: 150,
-        images: [
-          demoImg,
-          demoImg,
-          demoImg,
-          demoImg,
-          'https://543677.fs1.hubspotusercontent-na1.net/hubfs/543677/0.pool-in-countryside-setting.jpg'
-        ],
-        busyDays: [addDays(1), addDays(3), addDays(7), addDays(10)],
-        filters: { heated: true, petsAllowed: true },
-        description: 'Ovo je opis bazena mozda detaljniji...'
-      },
-      {
-        id: '2',
-        userId: '5',
-        title: 'Plavi Raj',
-        city: 'Sarajevo',
-        capacity: 6,
-        pricePerDay: 200,
-        images: [demoImg],
-        busyDays: [addDays(2), addDays(3), addDays(5), addDays(9)],
-        filters: { heated: true, petsAllowed: true }
-      },
-      {
-        id: '3',
-        userId: '5',
-
-        title: 'Jadranska Laguna',
-        city: 'Neum',
-        capacity: 10,
-        pricePerDay: 280,
-        images: [demoImg],
-        busyDays: [addDays(1), addDays(4), addDays(6), addDays(8)]
-      },
-      {
-        id: '4',
-        userId: '5',
-
-        title: 'Zeleni Brežuljak',
-        city: 'Banja Luka',
-        capacity: 14,
-        pricePerDay: 240,
-        images: [demoImg],
-        busyDays: [addDays(2), addDays(6), addDays(10), addDays(14)],
-        filters: { heated: true, petsAllowed: true }
-      },
-      {
-        id: '5',
-        userId: 'demo-1',
-        title: 'Mostarska Terasa',
-        city: 'Mostar',
-        capacity: 9,
-        pricePerDay: 190,
-        images: [demoImg],
-        busyDays: [addDays(3), addDays(4), addDays(11)]
-      }
-    ];
-
-    if (userId) {
-      const OWNERS: Record<string, string[]> = {
-        'demo-1': ['1', '5'],
-        'host-2': ['2']
-      };
-      const owned = new Set(OWNERS[userId] || []);
-      return { state: 'success', pools: owned.size ? pools.filter((p) => owned.has(p.id)) : [] };
-    }
-
-    return { state: 'success', pools };
-  } catch (e) {
-    return handleApiError(e);
-  }
-}
-
-export async function getPoolById(id: string): Promise<PoolByIdSuccess | ApiError> {
-  try {
-    /*     const { data } = await api.get("/pool", {
-      params: { id },
-    });
-    return { state: "success", pool: data }; */
-
-    const all = await getAvailablePools();
-    if (all.state === 'error') return all;
-
-    const found = all.pools.find((p) => p.id === id);
-    if (!found) {
-      return { state: 'error', message: 'Bazen nije pronađen.' };
-    }
-    await new Promise((r) => setTimeout(r, 10));
-
-    return { state: 'success', pool: found };
-  } catch (e) {
-    return handleApiError(e);
-  }
+  message: string;
 }
 
 type AuthSuccess = { state: 'success'; user: User };
-
-type UpdateUserSuccess = {
-  state: 'success';
-  user: User;
-};
-
-type UpdateUserPayload = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  mobileNumber: string;
-  avatarBase64?: string;
-  passwordChange?: { currentPassword: string; newPassword: string };
-};
-
-function demoUser(overrides?: Partial<User>): User {
-  return {
-    id: 'demo-1',
-    firstName: 'Demo',
-    lastName: 'Korisnik',
-    email: 'demo@bazeni.com',
-    avatarUrl: undefined, // front postavlja default
-    mobileNumber: '061234567',
-    role: 'host',
-    pools: [],
-    ...overrides
-  };
-}
+type UpdateUserSuccess = { state: 'success'; user: User };
+type AvailablePoolsSuccess = { state: 'success'; pools: Pool[] };
+type PoolByIdSuccess = { state: 'success'; pool: Pool };
+type CreatePoolSuccess = { state: 'success'; pool: Pool };
+type DeletePoolSuccess = { state: 'success' };
 
 export async function loginUser(payload: {
   email: string;
   password: string;
 }): Promise<AuthSuccess | ApiError> {
   try {
-    // ******* REAL API *******
-    // const { data } = await api.post('/auth/login', payload);
-    // return { state: 'success', user: data.user };
-
-    // ****** DEMO MOCK ******
-    await new Promise((r) => setTimeout(r, 400));
-    const { email, password } = payload;
-    const valid =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && password.length >= 6 && password.length <= 25;
-    if (!valid) return { state: 'error', message: 'Neispravni kredencijali.' };
-    return { state: 'success', user: demoUser({ email }) };
+    const { data } = await api.post('/auth/login', payload);
+    setAccessToken(data.accessToken);
+    
+    return { state: 'success', user: data.user as User };
   } catch (e) {
     return handleApiError(e);
   }
@@ -217,62 +75,75 @@ export async function registerUser(payload: {
   firstName: string;
   lastName: string;
   email: string;
-  mobileNumber: string; // samo brojevi
+  mobileNumber: string;
   password: string;
 }): Promise<AuthSuccess | ApiError> {
   try {
-    // ******* REAL API *******
-    // const { data } = await api.post('/auth/register', payload);
-    // return { state: 'success', user: data.user };
+    const { data } = await api.post('/auth/register', payload);
 
-    // ****** DEMO MOCK ******
-    await new Promise((r) => setTimeout(r, 500));
-    const phoneOk = payload.mobileNumber.replace(/\D+/g, '');
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email);
-    const passOk = payload.password.length >= 6 && payload.password.length <= 25;
-    const namesOk = !!payload.firstName.trim() && !!payload.lastName.trim();
-    if (!emailOk || !passOk || !namesOk || phoneOk.length < 9 || phoneOk.length > 15) {
-      return { state: 'error', message: 'Nevažeći podaci za registraciju.' };
-    }
-    const user = demoUser({
-      firstName: payload.firstName.trim(),
-      lastName: payload.lastName.trim(),
-      email: payload.email.trim(),
-      mobileNumber: phoneOk
-    });
-    return { state: 'success', user };
+    return { state: 'success', user: data.user as User };
   } catch (e) {
     return handleApiError(e);
   }
 }
 
+type UpdateUserPayload = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  avatarBase64?: string; // map to avatarUrl if provided (data URL or direct URL)
+  passwordChange?: { currentPassword: string; newPassword: string };
+};
+
 export async function updateUser(
   payload: UpdateUserPayload
 ): Promise<UpdateUserSuccess | ApiError> {
   try {
-    // const { data } = await api.put('/user', payload); return { state:'success', user: data };
-    await new Promise((r) => setTimeout(r, 500));
-
-    const updated: User = {
-      id: payload.id,
+    const body: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
-      mobileNumber: payload.mobileNumber,
-      avatarUrl: payload.avatarBase64 || 'https://i.pravatar.cc/200?u=' + payload.id,
-      role: 'host',
-      pools: [] // leave as empty for mock; real API should return actual pools
+      mobileNumber: payload.mobileNumber
     };
+    if (payload.avatarBase64) body.avatarUrl = payload.avatarBase64; // backend expects avatarUrl
+    if (payload.passwordChange) body.passwordChange = payload.passwordChange;
 
-    // PasswordChange is ignored in mock, but kept to mirror final contract.
-    return { state: 'success', user: updated };
+    const { data } = await api.put('/user', body);
+
+    return { state: 'success', user: data.user as User };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+// ===== POOLS =====
+
+export async function getAvailablePools(
+  userId?: string
+): Promise<AvailablePoolsSuccess | ApiError> {
+  try {
+    const { data } = await api.get('/pools', {
+      params: userId ? { userId } : undefined
+    });
+
+    return { state: 'success', pools: data.pools as Pool[] };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function getPoolById(id: string): Promise<PoolByIdSuccess | ApiError> {
+  try {
+    const { data } = await api.get('/pool', { params: { id } });
+
+    return { state: 'success', pool: data.pool as Pool };
   } catch (e) {
     return handleApiError(e);
   }
 }
 
 type CreatePoolPayload = {
-  user: User;
   pool: {
     title: string;
     city: string;
@@ -285,62 +156,23 @@ type CreatePoolPayload = {
   };
 };
 
-type CreatePoolSuccess = {
-  state: 'success';
-  pool: Pool;
-};
-
 export async function createPool(
   payload: CreatePoolPayload
 ): Promise<CreatePoolSuccess | ApiError> {
   try {
-    // ******* REAL API *******
-    // const { data } = await api.post('/pools', payload);
-    // return { state: 'success', pool: data.pool ?? data };
+    const { data } = await api.post('/pools', payload);
 
-    // ****** DEMO MOCK ******
-    await new Promise((r) => setTimeout(r, 500));
+    return { state: 'success', pool: data.pool as Pool };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
 
-    const { user, pool } = payload;
+export async function deletePool(id: string): Promise<DeletePoolSuccess | ApiError> {
+  try {
+    await api.delete(`/pools/${id}`);
 
-    console.log('[API] createPool -> user:', user);
-    console.log('[API] createPool -> pool:', pool);
-
-    const titleOk =
-      typeof pool.title === 'string' &&
-      pool.title.trim().length >= 3 &&
-      pool.title.trim().length <= 40;
-    const cityOk = typeof pool.city === 'string' && !!pool.city.trim();
-    const capacityOk = Number.isFinite(pool.capacity) && pool.capacity >= 1 && pool.capacity <= 100;
-    const imagesOk =
-      Array.isArray(pool.images) && pool.images.length >= 1 && pool.images.length <= 7;
-    const priceOk =
-      pool.pricePerDay === undefined ||
-      (Number.isFinite(pool.pricePerDay) && pool.pricePerDay >= 1 && pool.pricePerDay <= 10000);
-    const descOk =
-      pool.description === undefined ||
-      (typeof pool.description === 'string' &&
-        pool.description.trim().length >= 1 &&
-        pool.description.trim().length <= 300);
-
-    if (!user || !titleOk || !cityOk || !capacityOk || !imagesOk || !priceOk || !descOk) {
-      return { state: 'error', message: 'Nevažeći podaci za objavu.' };
-    }
-
-    const created: Pool = {
-      id: 'new-' + Math.random().toString(36).slice(2, 9),
-      userId: '5',
-      title: pool.title.trim(),
-      city: pool.city.trim(),
-      capacity: pool.capacity,
-      images: pool.images.slice(0, 7),
-      pricePerDay: pool.pricePerDay,
-      description: pool.description?.trim() || undefined,
-      busyDays: undefined,
-      filters: pool.filters
-    };
-
-    return { state: 'success', pool: created };
+    return { state: 'success' };
   } catch (e) {
     return handleApiError(e);
   }
