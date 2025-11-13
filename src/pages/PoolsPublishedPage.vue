@@ -6,13 +6,17 @@ import { useUserStore } from '../stores/user';
 import Navigation from '../components/Navigation.vue';
 import PoolCard from '../components/pools/PoolCard.vue';
 import type { Pool } from 'src/types';
-import { getAvailablePools } from '../api/index';
+import { deletePool, getAvailablePools } from '../api/index';
 import TitleBar from '.././components/TitleBar.vue';
+import { notificationsStore } from '../stores/notifications';
+import ConfirmPopup from '../components/utility/ConfirmPopup.vue';
 
 const router = useRouter();
 const isMobileView = isMobile();
 const userStore = useUserStore();
+const notifications = notificationsStore();
 const pools = ref<Pool[]>([]);
+const showDeleteFor = ref<string | null>(null);
 
 const publishedClasses = computed(() => ({
   [`published--${isMobileView ? 'mobile' : 'desktop'}`]: true
@@ -23,6 +27,19 @@ const editPool = (id: string) => {
 };
 const createNewPool = () => {
   router.push({ name: 'PoolsEditPublishPage' });
+};
+const onDeleteRequested = (id: string) => (showDeleteFor.value = id);
+const confirmDelete = async () => {
+  const id = showDeleteFor.value!;
+  try {
+    pools.value = pools.value.filter((p) => p.id !== id);
+    await deletePool(id);
+    notifications.addNotification('Bazen je obrisan.', 'success');
+  } catch {
+    notifications.addNotification('Brisanje nije uspjelo.', 'error');
+  } finally {
+    showDeleteFor.value = null;
+  }
 };
 
 onMounted(async () => {
@@ -138,8 +155,20 @@ onMounted(async () => {
           v-for="p in pools"
           :key="p.id"
           :pool="p"
-          :editable="true"
+          :actions="true"
           @open-pool="editPool"
+          @delete-requested="onDeleteRequested"
+        />
+
+        <ConfirmPopup
+          :open="!!showDeleteFor"
+          title="Brisanje bazena"
+          :message="`Želite li obrisati ovaj bazen?`"
+          confirm-label="Obriši"
+          cancel-label="Odustani"
+          @confirm="confirmDelete"
+          @cancel="showDeleteFor = null"
+          @update:open="(val: boolean) => (showDeleteFor = val ? showDeleteFor : null)"
         />
       </div>
     </div>

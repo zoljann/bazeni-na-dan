@@ -9,11 +9,12 @@ import { useFavorites } from '../../composables/useFavorites';
 
 const props = defineProps<{
   pool: Pool;
-  editable?: boolean;
+  actions?: boolean;
 }>();
 
 const emit = defineEmits<{
   openPool: [id: string];
+  deleteRequested: [id: string];
 }>();
 
 const isMobileView = isMobile();
@@ -225,15 +226,56 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       </div>
     </div>
     <div
-      v-if="editable"
-      class="pool-card-editbar"
-      @click.stop="emit('openPool', pool.id)"
+      v-if="actions"
+      class="pool-card-actions"
+      @click.stop
     >
       <button
         type="button"
-        class="pool-card-editbtn"
+        class="pool-card-actions-edit"
+        @click="emit('openPool', pool.id)"
       >
         Uredi bazen
+      </button>
+
+      <button
+        type="button"
+        class="pool-card-actions-delete"
+        @click="emit('deleteRequested', pool.id)"
+        aria-label="Obriši bazen"
+        title="Obriši bazen"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 6h18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+          />
+          <path
+            d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+          />
+          <path
+            d="M10 11v6M14 11v6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
       </button>
     </div>
   </div>
@@ -392,9 +434,42 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     }
   }
 
-  &-editbar {
-    padding: 8px;
-    display: grid;
+  &-actions {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px 12px;
+    border-top: 1px solid #eef2f7;
+
+    &-edit {
+      flex: 1;
+      border-radius: 12px;
+      background: var(--primary-color);
+      color: var(--text-color-white);
+      font-weight: 800;
+      box-shadow: 0 6px 14px rgba(2, 8, 23, 0.06);
+      cursor: pointer;
+
+      &:hover {
+        filter: brightness(0.97);
+      }
+    }
+
+    &-delete {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border: 1px solid #ffe2e2;
+      background: #fdeded;
+      color: #b91c1c;
+      box-shadow: 0 6px 14px rgba(185, 28, 28, 0.08);
+
+      &:hover {
+        background: #ffecec;
+      }
+    }
   }
 
   &-editbtn {

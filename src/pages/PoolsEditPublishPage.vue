@@ -6,7 +6,7 @@ import Navigation from '../components/Navigation.vue';
 import { useUserStore } from '../stores/user';
 import { notificationsStore } from '../stores/notifications';
 import { usePoolsStore } from '../stores/pools';
-import { createPool, getPoolById } from '../api';
+import { createPool, getPoolById, updatePool } from '../api';
 import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue';
 import allCities from '../helpers/bih-cities.json';
 import type { Pool } from 'src/types';
@@ -16,7 +16,7 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const poolsStore = usePoolsStore();
-const useNotificationsStore = notificationsStore();
+const notifications = notificationsStore();
 const isMobileView = isMobile();
 const imgInputRef = ref<HTMLInputElement | null>(null);
 const showCityDropdown = ref(false);
@@ -122,10 +122,18 @@ const submit = async () => {
     }
   };
 
-  const res = await createPool(payload);
-  if (res.state === 'error') {
-    useNotificationsStore.addNotification('Objava nije uspjela.', 'error');
-    return;
+  try {
+    const res = isEdit.value ? await updatePool(bazenId.value, payload) : await createPool(payload);
+
+    if (res.state === 'error') {
+      notifications.addNotification('Spremanje nije uspjelo.', 'error');
+      return;
+    }
+
+    notifications.addNotification(isEdit.value ? 'Bazen ažuriran.' : 'Bazen objavljen.', 'success');
+    router.push({ name: 'PoolsPublishedPage' });
+  } catch {
+    notifications.addNotification('Nešto je pošlo po krivu, pokušaj ponovo kasnije.', 'error');
   }
 
   router.push({ name: 'PoolsPublishedPage' });
@@ -133,7 +141,7 @@ const submit = async () => {
 const ensureOwnership = (p: Pool) => {
   if (!userStore.user?.id || p.userId !== userStore.user?.id) {
     console.log(userStore.user);
-    useNotificationsStore.addNotification('Nemate dozvolu za uređivanje ovog bazena.', 'error');
+    notifications.addNotification('Nemate dozvolu za uređivanje ovog bazena.', 'error');
     router.replace({ name: 'PoolsHomePage' });
     return false;
   }
@@ -157,7 +165,7 @@ onMounted(async () => {
     return;
   }
 
-  useNotificationsStore.addNotification('Došlo je do greške.', 'error');
+  notifications.addNotification('Došlo je do greške.', 'error');
   router.replace({ name: 'PoolsHomePage' });
 });
 </script>

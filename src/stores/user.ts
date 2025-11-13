@@ -4,6 +4,7 @@ import type { User } from 'src/types';
 import { notificationsStore } from './notifications';
 import { loginUser, registerUser, updateUser } from '../api';
 import { storage } from '../utility/localStorage';
+import { setAccessToken } from '../utility/token';
 
 const USER_STORAGE_KEY = 'BND_user';
 
@@ -79,6 +80,7 @@ export const useUserStore = defineStore('userStore', () => {
 
   const logout = () => {
     setUser(null);
+    setAccessToken(null);
     useNotificationsStore.addNotification('Uspješna odjava', 'success');
   };
 

@@ -177,3 +177,16 @@ export async function deletePool(id: string): Promise<DeletePoolSuccess | ApiErr
     return handleApiError(e);
   }
 }
+
+export async function updatePool(
+  id: string,
+  payload: CreatePoolPayload
+): Promise<CreatePoolSuccess | ApiError> {
+  try {
+    const { data } = await api.put(`/pools/${id}`, payload);
+
+    return { state: 'success', pool: data.pool as Pool };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
