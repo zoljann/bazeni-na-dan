@@ -55,23 +55,47 @@ const headerClasses = computed(() => ({
 .auth-titlebar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .auth-titlebar-backbtn {
-  padding: 0;
-  display: inline-flex;
-  cursor: pointer;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
   color: var(--text-color-black);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 120ms ease,
+    transform 80ms ease;
+
+  &:hover {
+    background: rgba(2, 8, 23, 0.06);
+  }
 }
 
 .auth-titlebar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
   color: var(--text-color-black);
-  line-height: 1.1rem;
+  line-height: 1.25;
   font-size: 32px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .auth-header--mobile .auth-titlebar-title {
   font-size: 26px;
+}
+
+.auth-header--desktop .auth-titlebar-backbtn {
+  width: 44px;
+  height: 44px;
 }
 </style>

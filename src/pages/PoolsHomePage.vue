@@ -24,12 +24,11 @@ const toggleFaq = (i: number) => {
 };
 const onSelectCity = (city: string) => {
   selectedCity.value = city;
-  router.push({ name: 'PoolsSearchPage', query: { city } });
+  router.push({ name: 'PoolsSearchPage', query: { grad: city } });
 };
 const showAllPools = () => {
   router.push({ name: 'PoolsSearchPage' });
 };
-const onFindNearby = () => console.log('pronadji bazene u blizini');
 const handleSearchPoolClick = () => {
   router.push({ name: 'PoolsSearchPage' });
 };
@@ -162,7 +161,7 @@ const handleSearchPoolClick = () => {
 
         <button
           class="content-after-cta"
-          @click="onFindNearby"
+          @click="handleSearchPoolClick"
         >
           Pronađi bazene u blizini
         </button>

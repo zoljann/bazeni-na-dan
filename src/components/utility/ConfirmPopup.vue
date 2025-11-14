@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import isMobile from 'is-mobile';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   open: boolean;
   title?: string;
   message?: string;
   confirmLabel?: string;
   cancelLabel?: string;
+    rich?: boolean; 
 }>();
 
 const emit = defineEmits<{
@@ -17,6 +19,11 @@ const emit = defineEmits<{
 
 const isMobileView = isMobile();
 
+const renderedMessage = computed(() => {
+  const s = props.message ?? '';
+  const esc = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return esc.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+});
 const rootClasses = {
   [`confirmpopup--${isMobileView ? 'mobile' : 'desktop'}`]: true
 };
@@ -54,11 +61,16 @@ const onConfirm = () => {
         <h3 class="confirmpopup-title">{{ title || 'Potvrdi radnju' }}</h3>
 
         <p
-          v-if="message"
+          v-if="message && !rich"
           class="confirmpopup-text"
         >
           {{ message }}
         </p>
+        <p
+          v-else-if="message && rich"
+          class="confirmpopup-text"
+          v-html="renderedMessage"
+        ></p>
 
         <div class="confirmpopup-actions">
           <button
@@ -70,11 +82,12 @@ const onConfirm = () => {
           </button>
 
           <button
+            v-if="confirmLabel"
             type="button"
             class="confirmpopup-btn confirmpopup-btn--danger"
             @click="onConfirm"
           >
-            {{ confirmLabel || 'Obriši' }}
+            {{ confirmLabel }}
           </button>
         </div>
       </div>
@@ -100,7 +113,7 @@ const onConfirm = () => {
   &-card {
     position: relative;
     width: 100%;
-    max-width: 420px;
+    max-width: 620px;
     margin: 16px;
     border-radius: 16px;
     background: #fff;
@@ -112,7 +125,7 @@ const onConfirm = () => {
   }
 
   &-title {
-    font-weight: 900;
+    font-weight: 800;
     font-size: 18px;
     line-height: 1.2;
   }
@@ -121,6 +134,7 @@ const onConfirm = () => {
     color: #6b7280;
     font-weight: 600;
     font-size: 14px;
+    white-space: pre-line;
   }
 
   &-actions {
@@ -133,7 +147,7 @@ const onConfirm = () => {
   &-btn {
     height: 42px;
     border-radius: 12px;
-    font-weight: 800;
+    font-weight: 700;
     padding: 0 14px;
     cursor: pointer;
     border: 1px solid transparent;

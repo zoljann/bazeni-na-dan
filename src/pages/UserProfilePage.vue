@@ -62,9 +62,9 @@ const submit = async () => {
   pwdErrors.value = {};
 
   if (!nameOk(form.value.firstName))
-    errors.value.firstName = 'Unesite ispravno ime (min 2, max 40 znakova).';
+    errors.value.firstName = 'Unesite ispravno ime (min 2, max 40 karaktera).';
   if (!nameOk(form.value.lastName))
-    errors.value.lastName = 'Unesite ispravno prezime (min 2, max 40 znakova).';
+    errors.value.lastName = 'Unesite ispravno prezime (min 2, max 40 karaktera).';
   if (!emailOk(form.value.email)) errors.value.email = 'Email nije ispravnog formata.';
   if (!mobileOk(form.value.mobileNumber))
     errors.value.mobileNumber = 'Broj telefona mora imati 9–15 cifara.';
@@ -73,9 +73,9 @@ const submit = async () => {
     showPwd.value && (pwd.value.currentPassword.length > 0 || pwd.value.newPassword.length > 0);
   if (wantsPwd) {
     if (!passOk(pwd.value.currentPassword))
-      pwdErrors.value.currentPassword = 'Lozinka mora imati 6–25 znakova.';
+      pwdErrors.value.currentPassword = 'Lozinka mora imati 6–25 karaktera.';
     if (!passOk(pwd.value.newPassword))
-      pwdErrors.value.newPassword = 'Lozinka mora imati 6–25 znakova.';
+      pwdErrors.value.newPassword = 'Lozinka mora imati 6–25 karaktera.';
   }
 
   if (Object.keys(errors.value).length || Object.keys(pwdErrors.value).length) return;

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import isMobile from 'is-mobile';
 import Navigation from '../../components/Navigation.vue';
 import { useUserStore } from '../../stores/user';
 import TitleBar from '../../components/TitleBar.vue';
 
 const router = useRouter();
+const route = useRoute();
+const nextRoute = (route.query.next as string) || 'PoolsHomePage';
 const userStore = useUserStore();
 const isMobileView = isMobile();
 const mode = ref('register');
@@ -39,28 +41,28 @@ const sanitizeMobile = (v: string) => v.replace(/\D/g, '').slice(0, 15);
 const submitRegister = async () => {
   regErrors.value = {};
   if (!nameOk(reg.value.firstName))
-    regErrors.value.firstName = 'Unesite ispravno ime (min 2, max 40 znakova).';
+    regErrors.value.firstName = 'Unesite ispravno ime (min 2, max 40 karaktera).';
   if (!nameOk(reg.value.lastName))
-    regErrors.value.lastName = 'Unesite ispravno prezime (min 2, max 40 znakova).';
+    regErrors.value.lastName = 'Unesite ispravno prezime (min 2, max 40 karaktera).';
   if (!emailOk(reg.value.email)) regErrors.value.email = 'Email nije ispravnog formata.';
   if (!mobileOk(reg.value.mobileNumber))
     regErrors.value.mobileNumber = 'Broj telefona mora imati 9–15 cifara.';
-  if (!passOk(reg.value.password)) regErrors.value.password = 'Lozinka mora imati 6–25 znakova.';
+  if (!passOk(reg.value.password)) regErrors.value.password = 'Lozinka mora imati 6–25 karaktera.';
   if (Object.keys(regErrors.value).length) return;
 
   const res = await userStore.register({ ...reg.value });
-  if (res === 'success') router.push({ name: 'PoolsHomePage' });
+  if (res === 'success') router.push({ name: nextRoute });
 };
 
 const submitLogin = async () => {
   loginErrors.value = {};
   if (!emailOk(loginPayload.value.email)) loginErrors.value.email = 'Email nije ispravnog formata.';
   if (!passOk(loginPayload.value.password))
-    loginErrors.value.password = 'Lozinka mora imati 6–25 znakova.';
+    loginErrors.value.password = 'Lozinka mora imati 6–25 karaktera.';
   if (Object.keys(loginErrors.value).length) return;
 
   const res = await userStore.login(loginPayload.value.email, loginPayload.value.password);
-  if (res === 'success') router.push({ name: 'PoolsHomePage' });
+  if (res === 'success') router.push({ name: nextRoute });
 };
 </script>
 

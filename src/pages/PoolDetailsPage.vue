@@ -27,7 +27,6 @@ const isEnd = ref(false);
 const isPreviewOpen = ref(false);
 const previewIndex = ref(0);
 const pool = ref<Pool>();
-const contactPhone = '062614300';
 
 const selectedPoolId = computed(() => route.query.id as string);
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(pool.value!));
@@ -37,7 +36,7 @@ const poolDetailsClasses = computed(() => ({
   [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
-const onContact = () => (window.location.href = `tel:${contactPhone}`);
+const onContact = () => (window.location.href = `tel:${pool.value?.owner?.mobileNumber}`);
 const openPreview = (index: number) => {
   previewIndex.value = index;
   isPreviewOpen.value = true;
@@ -79,7 +78,7 @@ onMounted(async () => {
     :class="poolDetailsClasses"
   >
     <header>
-      <TitleBar :title="`Bazen ${pool.title}`" />
+      <TitleBar :title="pool.title" />
 
       <p class="pool-details-meta">
         📍 {{ pool.city }}
@@ -184,15 +183,23 @@ onMounted(async () => {
 
       <div class="pool-details-summarybar">
         <div class="pool-details-card pool-details-host">
-          <div class="pool-details-host-avatar"></div>
+          <div class="pool-details-host-avatar">
+            <img
+              :src="
+                pool.owner?.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
+              "
+              alt="avatar domaćina"
+              class="pool-details-host-avatar-img"
+            />
+          </div>
           <div class="pool-details-host-info">
             <span class="pool-details-smalllabel">Domaćin</span>
-            <span class="pool-details-host-name">Ime i prezime</span>
+            <span class="pool-details-host-name">{{ pool.owner?.name || 'Domaćin' }}</span>
           </div>
           <a
             v-if="!isMobileView"
             class="pool-details-host-phone"
-            >📞 {{ contactPhone }}</a
+            >📞 {{ pool.owner?.mobileNumber }}</a
           >
         </div>
 
@@ -222,7 +229,7 @@ onMounted(async () => {
           @click="onContact"
         >
           Kontaktiraj domaćina na
-          <span class="pool-details-cta-number">{{ contactPhone }}</span>
+          <span class="pool-details-cta-number">{{ pool.owner?.mobileNumber }}</span>
         </button>
       </div>
     </header>
@@ -279,7 +286,7 @@ onMounted(async () => {
         class="pool-details-text"
       >
         Domaćin nije uključio kalendar dostupnosti. Kontaktirajte ga za više informacija na
-        {{ contactPhone }}
+        {{ pool.owner?.mobileNumber }}
       </p>
     </div>
   </section>
@@ -417,12 +424,18 @@ onMounted(async () => {
   &-host {
     display: flex;
     align-items: center;
-    border-color: #d7ecff;
 
     &-avatar {
       border-radius: 50%;
-      border: 2px solid #cfe8ff;
-      box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
+    }
+
+    &-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      border-radius: inherit;
     }
 
     &-info {

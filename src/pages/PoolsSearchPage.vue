@@ -61,8 +61,7 @@ const resultsText = computed(() => {
     n === 1 ? '1 pronađen bazen' : `${n} ${n >= 2 && n <= 4 ? 'pronađena' : 'pronađenih'} bazena`;
 
   const parts = [base];
-  if (displayDate.value)
-    parts.push(` (bazeni koji nemaju kalendar dostupnosti neće biti prikazani)`);
+  if (displayDate.value) parts.push(` na datum ${displayDate.value}`);
   if (filtersCount.value) {
     //parts.push(`sa filterima: ${selectedFiltersLabel.value}`);
     //ovdje mozda nekad ovo ukljuciti al remeti dizajn
@@ -70,8 +69,14 @@ const resultsText = computed(() => {
 
   return parts.join('');
 });
-
 const filtersCount = computed(() => Object.values(filters.value).filter(Boolean).length);
+const emptyText = computed(() => {
+  if (selectedDate.value && filtersCount.value > 0)
+    return 'Nema bazena za odabrani datum i filtere.';
+  if (selectedDate.value) return 'Nema bazena za odabrani datum.';
+  if (filtersCount.value > 0) return 'Nema bazena sa izabranim filterima.';
+  return 'Nema objavljenih bazena.';
+});
 
 const searchClasses = computed(() => ({
   [`search--${isMobileView ? 'mobile' : 'desktop'}`]: true
@@ -82,13 +87,13 @@ const onSelectDate = (iso: string | null) => {
 };
 const onSelectCity = (city: string) => {
   selectedCity.value = city;
-  router.replace({ query: { ...route.query, city } });
+  router.replace({ query: { ...route.query, grad: city } });
   showLocationDropdown.value = false;
 };
 const showAllPools = () => {
   selectedCity.value = 'Sve lokacije';
   const q = { ...route.query };
-  delete q.city;
+  delete q.grad;
   router.replace({ query: q });
 };
 const toggleDayPicker = () => {
@@ -116,7 +121,7 @@ onMounted(async () => {
 });
 
 watch(
-  () => route.query.city,
+  () => route.query.grad,
   (city) => {
     selectedCity.value = (city as string) || 'Sve lokacije';
   },
@@ -282,7 +287,7 @@ watch(showFilters, (v) => {
         v-if="filteredPools?.length === 0"
         class="search-results-empty"
       >
-        Nema rezultata.
+        {{ emptyText }}
       </p>
     </div>
   </section>

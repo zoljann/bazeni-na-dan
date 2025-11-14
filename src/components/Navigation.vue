@@ -56,7 +56,11 @@ const goToRoute = (route: string) => {
 const goToPoolsPublishedPage = () => {
   if (!userStore.isAuthenticated) {
     useNotificationsStore.addNotification('Morate biti prijavljeni', 'error');
+    closeDropdown();
+    router.push({ name: 'LoginRegisterPage', query: { next: 'PoolsPublishedPage' } });
+    return;
   }
+
   router.push({ name: 'PoolsPublishedPage' });
   closeDropdown();
 };
@@ -126,7 +130,7 @@ onBeforeUnmount(() => {
                 fill="currentColor"
               />
             </svg>
-            {{ menuLabel }}
+            <span class="navigation-right-button-label">{{ menuLabel }}</span>
           </button>
 
           <div
@@ -224,6 +228,7 @@ onBeforeUnmount(() => {
       position: relative;
       display: flex;
       justify-content: flex-end;
+      max-width: 200px;
     }
 
     &-button {
@@ -237,6 +242,16 @@ onBeforeUnmount(() => {
       font-weight: 700;
       transition: filter 120ms ease;
       color: var(--text-color-white);
+      overflow: hidden;
+
+      .icon {
+        flex: 0 0 auto;
+      }
+
+      &-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     &-dropdown {

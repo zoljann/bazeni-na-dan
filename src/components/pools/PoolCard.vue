@@ -6,6 +6,8 @@ import 'swiper/css';
 import isMobile from 'is-mobile';
 import type { Pool } from 'src/types';
 import { useFavorites } from '../../composables/useFavorites';
+import env from '../../utility/env';
+import ConfirmPopup from '../utility/ConfirmPopup.vue';
 
 const props = defineProps<{
   pool: Pool;
@@ -22,6 +24,7 @@ const { isPoolFavorite, toggleFavoritePool } = useFavorites();
 const swiperRef = ref<any>(null);
 const isBeginning = ref(true);
 const isEnd = ref(props.pool.images.length <= 1);
+const showVisibilityInfo = ref(false);
 
 const priceLabel = computed(() =>
   props.pool.pricePerDay ? `${props.pool.pricePerDay}KM/dan` : ''
@@ -39,6 +42,7 @@ const isPoolAvailableTomorrow = computed(() => {
   return Array.isArray(busy) && !busy.includes(iso);
 });
 
+const openVisibilityInfo = () => (showVisibilityInfo.value = true);
 const onPoolClick = () => emit('openPool', props.pool.id);
 const onSwiperInit = (sw: any) => {
   swiperRef.value = sw;
@@ -83,6 +87,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       <button
         class="pool-card-media-arrow pool-card-media-arrow--prev"
         :class="{ 'is-disabled': isBeginning }"
+        :disabled="isBeginning"
         @click.stop="goPrev"
       >
         <svg
@@ -104,6 +109,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       <button
         class="pool-card-media-arrow pool-card-media-arrow--next"
         :class="{ 'is-disabled': isEnd }"
+        :disabled="isEnd"
         @click.stop="goNext"
       >
         <svg
@@ -278,6 +284,39 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
         </svg>
       </button>
     </div>
+    <div
+      v-if="actions && !pool.isVisible"
+      class="pool-card-visibility-hint"
+      @click.stop
+    >
+      Ovaj bazen trenutno <strong>nije vidljiv</strong>.
+      <button
+        type="button"
+        class="pool-card-visibility-link"
+        @click="openVisibilityInfo"
+      >
+        Kliknite ovdje
+      </button>
+      za više informacija.
+    </div>
+
+    <ConfirmPopup
+      :open="showVisibilityInfo"
+      title="Vidljivost bazena"
+      :message="`**Vaš bazen trenutno NIJE javno vidljiv.**
+
+      Da bi postao vidljiv, potrebno je kontaktirati administratora(viber, whatsapp, poziv..) na **${env.adminMobileNumber}** i dogovoriti detalje.
+
+      **Cijena paketa:** 100KM/mjesec (promo za prvih 5 bazena **50KM**/mjesec).
+
+      Objavom na našoj platformi **garantujemo** više pregleda, upita i rezervacija — imaćete **više popunjenih termina** i manje praznih dana.`
+"
+      :rich="true"
+      cancel-label="Zatvori"
+      @confirm="showVisibilityInfo = false"
+      @cancel="showVisibilityInfo = false"
+      @update:open="(v) => (showVisibilityInfo = v)"
+    />
   </div>
 </template>
 
@@ -346,7 +385,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
 
       &.is-disabled {
         opacity: 0.4;
-        pointer-events: none;
       }
     }
 
@@ -485,6 +523,22 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     &:hover {
       filter: brightness(0.95);
     }
+  }
+
+  &-visibility-hint {
+    padding: 8px 10px;
+    border-radius: 12px;
+    color: #6b7280;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  &-visibility-link {
+    padding: 0;
+    color: var(--primary-color);
+    font-weight: 800;
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   &--mobile {

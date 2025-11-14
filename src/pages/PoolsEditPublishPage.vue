@@ -79,16 +79,16 @@ const removeImage = (i: number) => form.value.images.splice(i, 1);
 const validate = () => {
   errors.value = {};
   const t = form.value.title.trim();
-  if (t.length < 3 || t.length > 40) errors.value.title = 'Naslov mora imati 3–40 znakova.';
+  if (t.length < 3 || t.length > 40) errors.value.title = 'Naslov mora imati 3–40 karaktera.';
   if (!form.value.city || !allCities.includes(form.value.city))
     errors.value.city = 'Odaberite grad iz liste.';
   const cap = Number(form.value.capacity);
-  if (!cap || cap < 1 || cap > 100) errors.value.capacity = 'Unesite broj 1–100.';
+  if (!cap || cap < 1 || cap > 100) errors.value.capacity = 'Unesite maksimalni kapacitet gostiju od 1–100.';
   const price = form.value.pricePerDay ? Number(form.value.pricePerDay) : undefined;
   if (form.value.pricePerDay && (!price || price < 1 || price > 10000))
-    errors.value.pricePerDay = 'Unesite broj 1–10000 ili ostavite prazno.';
+    errors.value.pricePerDay = 'Unesite iznos 1–10000 ili ostavite prazno.';
   const d = form.value.description.trim();
-  if (d && (d.length < 1 || d.length > 300)) errors.value.description = '1–300 znakova.';
+  if (d && (d.length < 1 || d.length > 300)) errors.value.description = '1–300 karaktera.';
   if (form.value.images.length < 1 || form.value.images.length > 7)
     errors.value.images = 'Dodajte minimalno 1 a maksimalno 7 slika.';
   return Object.keys(errors.value).length === 0;
@@ -374,7 +374,7 @@ onMounted(async () => {
             v-if="form.enableAvailability"
             class="hint"
           >
-            Označite zauzete datume, ili to možete uraditi kasnije.
+            Označite zauzete datume, u svakom momentu ih možete uređivati.
           </div>
 
           <AvailabilityCalendar

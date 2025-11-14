@@ -236,14 +236,15 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
   }
 
   &-img {
-    max-width: 100%;
-    max-height: 86vh;
+    width: 90vw;
+    height: auto;
+    max-height: 80vh;
     object-fit: contain;
     display: block;
 
     @media (min-width: 768px) {
-      max-width: 92vw;
-      max-height: 92vh;
+      width: 80vw;
+      max-height: 90vh;
     }
   }
 

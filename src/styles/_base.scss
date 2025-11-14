@@ -22,7 +22,9 @@ body {
 
 body:has(.location-dropdown-backdrop-open),
 body:has(.daypicker--mobile),
-body:has(.filters-backdrop-open) {
+body:has(.filters-backdrop-open),
+body:has(.image-preview),
+body:has(.confirmpopup) {
   overflow: hidden;
 }
 
