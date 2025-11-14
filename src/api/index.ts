@@ -80,6 +80,7 @@ export async function registerUser(payload: {
 }): Promise<AuthSuccess | ApiError> {
   try {
     const { data } = await api.post('/auth/register', payload);
+    setAccessToken(data.accessToken);
 
     return { state: 'success', user: data.user as User };
   } catch (e) {
