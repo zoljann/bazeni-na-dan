@@ -379,6 +379,7 @@ watch(showFilters, (v) => {
 
     .search-locwrap {
       position: relative;
+      height: 63%;
     }
   }
 

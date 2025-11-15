@@ -56,10 +56,12 @@ onClickOutside(dropdownRef, () => closeDropdown());
 
 watch(isDropdownOpen, async (open) => {
   if (open) {
+    document.documentElement.style.overflow = 'hidden';
     await nextTick();
     dropdownRef.value?.querySelector<HTMLInputElement>('.location-dropdown-input')?.focus();
     emit('open');
   } else {
+    document.documentElement.style.overflow = '';
     searchTerm.value = '';
   }
 });
@@ -82,7 +84,28 @@ watch(isDropdownOpen, async (open) => {
     @click.stop
   >
     <div class="location-dropdown-handle" />
-
+    <button
+      class="location-dropdown-close"
+      type="button"
+      aria-label="Zatvori"
+      @click="closeDropdown"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        width="28"
+        height="28"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
     <div class="location-dropdown-header">
       <input
         class="location-dropdown-input"
@@ -191,7 +214,10 @@ watch(isDropdownOpen, async (open) => {
   }
 
   &-header {
-    padding: 10px 12px 8px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 12px 14px;
   }
 
   &-input {
@@ -215,7 +241,19 @@ watch(isDropdownOpen, async (open) => {
     gap: 6px;
     padding: 8px;
     overflow-y: auto;
-    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 8px 16px;
+  }
+
+ &-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 4;
+    color: var(--text-color-black);
   }
 
   &-section {
@@ -281,17 +319,28 @@ watch(isDropdownOpen, async (open) => {
 
   &--mobile {
     position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transform: translateY(110%);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    max-height: 75vh;
-    min-height: 40vh;
+    inset: 0;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    transform: translateY(-110%);
+    will-change: transform;
+    contain: layout paint style;
+    display: flex;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 
     &.location-dropdown-open {
       transform: translateY(0%);
+    }
+
+     .location-dropdown-header {
+      padding-top: 55px;
+    }
+
+    .location-dropdown-handle {
+      display: none;
     }
   }
 
