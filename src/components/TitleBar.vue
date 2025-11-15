@@ -78,7 +78,7 @@ const headerClasses = computed(() => ({
 .auth-titlebar-title {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 100%;
+  max-width: 80%;
   color: var(--text-color-black);
   line-height: 1.25;
   font-size: 32px;

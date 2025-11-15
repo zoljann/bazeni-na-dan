@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import isMobile from 'is-mobile';
+import { ymdLocal } from '../../utility/helpers';
 
 const props = defineProps<{
   busyDays?: string[];
@@ -57,20 +58,26 @@ const monthTitle = computed(() => {
       month: 'long',
       year: 'numeric'
     }).formatToParts(viewDate.value);
-    const mRaw = (parts.find((p) => p.type === 'month')?.value || '').toLowerCase();
+
+    const rawMonth = parts.find((p) => p.type === 'month')?.value || '';
     const y = parts.find((p) => p.type === 'year')?.value || String(viewDate.value.getFullYear());
-    const looksBad = !mRaw || /^m?\d+$/i.test(mRaw) || /\d+[\/\-.]\d+/.test(`${mRaw} ${y}`);
-    const month = looksBad ? BS_MONTHS[viewDate.value.getMonth()] : mRaw;
+
+    const looksBad =
+      !rawMonth || /^m?\d+$/i.test(rawMonth) || /\d+[\/\-.]\d+/.test(`${rawMonth} ${y}`);
+
+    const month = looksBad
+      ? BS_MONTHS[viewDate.value.getMonth()]
+      : rawMonth.charAt(0).toUpperCase() + rawMonth.slice(1);
+
     return `${month} ${y}`;
   } catch {
     return `${BS_MONTHS[viewDate.value.getMonth()]} ${viewDate.value.getFullYear()}`;
   }
 });
-
 const toISO = (d: Date) => {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
-  return x.toISOString().slice(0, 10);
+  return ymdLocal(x);
 };
 const daysInMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 const mondayIndex = (jsDay: number) => (jsDay + 6) % 7;
@@ -246,6 +253,7 @@ const togglePick = (c: Cell) => {
   &-title {
     text-align: center;
     font-weight: 800;
+    text-transform: capitalize;
 
     .availcal--desktop & {
       font-size: 18px;

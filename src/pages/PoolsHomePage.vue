@@ -501,6 +501,7 @@ const handleSearchPoolClick = () => {
       }
 
       &-plus {
+        position: relative;
         flex: 0 0 auto;
         width: 34px;
         height: 34px;
@@ -512,6 +513,9 @@ const handleSearchPoolClick = () => {
 
         &-bar {
           position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
           background: var(--text-color-black);
           border-radius: 2px;
         }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import isMobile from 'is-mobile';
+import { ymdLocal } from '../../utility/helpers';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -17,8 +18,7 @@ const open = computed({
   get: () => props.modelValue,
   set: (v: boolean) => emit('update:modelValue', v)
 });
-
-const todayIso = new Date().toISOString().slice(0, 10);
+const todayIso = ymdLocal(new Date());
 const viewDate = ref(new Date());
 
 function monthLabel(d: Date) {
@@ -51,7 +51,7 @@ function monthLabel(d: Date) {
 function toISO(d: Date) {
   const copy = new Date(d);
   copy.setHours(0, 0, 0, 0);
-  return copy.toISOString().slice(0, 10);
+  return ymdLocal(copy);
 }
 function daysInMonth(d: Date) {
   return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
