@@ -108,3 +108,9 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-desktop:hover {
+    filter: brightness(0.95);
+  }
+}

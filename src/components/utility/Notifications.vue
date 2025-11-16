@@ -127,10 +127,6 @@ const classes = computed(() => ({
       display: grid;
       place-items: center;
       cursor: pointer;
-
-      &:hover {
-        filter: brightness(0.95);
-      }
     }
   }
 

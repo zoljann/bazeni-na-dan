@@ -42,7 +42,7 @@ const handleSearchPoolClick = () => {
     :class="contentClasses"
   >
     <div class="content-middle">
-      <h1 class="content-middle-title">Iznajmi privatne bazene, na dan</h1>
+      <h1 class="content-middle-title">Iznajmi privatne bazene na dan</h1>
 
       <div class="content-search">
         <button
@@ -270,22 +270,12 @@ const handleSearchPoolClick = () => {
       cursor: pointer;
     }
 
-    &-row:hover {
-      background: #e9ecf1;
-      opacity: 1;
-      border-radius: 20px;
-    }
-
     &-button {
       cursor: pointer;
       border-radius: 100px;
       height: 43px;
       font-weight: 800;
       background: var(--primary-color);
-
-      &:hover {
-        filter: brightness(0.95);
-      }
     }
 
     &-dropdown-icon {
@@ -435,10 +425,6 @@ const handleSearchPoolClick = () => {
       background: var(--primary-color);
       box-shadow: 0 6px 18px rgba(0, 178, 255, 0.35);
       cursor: pointer;
-
-      &:hover {
-        filter: brightness(0.95);
-      }
     }
 
     &-faq {
@@ -472,10 +458,6 @@ const handleSearchPoolClick = () => {
           background: var(--primary-color);
           color: var(--text-color-white);
           box-shadow: 0 6px 18px rgba(0, 178, 255, 0.35);
-        }
-
-        &:hover {
-          filter: brightness(0.95);
         }
       }
 

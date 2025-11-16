@@ -320,10 +320,6 @@ watch(showFilters, (v) => {
       align-items: center;
       cursor: pointer;
 
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.041);
-      }
-
       &-label {
         flex: 1;
         text-align: left;
@@ -345,10 +341,6 @@ watch(showFilters, (v) => {
       box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
       cursor: pointer;
       border: 1px solid #e5e7eb;
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.041);
-      }
 
       &-badge {
         position: absolute;

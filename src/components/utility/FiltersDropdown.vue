@@ -294,10 +294,6 @@ const classes = computed(() => ({
     font-weight: 600;
     cursor: pointer;
     padding: 8px 6px;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 
   &-apply {
@@ -313,11 +309,6 @@ const classes = computed(() => ({
       background 0.12s ease,
       border-color 0.12s ease,
       box-shadow 0.12s ease;
-
-    &:hover {
-      background: #e7edf5;
-      border-color: #d1d5db;
-    }
   }
 
   &--mobile {
@@ -354,11 +345,6 @@ const classes = computed(() => ({
 
     .filters-handle {
       display: none;
-    }
-
-    .filters-check:hover {
-      background: #f7f8fa;
-      border-color: #eef0f3;
     }
   }
 }

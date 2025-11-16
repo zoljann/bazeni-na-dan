@@ -271,11 +271,6 @@ const togglePick = (c: Cell) => {
     border: 1px solid #e5e7eb;
     background: #fff;
 
-    &:hover {
-      background: #f9fafb;
-      border-color: #d1d5db;
-    }
-
     .availcal--desktop & {
       height: 46px;
       font-size: 24px;

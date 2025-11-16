@@ -81,7 +81,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
         @click.stop
       >
         <button
-          class="image-preview-close"
+          class="image-preview-close hover-desktop"
           @click="onClosePreview"
           aria-label="Zatvori"
         >
@@ -215,10 +215,6 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
     place-items: center;
     cursor: pointer;
     z-index: 4;
-
-    &:hover {
-      filter: brightness(0.95);
-    }
   }
 
   &-swiper {
@@ -287,10 +283,6 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
     cursor: pointer;
     box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
     z-index: 3;
-
-    &:not(:disabled):hover {
-      filter: brightness(0.95);
-    }
 
     &.is-disabled,
     &:disabled {

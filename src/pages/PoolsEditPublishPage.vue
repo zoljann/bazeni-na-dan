@@ -83,7 +83,8 @@ const validate = () => {
   if (!form.value.city || !allCities.includes(form.value.city))
     errors.value.city = 'Odaberite grad iz liste.';
   const cap = Number(form.value.capacity);
-  if (!cap || cap < 1 || cap > 100) errors.value.capacity = 'Unesite maksimalni kapacitet gostiju od 1–100.';
+  if (!cap || cap < 1 || cap > 100)
+    errors.value.capacity = 'Unesite maksimalni kapacitet gostiju od 1–100.';
   const price = form.value.pricePerDay ? Number(form.value.pricePerDay) : undefined;
   if (form.value.pricePerDay && (!price || price < 1 || price > 10000))
     errors.value.pricePerDay = 'Unesite iznos 1–10000 ili ostavite prazno.';
@@ -601,11 +602,6 @@ onMounted(async () => {
     text-align: left;
     padding: 0 10px;
     cursor: pointer;
-  }
-
-  &:hover {
-    background: #f3f8ff;
-    border-color: #dbeafe;
   }
 
   .is-selected {

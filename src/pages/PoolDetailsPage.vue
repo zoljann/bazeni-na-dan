@@ -36,7 +36,7 @@ const poolDetailsClasses = computed(() => ({
   [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
-const onContact = () => (window.location.href = `tel:${pool.value?.owner?.mobileNumber}`);
+const onContact = () => { if(isMobileView) (window.location.href = `tel:${pool.value?.owner?.mobileNumber}`) };
 const openPreview = (index: number) => {
   previewIndex.value = index;
   isPreviewOpen.value = true;
@@ -192,7 +192,7 @@ onMounted(async () => {
               class="pool-details-host-avatar-img"
             />
           </div>
-          <div class="pool-details-host-info">
+          <div class="pool-details-host-info" @click="onContact">
             <span class="pool-details-smalllabel">Domaćin</span>
             <span class="pool-details-host-name">{{ pool.owner?.name || 'Domaćin' }}</span>
           </div>
@@ -331,10 +331,6 @@ onMounted(async () => {
     box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
     cursor: pointer;
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.041);
-    }
-
     &.is-active svg path {
       color: rgb(156, 0, 0);
     }
@@ -372,10 +368,6 @@ onMounted(async () => {
       place-items: center;
       cursor: pointer;
       box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
-
-      &:hover {
-        filter: brightness(0.95);
-      }
 
       &--prev {
         left: 8px;

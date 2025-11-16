@@ -69,10 +69,6 @@ const headerClasses = computed(() => ({
   transition:
     background 120ms ease,
     transform 80ms ease;
-
-  &:hover {
-    background: rgba(2, 8, 23, 0.06);
-  }
 }
 
 .auth-titlebar-title {

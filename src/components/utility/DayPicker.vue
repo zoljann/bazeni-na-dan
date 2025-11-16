@@ -254,11 +254,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
     color: var(--text-color-black);
     border: 1px solid #e5e7eb;
 
-    &:hover {
-      background: #f9fafb;
-      border-color: #d1d5db;
-    }
-
     .daypicker--desktop & {
       height: 46px;
       font-size: 24px;
@@ -331,9 +326,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
       opacity: 0.45;
       cursor: not-allowed;
     }
-    &:hover:not(.is-disabled) {
-      filter: brightness(0.95);
-    }
     &.is-selected {
       background: var(--primary-color);
       color: var(--text-color-white);
@@ -360,11 +352,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
       background 0.12s ease,
       border-color 0.12s ease,
       box-shadow 0.12s ease;
-
-    &:hover {
-      background: #e7edf5;
-      border-color: #d1d5db;
-    }
   }
 }
 </style>

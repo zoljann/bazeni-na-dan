@@ -10,7 +10,7 @@ export type Pool = {
   description?: string;
   busyDays?: string[];
   filters?: { heated: boolean; petsAllowed: boolean };
-  owner?: { name: string; avatarUrl: string, mobileNumber: string }
+  owner?: { name: string; avatarUrl: string; mobileNumber: string };
 };
 
 export type User = {

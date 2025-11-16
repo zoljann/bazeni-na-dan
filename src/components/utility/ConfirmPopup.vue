@@ -8,7 +8,7 @@ const props = defineProps<{
   message?: string;
   confirmLabel?: string;
   cancelLabel?: string;
-    rich?: boolean; 
+  rich?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -154,10 +154,6 @@ const onConfirm = () => {
     box-shadow: 0 6px 14px rgba(2, 8, 23, 0.06);
     background: #f4f9ff;
     color: var(--text-color-black);
-
-    &:hover {
-      filter: brightness(0.97);
-    }
 
     &--ghost {
       background: #fff;

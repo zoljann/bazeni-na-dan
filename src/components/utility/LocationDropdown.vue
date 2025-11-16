@@ -26,10 +26,15 @@ const isDropdownOpen = computed({
   get: () => props.modelValue,
   set: (value: boolean) => emit('update:modelValue', value)
 });
+const norm = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/đ/gi, 'd');
 const matchedCities = computed(() => {
-  const q = searchTerm.value.trim().toLowerCase();
+  const q = norm(searchTerm.value.trim().toLowerCase());
   if (!q || !props.allCities?.length) return [];
-  return props.allCities.filter((c) => c.toLowerCase().includes(q)).slice(0, 100);
+  return props.allCities.filter((c) => norm(c.toLowerCase()).includes(q)).slice(0, 100);
 });
 const dropdownClasses = computed(() => ({
   [`location-dropdown--${isMobileView ? 'mobile' : 'desktop'}`]: true,
@@ -111,7 +116,7 @@ watch(isDropdownOpen, async (open) => {
         class="location-dropdown-input"
         type="text"
         v-model="searchTerm"
-        placeholder="Unesite grad"
+        placeholder="Unesite naziv grada"
       />
     </div>
 
@@ -245,10 +250,10 @@ watch(isDropdownOpen, async (open) => {
     padding: 10px 8px 16px;
   }
 
- &-close {
+  &-close {
     position: absolute;
     top: 15px;
-    right: 15px;
+    left: 15px;
     display: grid;
     place-items: center;
     cursor: pointer;
@@ -290,11 +295,6 @@ watch(isDropdownOpen, async (open) => {
     cursor: pointer;
     text-align: left;
 
-    &:hover {
-      background: #f7f8fa;
-      border-color: #eef0f3;
-    }
-
     &--allpools {
       font-weight: 600;
     }
@@ -335,7 +335,7 @@ watch(isDropdownOpen, async (open) => {
       transform: translateY(0%);
     }
 
-     .location-dropdown-header {
+    .location-dropdown-header {
       padding-top: 55px;
     }
 

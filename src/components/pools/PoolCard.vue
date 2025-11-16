@@ -309,8 +309,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
 
       **Cijena paketa:** 100KM/mjesec (promo za prvih 5 bazena **50KM**/mjesec).
 
-      Objavom na našoj platformi **garantujemo** više pregleda, upita i rezervacija — imaćete **više popunjenih termina** i manje praznih dana.`
-"
+      Objavom na našoj platformi **garantujemo** više pregleda, upita i rezervacija — imaćete **više popunjenih termina** i manje praznih dana.`"
       :rich="true"
       cancel-label="Zatvori"
       @confirm="showVisibilityInfo = false"
@@ -371,10 +370,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       cursor: pointer;
       box-shadow: 0 6px 14px rgba(2, 8, 23, 0.15);
 
-      &:hover {
-        filter: brightness(0.95);
-      }
-
       &--prev {
         left: 8px;
       }
@@ -415,10 +410,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     place-items: center;
     z-index: 3;
     cursor: pointer;
-
-    &:hover {
-      filter: brightness(0.95);
-    }
 
     &-active {
       color: rgb(156, 0, 0);
@@ -486,10 +477,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       font-weight: 800;
       box-shadow: 0 6px 14px rgba(2, 8, 23, 0.06);
       cursor: pointer;
-
-      &:hover {
-        filter: brightness(0.97);
-      }
     }
 
     &-delete {
@@ -503,10 +490,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       background: #fdeded;
       color: #b91c1c;
       box-shadow: 0 6px 14px rgba(185, 28, 28, 0.08);
-
-      &:hover {
-        background: #ffecec;
-      }
     }
   }
 
@@ -519,10 +502,6 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     border: 1px solid #e5e7eb;
     box-shadow: 0 6px 14px rgba(2, 8, 23, 0.06);
     cursor: pointer;
-
-    &:hover {
-      filter: brightness(0.95);
-    }
   }
 
   &-visibility-hint {

@@ -137,30 +137,17 @@ onBeforeUnmount(() => {
             class="navigation-right-dropdown"
             :class="{ 'is-open': isDropdownOpen }"
           >
-            <button
-              class="navigation-right-dropdown-signin-button"
-              v-if="!userStore.isAuthenticated"
-              @click="goToRoute('LoginRegisterPage')"
-            >
-              Prijava ili registracija
-            </button>
-            <button
-              class="navigation-right-dropdown-signin-button"
-              v-else
-              @click="goToRoute('UserProfilePage')"
-            >
-              Moj profil
-            </button>
-
-            <span class="navigation-right-dropdown-divider"></span>
-
             <nav class="navigation-right-dropdown-links">
               <a
-                class="navigation-right-dropdown-links-item"
-                @click.prevent="goToRoute('PoolsHomePage')"
+                class="navigation-right-dropdown-links-item navigation-right-dropdown-links-item-important"
+                @click.prevent="
+                  goToRoute(userStore.isAuthenticated ? 'UserProfilePage' : 'LoginRegisterPage')
+                "
               >
-                Početna
+                <span v-if="!userStore.isAuthenticated">Prijava ili registracija</span>
+                <span v-else>Moj profil</span>
               </a>
+
               <a
                 class="navigation-right-dropdown-links-item"
                 @click.prevent="goToPoolsPublishedPage"
@@ -276,13 +263,6 @@ onBeforeUnmount(() => {
         visibility 0s linear 300ms;
       transform-origin: top right;
 
-      &-signin-button {
-        border-radius: 14px;
-        background: var(--primary-color);
-        padding: 14px 12px;
-        cursor: pointer;
-      }
-
       &-divider {
         height: 1px;
         background: rgba(0, 0, 0, 0.08);
@@ -301,8 +281,9 @@ onBeforeUnmount(() => {
           font-weight: 500;
           padding: 10px 12px;
 
-          &:hover {
-            color: rgba(0, 0, 0, 0.541);
+          &-important {
+            color: var(--primary-color);
+            font-weight: 800;
           }
         }
 
@@ -351,10 +332,6 @@ onBeforeUnmount(() => {
         right: 5%;
         transform: none;
 
-        &-signin-button {
-          font-size: 16px;
-        }
-
         &-links {
           font-size: 14px;
         }
@@ -388,21 +365,10 @@ onBeforeUnmount(() => {
     .navigation-right {
       &-button {
         font-size: 18px;
-
-        &:hover {
-          transition: 0.2s;
-          background-color: var(--button-hover);
-          color: var(--text-color-white);
-          border: 1px solid var(--button-hover);
-        }
       }
 
       &-dropdown {
         width: 400px;
-
-        &-signin-button {
-          font-size: 16px;
-        }
 
         &-links {
           font-size: 16px;
