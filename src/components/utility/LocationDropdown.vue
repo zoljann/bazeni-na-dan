@@ -61,12 +61,8 @@ onClickOutside(dropdownRef, () => closeDropdown());
 
 watch(isDropdownOpen, async (open) => {
   if (open) {
-    document.documentElement.style.overflow = 'hidden';
-    await nextTick();
-    dropdownRef.value?.querySelector<HTMLInputElement>('.location-dropdown-input')?.focus();
     emit('open');
   } else {
-    document.documentElement.style.overflow = '';
     searchTerm.value = '';
   }
 });
@@ -90,6 +86,7 @@ watch(isDropdownOpen, async (open) => {
   >
     <div class="location-dropdown-handle" />
     <button
+      v-if="isMobileView"
       class="location-dropdown-close"
       type="button"
       aria-label="Zatvori"
@@ -253,7 +250,7 @@ watch(isDropdownOpen, async (open) => {
   &-close {
     position: absolute;
     top: 15px;
-    left: 15px;
+    right: 15px;
     display: grid;
     place-items: center;
     cursor: pointer;

@@ -4,7 +4,9 @@ import isMobile from 'is-mobile';
 import Navigation from '.././components/Navigation.vue';
 import { useUserStore } from '.././stores/user';
 import TitleBar from '../components/TitleBar.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 const isMobileView = isMobile();
 const showPwd = ref(false);
@@ -350,6 +352,13 @@ onMounted(() => {
         >
           Sačuvaj promjene
         </button>
+        <button
+          type="button"
+          class="auth-secondary"
+          @click="router.push({ name: 'PoolsPublishedPage' })"
+        >
+          Moji objavljeni bazeni
+        </button>
       </form>
     </div>
   </section>
@@ -418,7 +427,6 @@ onMounted(() => {
     background: var(--primary-color);
     color: var(--text-color-white);
     font-weight: 900;
-    border: 1px solid var(--primary-color);
     box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
     cursor: pointer;
   }
@@ -499,9 +507,20 @@ onMounted(() => {
     gap: 12px;
   }
 
+  &-secondary {
+    height: 48px;
+    border-radius: 999px;
+    border: 1px solid var(--primary-color);
+    background: #f1f5f9;
+    color: var(--text-color-black);
+    font-weight: 900;
+    cursor: pointer;
+  }
+
   &--mobile {
     .auth {
-      &-submit {
+      &-submit,
+      &-secondary {
         width: 100%;
       }
     }
@@ -513,7 +532,8 @@ onMounted(() => {
         padding: 14px;
       }
 
-      &-submit {
+      &-submit,
+      &-secondary {
         width: 50%;
         justify-self: center;
       }

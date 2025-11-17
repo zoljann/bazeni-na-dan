@@ -40,6 +40,14 @@ const errors = ref<{
   description?: string;
   images?: string;
 }>({});
+const fieldRefs = ref<Record<string, HTMLElement | null>>({
+  title: null,
+  city: null,
+  capacity: null,
+  pricePerDay: null,
+  description: null,
+  images: null
+});
 
 const filteredCities = computed(() => {
   const q = cityQuery.value.trim().toLowerCase();
@@ -92,7 +100,10 @@ const validate = () => {
   if (d && (d.length < 1 || d.length > 300)) errors.value.description = '1–300 karaktera.';
   if (form.value.images.length < 1 || form.value.images.length > 7)
     errors.value.images = 'Dodajte minimalno 1 a maksimalno 7 slika.';
-  return Object.keys(errors.value).length === 0;
+
+  const isValid = Object.keys(errors.value).length === 0;
+  if (!isValid) focusFirstError();
+  return isValid;
 };
 const fillFromPool = (p: Pool) => {
   form.value.title = p.title || '';
@@ -109,7 +120,6 @@ const fillFromPool = (p: Pool) => {
 const submit = async () => {
   if (!validate()) return;
   const payload = {
-    user: userStore.user!,
     pool: {
       id: isEdit.value ? bazenId.value : undefined,
       title: form.value.title.trim(),
@@ -147,6 +157,20 @@ const ensureOwnership = (p: Pool) => {
     return false;
   }
   return true;
+};
+const setFieldRef = (name: string) => (el: any) => {
+  fieldRefs.value[name] = el as HTMLElement | null;
+};
+const focusFirstError = () => {
+  const firstKey = Object.keys(errors.value)[0];
+  if (!firstKey) return;
+
+  const el = fieldRefs.value[firstKey];
+  if (!el) return;
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const focusable = el.querySelector('input, textarea, button') as HTMLElement | null;
+  (focusable ?? el).focus?.();
 };
 
 onMounted(async () => {
@@ -188,6 +212,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.title }"
+          :ref="setFieldRef('title')"
         >
           <label
             for="title"
@@ -212,6 +237,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.city }"
+          :ref="setFieldRef('city')"
         >
           <label class="auth-label">Grad <span class="req">*</span></label>
           <button
@@ -271,6 +297,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.capacity }"
+          :ref="setFieldRef('capacity')"
         >
           <label
             for="capacity"
@@ -297,6 +324,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.pricePerDay }"
+          :ref="setFieldRef('pricePerDay')"
         >
           <label
             for="price"
@@ -323,6 +351,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.description }"
+          :ref="setFieldRef('description')"
         >
           <label
             for="desc"
@@ -388,6 +417,7 @@ onMounted(async () => {
         <div
           class="auth-field"
           :class="{ 'has-error': !!errors.images }"
+          :ref="setFieldRef('images')"
         >
           <div class="auth-labelrow">
             <label class="auth-label">Slike <span class="req">*</span></label>

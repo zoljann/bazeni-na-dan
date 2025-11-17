@@ -36,7 +36,9 @@ const poolDetailsClasses = computed(() => ({
   [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
 
-const onContact = () => { if(isMobileView) (window.location.href = `tel:${pool.value?.owner?.mobileNumber}`) };
+const onContact = () => {
+  if (isMobileView) window.location.href = `tel:${pool.value?.owner?.mobileNumber}`;
+};
 const openPreview = (index: number) => {
   previewIndex.value = index;
   isPreviewOpen.value = true;
@@ -192,7 +194,10 @@ onMounted(async () => {
               class="pool-details-host-avatar-img"
             />
           </div>
-          <div class="pool-details-host-info" @click="onContact">
+          <div
+            class="pool-details-host-info"
+            @click="onContact"
+          >
             <span class="pool-details-smalllabel">Domaćin</span>
             <span class="pool-details-host-name">{{ pool.owner?.name || 'Domaćin' }}</span>
           </div>

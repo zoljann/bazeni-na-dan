@@ -55,7 +55,7 @@ const goToRoute = (route: string) => {
 
 const goToPoolsPublishedPage = () => {
   if (!userStore.isAuthenticated) {
-    useNotificationsStore.addNotification('Morate biti prijavljeni', 'error');
+    useNotificationsStore.addNotification('Prijavite se da biste objavili bazen', 'error');
     closeDropdown();
     router.push({ name: 'LoginRegisterPage', query: { next: 'PoolsPublishedPage' } });
     return;
