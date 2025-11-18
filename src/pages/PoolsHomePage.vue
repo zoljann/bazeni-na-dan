@@ -13,6 +13,7 @@ const showLocationDropdown = ref(false);
 const selectedCity = ref<string>('Sve lokacije');
 const activeFaqTab = ref<'guests' | 'hosts'>('guests');
 const openFaqIndex = ref<number | null>(null);
+const howItWorksRef = ref<HTMLElement | null>(null);
 
 const currentFaq = computed(() => faqData[activeFaqTab.value]);
 const contentClasses = computed(() => ({
@@ -31,6 +32,12 @@ const showAllPools = () => {
 };
 const handleSearchPoolClick = () => {
   router.push({ name: 'PoolsSearchPage' });
+};
+const scrollToHowItWorks = () => {
+  howItWorksRef.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
 };
 </script>
 
@@ -84,9 +91,10 @@ const handleSearchPoolClick = () => {
       </div>
     </div>
 
-    <a
-      href="#how-it-works"
+    <button
+      type="button"
       class="content-works"
+      @click="scrollToHowItWorks"
     >
       <span class="content-works-text">Kako rezervisati bazen</span>
       <svg
@@ -103,7 +111,7 @@ const handleSearchPoolClick = () => {
           clip-rule="evenodd"
         ></path>
       </svg>
-    </a>
+    </button>
 
     <div class="content-curly">
       <img
@@ -117,7 +125,7 @@ const handleSearchPoolClick = () => {
   <section
     class="content-after"
     :class="contentClasses"
-    id="how-it-works"
+    ref="howItWorksRef"
   >
     <div class="content-after-how-it-works">
       <h2 class="content-after-how-it-works-title">Kako rezervisati bazen</h2>
@@ -302,6 +310,7 @@ const handleSearchPoolClick = () => {
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 4px;
+      cursor: pointer;
     }
 
     &-arrow {

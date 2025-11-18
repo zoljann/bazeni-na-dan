@@ -47,6 +47,9 @@ const onAvatarChange = (e: Event) => {
   reader.onload = () => (form.value.avatarPreview = String(reader.result || ''));
   reader.readAsDataURL(f);
 };
+const clearAvatar = () => {
+  console.log('obrisi avatar');
+};
 const fillFromStore = () => {
   const u = userStore.user!;
   form.value.firstName = u.firstName || '';
@@ -141,6 +144,24 @@ onMounted(() => {
           >
             👤
           </div>
+          <button
+            v-if="form.avatarPreview"
+            type="button"
+            class="auth-avatar-remove"
+            @click.stop="clearAvatar"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9 3h6a1 1 0 0 1 1 1v2h3v2h-1v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8H5V6h3V4a1 1 0 0 1 1-1zm1 4v10h2V7h-2zm4 0v10h2V7h-2z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+
           <div
             class="auth-avatar-edit"
             aria-hidden="true"
@@ -451,6 +472,22 @@ onMounted(() => {
     input[type='file'] {
       display: none;
     }
+  }
+
+  &-avatar-remove {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffffcc;
+    color: red;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    padding: 0;
   }
 
   &-avatar-img {

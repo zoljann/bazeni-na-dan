@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useSortable } from '@vueuse/integrations/useSortable';
 import isMobile from 'is-mobile';
 import Navigation from '../components/Navigation.vue';
 import { useUserStore } from '../stores/user';
@@ -11,6 +12,7 @@ import AvailabilityCalendar from '../components/utility/AvailabilityCalendar.vue
 import allCities from '../helpers/bih-cities.json';
 import type { Pool } from 'src/types';
 import TitleBar from '.././components/TitleBar.vue';
+import ImagePreview from '../components/ImagePreview.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -18,7 +20,10 @@ const userStore = useUserStore();
 const poolsStore = usePoolsStore();
 const notifications = notificationsStore();
 const isMobileView = isMobile();
-const imgInputRef = ref<HTMLInputElement | null>(null);
+const imgInputRef = ref<HTMLInputElement>();
+const showImagePreview = ref(false);
+const previewStartIndex = ref(0);
+const imgGridRef = ref<HTMLElement>();
 const showCityDropdown = ref(false);
 const cityQuery = ref('');
 const form = ref({
@@ -53,6 +58,12 @@ const filteredCities = computed(() => {
   const q = cityQuery.value.trim().toLowerCase();
   return q ? allCities.filter((c: string) => c.toLowerCase().includes(q)) : allCities;
 });
+const imagesRef = computed({
+  get: () => form.value.images,
+  set: (v: string[]) => {
+    form.value.images = v;
+  }
+});
 const bazenId = computed(() => (route.query.bazenId ? String(route.query.bazenId) : ''));
 const isEdit = computed(() => !!bazenId.value);
 const pageTitle = computed(() => (isEdit.value ? 'Uredi bazen' : 'Objavi bazen'));
@@ -84,6 +95,10 @@ function fileToBase64(f: File) {
   });
 }
 const removeImage = (i: number) => form.value.images.splice(i, 1);
+const openImagePreview = (index: number) => {
+  previewStartIndex.value = index;
+  showImagePreview.value = true;
+};
 const validate = () => {
   errors.value = {};
   const t = form.value.title.trim();
@@ -173,6 +188,9 @@ const focusFirstError = () => {
   (focusable ?? el).focus?.();
 };
 
+useSortable(imgGridRef, imagesRef, {
+  animation: 150
+});
 onMounted(async () => {
   if (!isEdit.value) return;
 
@@ -404,7 +422,7 @@ onMounted(async () => {
             v-if="form.enableAvailability"
             class="hint"
           >
-            Označite zauzete datume, u svakom momentu ih možete uređivati.
+            Označite zauzete datume, u svakom momentu ih možete uređivati
           </div>
 
           <AvailabilityCalendar
@@ -424,7 +442,14 @@ onMounted(async () => {
             <span class="imgcount">{{ form.images.length }}/7</span>
           </div>
 
-          <div class="imggrid">
+          <div class="hint">
+            Povucite i pustite slike da promijenite raspored, prva slika je naslovna
+          </div>
+
+          <div
+            class="imggrid"
+            ref="imgGridRef"
+          >
             <div
               v-for="(img, i) in form.images"
               :key="i"
@@ -433,11 +458,12 @@ onMounted(async () => {
               <img
                 :src="img"
                 alt="slika"
+                @click="openImagePreview(i)"
               />
               <button
                 type="button"
                 class="imgtile-del"
-                @click="removeImage(i)"
+                @click.stop="removeImage(i)"
                 aria-label="Ukloni"
               >
                 ✕
@@ -484,6 +510,12 @@ onMounted(async () => {
       class="drop-overlay"
       @click="showCityDropdown = false"
     ></div>
+
+    <ImagePreview
+      v-model="showImagePreview"
+      :images="form.images"
+      :startIndex="previewStartIndex"
+    />
   </section>
 </template>
 
@@ -693,7 +725,7 @@ onMounted(async () => {
 .hint {
   color: #6b7280;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .imggrid {
@@ -711,6 +743,7 @@ onMounted(async () => {
   border-radius: 12px;
   height: 100px;
   overflow: hidden;
+  cursor: pointer;
 
   img {
     width: 100%;
