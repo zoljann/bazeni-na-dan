@@ -11,12 +11,14 @@ import LocationDropdown from '../components/utility/LocationDropdown.vue';
 import allCities from '../helpers/bih-cities.json';
 import FiltersDropdown from '../components/utility/FiltersDropdown.vue';
 import { usePoolsStore } from '../stores/pools';
+import PoolCardSkeleton from '../components/pools/PoolCardSkeleton.vue';
 
 const isMobileView = isMobile();
 const useNotificationsStore = notificationsStore();
 const poolsStore = usePoolsStore();
 const route = useRoute();
 const router = useRouter();
+const isLoadingPools = ref(true);
 const showDayPicker = ref(false);
 const selectedDate = ref<string | null>(null);
 const showLocationDropdown = ref(false);
@@ -118,6 +120,7 @@ onMounted(async () => {
       'error'
     );
   }
+  isLoadingPools.value = false;
 });
 
 watch(
@@ -275,7 +278,13 @@ watch(showFilters, (v) => {
 
     <div class="search-results">
       <div class="search-results-grid">
+        <PoolCardSkeleton
+          v-if="isLoadingPools"
+          v-for="i in 3"
+          :key="i"
+        />
         <PoolCard
+          v-else
           v-for="p in filteredPools"
           :key="p.id"
           :pool="p"
@@ -284,7 +293,7 @@ watch(showFilters, (v) => {
       </div>
 
       <p
-        v-if="filteredPools?.length === 0"
+        v-if="!isLoadingPools && filteredPools?.length === 0"
         class="search-results-empty"
       >
         {{ emptyText }}

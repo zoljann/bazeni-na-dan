@@ -13,6 +13,7 @@ import allCities from '../helpers/bih-cities.json';
 import type { Pool } from 'src/types';
 import TitleBar from '.././components/TitleBar.vue';
 import ImagePreview from '../components/ImagePreview.vue';
+import BaseLoader from '../components/utility/BaseLoader.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -26,6 +27,8 @@ const previewStartIndex = ref(0);
 const imgGridRef = ref<HTMLElement>();
 const showCityDropdown = ref(false);
 const cityQuery = ref('');
+const isLoadingPool = ref(false);
+const isSubmitting = ref(false);
 const form = ref({
   title: '',
   city: '',
@@ -134,6 +137,7 @@ const fillFromPool = (p: Pool) => {
 };
 const submit = async () => {
   if (!validate()) return;
+  if (isSubmitting.value) return;
   const payload = {
     pool: {
       id: isEdit.value ? bazenId.value : undefined,
@@ -147,7 +151,7 @@ const submit = async () => {
       busyDays: form.value.enableAvailability ? [...form.value.busyDays].sort() : undefined
     }
   };
-
+  isSubmitting.value = true;
   try {
     const res = isEdit.value ? await updatePool(bazenId.value, payload) : await createPool(payload);
 
@@ -160,9 +164,9 @@ const submit = async () => {
     router.push({ name: 'PoolsPublishedPage' });
   } catch {
     notifications.addNotification('Nešto je pošlo po krivu, pokušaj ponovo kasnije.', 'error');
+  } finally {
+    isSubmitting.value = false;
   }
-
-  router.push({ name: 'PoolsPublishedPage' });
 };
 const ensureOwnership = (p: Pool) => {
   if (!userStore.user?.id || p.userId !== userStore.user?.id) {
@@ -194,22 +198,27 @@ useSortable(imgGridRef, imagesRef, {
 onMounted(async () => {
   if (!isEdit.value) return;
 
-  const stored = poolsStore.findPoolById(bazenId.value);
-  if (stored) {
-    if (!ensureOwnership(stored)) return;
-    fillFromPool(stored);
-    return;
-  }
+  isLoadingPool.value = true;
+  try {
+    const stored = poolsStore.findPoolById(bazenId.value);
+    if (stored) {
+      if (!ensureOwnership(stored)) return;
+      fillFromPool(stored);
+      return;
+    }
 
-  const res = await getPoolById(bazenId.value);
-  if (res.state === 'success') {
-    if (!ensureOwnership(res.pool)) return;
-    fillFromPool(res.pool);
-    return;
-  }
+    const res = await getPoolById(bazenId.value);
+    if (res.state === 'success') {
+      if (!ensureOwnership(res.pool)) return;
+      fillFromPool(res.pool);
+      return;
+    }
 
-  notifications.addNotification('Došlo je do greške.', 'error');
-  router.replace({ name: 'PoolsHomePage' });
+    notifications.addNotification('Došlo je do greške.', 'error');
+    router.replace({ name: 'PoolsHomePage' });
+  } finally {
+    isLoadingPool.value = false;
+  }
 });
 </script>
 
@@ -223,7 +232,14 @@ onMounted(async () => {
     <TitleBar :title="pageTitle" />
 
     <div class="auth-card">
+      <BaseLoader
+        v-if="isEdit && isLoadingPool"
+        text="Učitavanje bazena.."
+        :fullHeight="true"
+      />
+
       <form
+        v-else
         class="auth-form"
         @submit.prevent="submit"
       >
@@ -499,8 +515,12 @@ onMounted(async () => {
         <button
           type="submit"
           class="auth-submit"
+          :disabled="isSubmitting"
         >
-          {{ isEdit ? 'Sačuvaj promjene' : 'Objavi bazen' }}
+          <span v-if="isSubmitting">Spremanje...</span>
+          <span v-else>
+            {{ isEdit ? 'Sačuvaj promjene' : 'Objavi bazen' }}
+          </span>
         </button>
       </form>
     </div>
@@ -585,6 +605,15 @@ onMounted(async () => {
     border: 1px solid var(--primary-color);
     box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
     cursor: pointer;
+    transition:
+      opacity 120ms ease,
+      box-shadow 120ms ease;
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 
   &--mobile {

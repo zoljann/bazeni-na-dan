@@ -13,6 +13,7 @@ const showPwd = ref(false);
 const pwd = ref({ currentPassword: '', newPassword: '' });
 const pwdErrors = ref<{ currentPassword?: string; newPassword?: string }>({});
 const avatarInputRef = ref<HTMLInputElement | null>(null);
+const isSavingProfile = ref(false);
 const form = ref({
   firstName: '',
   lastName: '',
@@ -106,7 +107,13 @@ const submit = async () => {
       newPassword: pwd.value.newPassword
     };
 
-  await userStore.updateProfile(payload);
+  if (isSavingProfile.value) return;
+  isSavingProfile.value = true;
+  try {
+    await userStore.updateProfile(payload);
+  } finally {
+    isSavingProfile.value = false;
+  }
 };
 
 onMounted(() => {
@@ -370,8 +377,10 @@ onMounted(() => {
         <button
           type="submit"
           class="auth-submit"
+          :disabled="isSavingProfile"
         >
-          Sačuvaj promjene
+          <span v-if="isSavingProfile">Spremanje...</span>
+          <span v-else>Sačuvaj promjene</span>
         </button>
         <button
           type="button"
@@ -450,6 +459,12 @@ onMounted(() => {
     font-weight: 900;
     box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
     cursor: pointer;
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 
   &-avatar {

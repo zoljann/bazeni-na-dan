@@ -10,6 +10,7 @@ import { deletePool, getAvailablePools } from '../api/index';
 import TitleBar from '.././components/TitleBar.vue';
 import { notificationsStore } from '../stores/notifications';
 import ConfirmPopup from '../components/utility/ConfirmPopup.vue';
+import PoolCardSkeleton from '../components/pools/PoolCardSkeleton.vue'; // NEW
 
 const router = useRouter();
 const isMobileView = isMobile();
@@ -17,6 +18,7 @@ const userStore = useUserStore();
 const notifications = notificationsStore();
 const pools = ref<Pool[]>([]);
 const showDeleteFor = ref<string | null>(null);
+const isLoadingPools = ref(true);
 
 const publishedClasses = computed(() => ({
   [`published--${isMobileView ? 'mobile' : 'desktop'}`]: true
@@ -43,9 +45,18 @@ const confirmDelete = async () => {
 };
 
 onMounted(async () => {
-  const res = await getAvailablePools(userStore.user?.id);
+  isLoadingPools.value = true;
+  try {
+    const res = await getAvailablePools(userStore.user?.id);
 
-  if (res.state === 'success') pools.value = res.pools;
+    if (res.state === 'success') {
+      pools.value = res.pools;
+    } else {
+      notifications.addNotification('Nešto je pošlo po krivu, pokušajte malo kasnije', 'error');
+    }
+  } finally {
+    isLoadingPools.value = false;
+  }
 });
 </script>
 
@@ -58,7 +69,19 @@ onMounted(async () => {
   >
     <TitleBar title="Objavljeni bazeni" />
     <div
-      v-if="pools.length === 0"
+      v-if="isLoadingPools"
+      class="published-results"
+    >
+      <div class="published-results-grid">
+        <PoolCardSkeleton
+          v-for="i in 3"
+          :key="i"
+        />
+      </div>
+    </div>
+
+    <div
+      v-else-if="pools.length === 0"
       class="published-results"
     >
       <div
