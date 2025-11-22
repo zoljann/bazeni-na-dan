@@ -588,6 +588,15 @@ onMounted(() => {
       &-secondary {
         width: 50%;
         justify-self: center;
+
+        &:hover {
+          filter: brightness(0.95);
+        }
+      }
+
+      &-avatar-edit:hover,
+      &-avatar-remove:hover {
+        filter: brightness(0.95);
       }
     }
   }

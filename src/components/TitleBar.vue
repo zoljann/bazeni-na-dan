@@ -94,4 +94,8 @@ const headerClasses = computed(() => ({
   width: 44px;
   height: 44px;
 }
+
+.auth-header--desktop .auth-titlebar-backbtn:hover {
+  background-color: rgb(233, 233, 233);
+}
 </style>

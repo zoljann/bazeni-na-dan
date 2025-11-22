@@ -1,12 +1,20 @@
-import { nextTick } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  scrollBehavior(to, from, saved) {
-    if (saved) return saved;
-    if (to.hash) return { el: to.hash };
-    return { left: 0, top: 0 };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth'
+      };
+    }
+
+    return { top: 0, behavior: 'smooth' };
   },
   routes: [
     {
@@ -55,13 +63,6 @@ const router = createRouter({
     },
     { path: '/:pathMatch(.*)*', redirect: { name: 'PoolsHomePage' } }
   ]
-});
-
-router.afterEach(async () => {
-  await nextTick();
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
-  });
 });
 
 export default router;

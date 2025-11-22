@@ -3,7 +3,7 @@ import isMobile from 'is-mobile';
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
-import { notificationsStore } from '.././stores/notifications';
+import { notificationsStore } from '@/stores/notifications';
 
 const props = defineProps<{
   variant?: 'transparent' | 'solid';
@@ -31,17 +31,8 @@ const handleClickOutside = (event: MouseEvent) => {
   if (!dropdownRef.value.contains(event.target as Node)) closeDropdown();
 };
 const goToFaqSection = async () => {
-  const el = document.getElementById('faq');
-  if (el) {
-    el.scrollIntoView();
-    closeDropdown();
-    return;
-  }
+  closeDropdown();
   await router.push({ name: 'PoolsHomePage', hash: '#faq' });
-  requestAnimationFrame(() => {
-    document.getElementById('faq')?.scrollIntoView();
-    closeDropdown();
-  });
 };
 const logout = () => {
   userStore.logout();
@@ -365,6 +356,10 @@ onBeforeUnmount(() => {
     .navigation-right {
       &-button {
         font-size: 18px;
+
+        &:hover {
+          filter: brightness(0.85);
+        }
       }
 
       &-dropdown {
@@ -372,6 +367,12 @@ onBeforeUnmount(() => {
 
         &-links {
           font-size: 16px;
+
+          &-item {
+            &:hover {
+              color: rgb(99, 99, 99);
+            }
+          }
         }
       }
     }

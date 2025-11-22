@@ -201,6 +201,15 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
     top: calc(100% + 10px);
     right: 68px;
     z-index: 100;
+
+    .daypicker-cell:not(.is-blank):not(.is-disabled):not(.is-selected):hover,
+    .daypicker-navbtn:hover {
+      background-color: rgb(243, 243, 243);
+    }
+
+    .daypicker-clear:hover {
+      background-color: rgb(236, 236, 236);
+    }
   }
   &--mobile {
     position: fixed;

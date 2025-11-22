@@ -624,6 +624,19 @@ const scrollToHowItWorks = () => {
 
       &-search {
         max-width: 680px;
+
+        &-row {
+          &:hover {
+            background-color: rgb(241, 241, 241);
+            border-radius: 16px;
+          }
+        }
+
+        &-button {
+          &:hover {
+            filter: brightness(0.95);
+          }
+        }
       }
 
       &-curly {
@@ -694,6 +707,10 @@ const scrollToHowItWorks = () => {
         &-cta {
           height: 60px;
           width: 25%;
+
+          &:hover {
+            filter: brightness(0.95);
+          }
         }
 
         &-faq {
@@ -705,6 +722,12 @@ const scrollToHowItWorks = () => {
 
           &-answer p {
             font-size: 16px;
+          }
+
+          &-tab, &-plus {
+            &:hover {
+              filter: brightness(0.95);
+            }
           }
         }
       }

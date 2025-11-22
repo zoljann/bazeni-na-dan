@@ -435,11 +435,19 @@ watch(showFilters, (v) => {
 
         &-location {
           height: 54px;
+
+          &:hover {
+            background-color: rgb(243, 243, 243);
+          }
         }
 
         &-iconbtn {
           width: 54px;
           height: 54px;
+
+          &:hover {
+            background-color: rgb(243, 243, 243);
+          }
         }
 
         &-iconbtn svg {

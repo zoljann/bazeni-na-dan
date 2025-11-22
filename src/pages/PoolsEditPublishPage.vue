@@ -633,7 +633,22 @@ onMounted(async () => {
       &-submit {
         width: 50%;
         justify-self: center;
+
+        &:hover {
+          filter: brightness(0.95);
+        }
       }
+
+      &-input:hover {
+        background-color: rgb(253, 253, 253);
+      }
+    }
+
+    .citydrop-item:hover,
+    .optcheck:hover,
+    .imgadd:hover,
+    .imgtile-del:hover {
+      background-color: rgb(243, 243, 243);
     }
   }
 }

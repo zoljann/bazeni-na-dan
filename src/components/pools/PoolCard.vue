@@ -530,6 +530,13 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     .pool-card-body-quick {
       font-size: 16px;
     }
+
+    .pool-card-actions-edit:hover,
+    .pool-card-actions-delete:hover,
+    .pool-card-media-arrow:not([disabled]):hover,
+    .pool-card-like:hover {
+      filter: brightness(0.95);
+    }
   }
 }
 </style>

@@ -174,5 +174,11 @@ const onConfirm = () => {
       margin: 16px auto;
     }
   }
+
+  &--desktop {
+    .confirmpopup-btn:hover {
+      filter: brightness(0.95);
+    }
+  }
 }
 </style>

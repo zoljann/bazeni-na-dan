@@ -359,6 +359,10 @@ watch(isDropdownOpen, async (open) => {
       transform: translateY(0);
     }
 
+    .location-dropdown-item:hover {
+      color: rgb(83, 83, 83);
+    }
+
     .location-dropdown-handle {
       display: none;
     }

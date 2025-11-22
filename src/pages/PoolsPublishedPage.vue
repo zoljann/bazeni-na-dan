@@ -205,7 +205,7 @@ onMounted(async () => {
 
   &-addbtn {
     height: 42px;
-    border-radius: 999px;
+    border-radius: 12px;
     background: var(--primary-color);
     color: var(--text-color-white);
     font-weight: 700;
@@ -310,11 +310,19 @@ onMounted(async () => {
       }
 
       &-addbtn {
-        width: auto;
+        width: 100%;
+
+        &:hover {
+          filter: brightness(0.95);
+        }
       }
 
       &-addcard {
         height: 390px;
+
+        &-plus:hover {
+          filter: brightness(0.95);
+        }
       }
     }
   }

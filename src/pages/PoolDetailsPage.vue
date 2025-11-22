@@ -632,6 +632,10 @@ onMounted(async () => {
         &-arrow {
           width: 50px;
           height: 50px;
+
+          &:not(.is-disabled):not(:disabled):hover {
+            filter: brightness(0.95);
+          }
         }
       }
 
@@ -643,6 +647,10 @@ onMounted(async () => {
         top: 10px;
         width: 50px;
         height: 50px;
+
+        &:hover {
+          background-color: rgb(243, 243, 243);
+        }
       }
 
       &-body {

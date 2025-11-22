@@ -391,4 +391,11 @@ const togglePick = (c: Cell) => {
     opacity: 0.6;
   }
 }
+
+.availcal--desktop {
+  .availcal-cell:not(.is-available):not(.is-picked):not(.is-disabled):not(.is-blank):hover,
+  .availcal-navbtn:hover {
+    background-color: rgb(243, 243, 243);
+  }
+}
 </style>
