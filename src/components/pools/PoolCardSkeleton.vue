@@ -157,7 +157,7 @@
 
 .skeleton-pill--primary {
   flex: 1;
-  height: 44px; 
+  height: 44px;
 }
 
 .skeleton-circle--small {

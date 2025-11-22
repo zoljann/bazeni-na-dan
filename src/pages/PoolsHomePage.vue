@@ -627,7 +627,7 @@ const scrollToHowItWorks = () => {
 
         &-row {
           &:hover {
-            background-color: rgb(241, 241, 241);
+            background-color: rgb(245, 245, 245);
             border-radius: 16px;
           }
         }
@@ -724,10 +724,12 @@ const scrollToHowItWorks = () => {
             font-size: 16px;
           }
 
-          &-tab, &-plus {
-            &:hover {
-              filter: brightness(0.95);
-            }
+          &-tab:not(.is-active):hover {
+            filter: brightness(0.95);
+          }
+
+          &-plus:hover {
+            filter: brightness(0.95);
           }
         }
       }

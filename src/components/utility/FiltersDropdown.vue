@@ -293,7 +293,8 @@ const classes = computed(() => ({
     color: #374151;
     font-weight: 600;
     cursor: pointer;
-    padding: 8px 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
   }
 
   &-apply {
@@ -345,6 +346,15 @@ const classes = computed(() => ({
 
     .filters-handle {
       display: none;
+    }
+
+    .filters-check:hover,
+    .filters-clear:hover {
+      background-color: rgb(253, 253, 253);
+    }
+
+    .filters-apply:hover {
+      filter: brightness(0.95);
     }
   }
 }

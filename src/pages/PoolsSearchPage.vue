@@ -437,7 +437,7 @@ watch(showFilters, (v) => {
           height: 54px;
 
           &:hover {
-            background-color: rgb(243, 243, 243);
+            background-color: rgb(253, 253, 253);
           }
         }
 
@@ -446,7 +446,7 @@ watch(showFilters, (v) => {
           height: 54px;
 
           &:hover {
-            background-color: rgb(243, 243, 243);
+            background-color: rgb(253, 253, 253);
           }
         }
 
