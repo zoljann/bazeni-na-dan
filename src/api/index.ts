@@ -191,3 +191,55 @@ export async function updatePool(
     return handleApiError(e);
   }
 }
+
+type UpdatePoolVisibilityAdminSuccess = { state: 'success'; pool: Pool };
+
+export async function updatePoolVisibilityAdmin(
+  id: string,
+  payload: { isVisible: boolean; visibleUntil: string | null },
+  adminSecret: string
+): Promise<UpdatePoolVisibilityAdminSuccess | ApiError> {
+  try {
+    const { data } = await api.put(`/pools/${id}/visibility`, payload, {
+      headers: {
+        'x-admin-secret': adminSecret
+      }
+    });
+
+    return { state: 'success', pool: data.pool as Pool };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+type AdminPoolsSuccess = { state: 'success'; pools: Pool[] };
+
+export async function getAdminPools(adminSecret: string): Promise<AdminPoolsSuccess | ApiError> {
+  try {
+    const { data } = await api.get('/admin/pools', {
+      headers: {
+        'x-admin-secret': adminSecret
+      }
+    });
+
+    return { state: 'success', pools: data.pools as Pool[] };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+type AdminUsersSuccess = { state: 'success'; users: User[] };
+
+export async function getAdminUsers(adminSecret: string): Promise<AdminUsersSuccess | ApiError> {
+  try {
+    const { data } = await api.get('/admin/users', {
+      headers: {
+        'x-admin-secret': adminSecret
+      }
+    });
+
+    return { state: 'success', users: data.users as User[] };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}

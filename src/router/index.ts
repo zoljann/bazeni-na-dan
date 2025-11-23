@@ -61,6 +61,12 @@ const router = createRouter({
       component: () => import('../pages/UserProfilePage.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/admin',
+      name: 'AdminHomePage',
+      component: () => import('../pages/admin/AdminHomePage.vue')
+    },
+
     { path: '/:pathMatch(.*)*', redirect: { name: 'PoolsHomePage' } }
   ]
 });
