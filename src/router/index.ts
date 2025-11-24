@@ -66,7 +66,16 @@ const router = createRouter({
       name: 'AdminHomePage',
       component: () => import('../pages/admin/AdminHomePage.vue')
     },
-
+    {
+      path: '/admin/users',
+      name: 'AdminUsersPage',
+      component: () => import('../pages/admin/AdminUsersPage.vue')
+    },
+    {
+      path: '/admin/pools',
+      name: 'AdminPoolsPage',
+      component: () => import('../pages/admin/AdminPoolsPage.vue')
+    },
     { path: '/:pathMatch(.*)*', redirect: { name: 'PoolsHomePage' } }
   ]
 });

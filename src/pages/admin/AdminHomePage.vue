@@ -7,8 +7,10 @@ import { notificationsStore } from '@/stores/notifications';
 import { updatePoolVisibilityAdmin } from '@/api';
 import env from '@/utility/env';
 import { storage } from '@/utility/localStorage';
+import { useRouter } from 'vue-router';
 
 const isMobileView = isMobile();
+const router = useRouter();
 const notifications = notificationsStore();
 const adminPassword = ref('');
 const isAuthed = ref(false);
@@ -92,10 +94,10 @@ const submitVisibility = async () => {
   }
 };
 const openUsersAdmin = () => {
-  console.log('open admin/users');
+  router.push({ name: 'AdminUsersPage' });
 };
 const openPoolsAdmin = () => {
-  console.log('open admin/pools');
+  router.push({ name: 'AdminPoolsPage' });
 };
 </script>
 

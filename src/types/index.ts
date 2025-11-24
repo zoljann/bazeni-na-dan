@@ -11,6 +11,9 @@ export type Pool = {
   busyDays?: string[];
   filters?: { heated: boolean; petsAllowed: boolean };
   owner?: { name: string; avatarUrl: string; mobileNumber: string };
+  visibleUntil: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type User = {
@@ -20,4 +23,6 @@ export type User = {
   email: string;
   mobileNumber: string;
   avatarUrl?: string;
+  createdAt?: string;
+  updatedAt: string;
 };
