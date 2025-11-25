@@ -23,4 +23,10 @@ router.beforeEach((to) => {
   return true;
 });
 
+router.afterEach((to) => {
+  (window as any).gtag?.('config', 'G-037XJC5D1P', {
+    page_path: to.fullPath
+  });
+});
+
 app.mount('#app');

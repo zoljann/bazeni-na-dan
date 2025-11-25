@@ -118,7 +118,7 @@ function fileToBase64(f: File) {
       ctx.drawImage(img, 0, 0, width, height);
 
       const mimeType = f.type === 'image/png' ? 'image/png' : 'image/jpeg';
-      const quality = 0.8;
+      const quality = 0.75;
 
       const dataUrl = canvas.toDataURL(mimeType, quality);
 
