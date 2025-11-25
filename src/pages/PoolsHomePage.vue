@@ -113,14 +113,7 @@ const scrollToHowItWorks = () => {
       </svg>
     </button>
 
-    <div class="content-curly">
-      <img
-        class="content-curly-img"
-        src="../assets/waves.png"
-        alt="Waves"
-      />
-      <h3 class="content-curly-title"></h3>
-    </div>
+    <div class="content-curly"></div>
   </section>
   <section
     class="content-after"
@@ -135,10 +128,10 @@ const scrollToHowItWorks = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">1</span>
-            <h3 class="content-after-how-it-works-body-title">Pronađi bazen koji ti odgovara</h3>
+            <h3 class="content-after-how-it-works-body-title">Pretraži bazene po gradu</h3>
             <p class="content-after-how-it-works-body-text">
-              Pretraži po gradu ili blizini, otvori profil i pregledaj fotke, cijene i pravila
-              kućnog reda. Sačuvaj favorite – vratićeš im se lako.
+              Odaberi grad koji te zanima, pretraži bazene po datumu i filterima, pregledaj slike,
+              cijene i pravila kućnog reda dok ne nađeš bazen koji ti odgovara.
             </p>
           </div>
         </div>
@@ -147,10 +140,11 @@ const scrollToHowItWorks = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">2</span>
-            <h3 class="content-after-how-it-works-body-title">Provjeri termine i detalje</h3>
+            <h3 class="content-after-how-it-works-body-title">Otvori bazen i provjeri kalendar</h3>
             <p class="content-after-how-it-works-body-text">
-              Otvori kalendar dostupnosti, provjeri cijenu za tvoj termin i vidi što je uključeno
-              (muzička oprema, roštilj, parking…).
+              Otvori profil bazena koji ti se sviđa i na dnu stranice provjeri kalendar dostupnosti,
+              ako ga bazen ima. Ako kalendara nema, termin i cijenu možeš provjeriti direktno s
+              domaćinom, a uz to vidi šta je sve uključeno u cijenu (oprema, roštilj, parking..).
             </p>
           </div>
         </div>
@@ -159,10 +153,10 @@ const scrollToHowItWorks = () => {
           <div class="content-after-how-it-works-media"></div>
           <div class="content-after-how-it-works-body">
             <span class="content-after-how-it-works-badge">3</span>
-            <h3 class="content-after-how-it-works-body-title">Javi se domaćinu</h3>
+            <h3 class="content-after-how-it-works-body-title">Nazovi domaćina i potvrdi termin</h3>
             <p class="content-after-how-it-works-body-text">
-              Pozovi broj sa profila, dogovori detalje i potvrdi termin. Dođi na vrijeme i uživaj —
-              sve je spremno za kupanje! 🏊‍♂️
+              Nazovi domaćina na broj naveden na profilu, provjeri slobodan termin, cijenu i ostale
+              detalje, dogovorite se oko dolaska i uživaj u svom danu na bazenu. 🏊‍♂️
             </p>
           </div>
         </div>
@@ -321,28 +315,20 @@ const scrollToHowItWorks = () => {
 
   &-curly {
     position: absolute;
-    bottom: -20px;
+    left: 0;
+    bottom: -1px;
     width: 100%;
-    text-align: center;
+    height: 220px;
+    pointer-events: none;
     overflow: hidden;
-    background: linear-gradient(to bottom, transparent 0 50%, #5cc9ff 100%);
 
-    &-img {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      height: 100%;
-      transform: translateX(-50%);
-      display: block;
-      object-fit: cover;
-    }
-
-    &-title {
-      position: absolute;
-      bottom: 35%;
-      width: 100%;
-      font-weight: 900;
-    }
+    background: linear-gradient(
+      to bottom,
+      rgba(92, 201, 255, 0) 0%,
+      rgba(92, 201, 255, 0.2) 35%,
+      rgba(92, 201, 255, 0.55) 65%,
+      #5cc9ff 100%
+    );
   }
 
   &-after {
@@ -384,15 +370,15 @@ const scrollToHowItWorks = () => {
       }
 
       &-row:nth-child(1) .content-after-how-it-works-media {
-        background: url('../assets/background.jpg') center / cover no-repeat;
+        background: url('../assets/ghibli1.png') center / cover no-repeat;
       }
 
       &-row:nth-child(2) .content-after-how-it-works-media {
-        background: url('../assets/background.jpg') center / cover no-repeat;
+        background: url('../assets/ghibli2.png') center / cover no-repeat;
       }
 
       &-row:nth-child(3) .content-after-how-it-works-media {
-        background: url('../assets/background.jpg') center / cover no-repeat;
+        background: url('../assets/ghibli3.png') center / cover no-repeat;
       }
 
       &-body {
