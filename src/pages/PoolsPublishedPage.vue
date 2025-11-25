@@ -10,7 +10,7 @@ import { deletePool, getAvailablePools } from '../api/index';
 import TitleBar from '.././components/TitleBar.vue';
 import { notificationsStore } from '../stores/notifications';
 import ConfirmPopup from '../components/utility/ConfirmPopup.vue';
-import PoolCardSkeleton from '../components/pools/PoolCardSkeleton.vue'; // NEW
+import PoolCardSkeleton from '../components/pools/PoolCardSkeleton.vue';
 
 const router = useRouter();
 const isMobileView = isMobile();

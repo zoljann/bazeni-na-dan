@@ -25,7 +25,6 @@ api.interceptors.response.use(
       (code === 'TOKEN_EXPIRED' || code === 'TOKEN_INVALID' || code === 'AUTH_REQUIRED')
     ) {
       setAccessToken(null);
-      // optional: route to /login or show toast here
     }
     return Promise.reject(err);
   }
@@ -93,7 +92,8 @@ type UpdateUserPayload = {
   lastName: string;
   email: string;
   mobileNumber: string;
-  avatarBase64?: string; // map to avatarUrl if provided (data URL or direct URL)
+  avatarBase64?: string;
+  removeAvatar?: boolean;
   passwordChange?: { currentPassword: string; newPassword: string };
 };
 
@@ -107,8 +107,22 @@ export async function updateUser(
       email: payload.email,
       mobileNumber: payload.mobileNumber
     };
-    if (payload.avatarBase64) body.avatarUrl = payload.avatarBase64; // backend expects avatarUrl
-    if (payload.passwordChange) body.passwordChange = payload.passwordChange;
+
+    if (payload.removeAvatar) {
+      body.avatarUrl = null;
+    } else if (payload.avatarBase64 && isDataUrl(payload.avatarBase64)) {
+      const uploadRes = await uploadSingleImage(payload.avatarBase64, '/avatars');
+
+      if ((uploadRes as ApiError).state === 'error') {
+        return uploadRes as ApiError;
+      }
+
+      body.avatarUrl = uploadRes as string;
+    }
+
+    if (payload.passwordChange) {
+      body.passwordChange = payload.passwordChange;
+    }
 
     const { data } = await api.put('/user', body);
 
@@ -117,8 +131,6 @@ export async function updateUser(
     return handleApiError(e);
   }
 }
-
-// ===== POOLS =====
 
 export async function getAvailablePools(
   userId?: string
@@ -161,7 +173,32 @@ export async function createPool(
   payload: CreatePoolPayload
 ): Promise<CreatePoolSuccess | ApiError> {
   try {
-    const { data } = await api.post('/pools', payload);
+    const rawImages = payload.pool.images || [];
+    const base64Images = rawImages.filter((img) => isDataUrl(img));
+
+    let imagesToSend: string[] = rawImages;
+
+    if (base64Images.length) {
+      const uploadRes = await uploadMultipleImages(base64Images, '/pools');
+
+      if ((uploadRes as ApiError).state === 'error') {
+        return uploadRes as ApiError;
+      }
+
+      const uploadedUrls = uploadRes as string[];
+      let idx = 0;
+
+      imagesToSend = rawImages.map((img) => (isDataUrl(img) ? uploadedUrls[idx++]! : img));
+    }
+
+    const body = {
+      pool: {
+        ...payload.pool,
+        images: imagesToSend
+      }
+    };
+
+    const { data } = await api.post('/pools', body);
 
     return { state: 'success', pool: data.pool as Pool };
   } catch (e) {
@@ -184,7 +221,32 @@ export async function updatePool(
   payload: CreatePoolPayload
 ): Promise<CreatePoolSuccess | ApiError> {
   try {
-    const { data } = await api.put(`/pools/${id}`, payload);
+    const rawImages = payload.pool.images || [];
+    const base64Images = rawImages.filter((img) => isDataUrl(img));
+
+    let imagesToSend: string[] = rawImages;
+
+    if (base64Images.length) {
+      const uploadRes = await uploadMultipleImages(base64Images, '/pools');
+
+      if ((uploadRes as ApiError).state === 'error') {
+        return uploadRes as ApiError;
+      }
+
+      const uploadedUrls = uploadRes as string[];
+      let idx = 0;
+
+      imagesToSend = rawImages.map((img) => (isDataUrl(img) ? uploadedUrls[idx++]! : img));
+    }
+
+    const body = {
+      pool: {
+        ...payload.pool,
+        images: imagesToSend
+      }
+    };
+
+    const { data } = await api.put(`/pools/${id}`, body);
 
     return { state: 'success', pool: data.pool as Pool };
   } catch (e) {
@@ -239,6 +301,39 @@ export async function getAdminUsers(adminSecret: string): Promise<AdminUsersSucc
     });
 
     return { state: 'success', users: data.users as User[] };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+function isDataUrl(value: string): boolean {
+  return typeof value === 'string' && value.startsWith('data:');
+}
+
+async function uploadSingleImage(fileBase64: string, folder?: string): Promise<string | ApiError> {
+  try {
+    const { data } = await api.post('/upload/image', {
+      file: fileBase64,
+      folder
+    });
+
+    return data.url as string;
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+async function uploadMultipleImages(
+  filesBase64: string[],
+  folder?: string
+): Promise<string[] | ApiError> {
+  try {
+    const { data } = await api.post('/upload/images', {
+      files: filesBase64,
+      folder
+    });
+
+    return data.urls as string[];
   } catch (e) {
     return handleApiError(e);
   }

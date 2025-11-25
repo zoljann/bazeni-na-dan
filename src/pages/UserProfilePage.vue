@@ -13,6 +13,7 @@ const showPwd = ref(false);
 const pwd = ref({ currentPassword: '', newPassword: '' });
 const pwdErrors = ref<{ currentPassword?: string; newPassword?: string }>({});
 const avatarInputRef = ref<HTMLInputElement | null>(null);
+const avatarRemoved = ref(false);
 const isSavingProfile = ref(false);
 const form = ref({
   firstName: '',
@@ -45,11 +46,19 @@ const onAvatarChange = (e: Event) => {
   if (!allowed.includes(f.type) || f.size > 5 * 1024 * 1024) return;
 
   const reader = new FileReader();
-  reader.onload = () => (form.value.avatarPreview = String(reader.result || ''));
+  reader.onload = () => {
+    form.value.avatarPreview = String(reader.result || '');
+    avatarRemoved.value = false;
+  };
   reader.readAsDataURL(f);
 };
 const clearAvatar = () => {
-  console.log('obrisi avatar');
+  form.value.avatarPreview = '';
+  avatarRemoved.value = true;
+
+  if (avatarInputRef.value) {
+    avatarInputRef.value.value = '';
+  }
 };
 const fillFromStore = () => {
   const u = userStore.user!;
@@ -58,6 +67,7 @@ const fillFromStore = () => {
   form.value.email = u.email || '';
   form.value.mobileNumber = u.mobileNumber || '';
   form.value.avatarPreview = u.avatarUrl || '';
+  avatarRemoved.value = false;
   errors.value = {};
   showPwd.value = false;
   pwd.value = { currentPassword: '', newPassword: '' };
@@ -92,6 +102,7 @@ const submit = async () => {
     email: string;
     mobileNumber: string;
     avatarBase64?: string;
+    removeAvatar?: boolean;
     passwordChange?: { currentPassword: string; newPassword: string };
   } = {
     firstName: form.value.firstName,
@@ -100,7 +111,11 @@ const submit = async () => {
     mobileNumber: form.value.mobileNumber
   };
 
-  if (form.value.avatarPreview.startsWith('data:')) payload.avatarBase64 = form.value.avatarPreview;
+  if (avatarRemoved.value) {
+    payload.removeAvatar = true;
+  } else if (form.value.avatarPreview.startsWith('data:')) {
+    payload.avatarBase64 = form.value.avatarPreview;
+  }
   if (wantsPwd)
     payload.passwordChange = {
       currentPassword: pwd.value.currentPassword,
