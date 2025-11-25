@@ -106,7 +106,7 @@ onMounted(() => {
   padding: 16px;
 
   &-shell {
-    max-width: 960px;
+    max-width: 1100px;
     margin: 0 auto;
   }
 

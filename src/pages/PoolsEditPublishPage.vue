@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSortable } from '@vueuse/integrations/useSortable';
 import isMobile from 'is-mobile';
@@ -192,11 +192,12 @@ const focusFirstError = () => {
   (focusable ?? el).focus?.();
 };
 
-useSortable(imgGridRef, imagesRef, {
-  animation: 150
-});
 onMounted(async () => {
-  if (!isEdit.value) return;
+  if (!isEdit.value) {
+    await nextTick();
+    useSortable(imgGridRef, imagesRef, { animation: 150 });
+    return;
+  }
 
   isLoadingPool.value = true;
   try {
@@ -204,21 +205,23 @@ onMounted(async () => {
     if (stored) {
       if (!ensureOwnership(stored)) return;
       fillFromPool(stored);
-      return;
+    } else {
+      const res = await getPoolById(bazenId.value);
+      if (res.state === 'success') {
+        if (!ensureOwnership(res.pool)) return;
+        fillFromPool(res.pool);
+      } else {
+        notifications.addNotification('Došlo je do greške.', 'error');
+        router.replace({ name: 'PoolsHomePage' });
+        return;
+      }
     }
-
-    const res = await getPoolById(bazenId.value);
-    if (res.state === 'success') {
-      if (!ensureOwnership(res.pool)) return;
-      fillFromPool(res.pool);
-      return;
-    }
-
-    notifications.addNotification('Došlo je do greške.', 'error');
-    router.replace({ name: 'PoolsHomePage' });
   } finally {
     isLoadingPool.value = false;
   }
+
+  await nextTick();
+  useSortable(imgGridRef, imagesRef, { animation: 150 });
 });
 </script>
 
