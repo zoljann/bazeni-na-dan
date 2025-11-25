@@ -39,19 +39,63 @@ const passOk = (v: string) => v.length >= 6 && v.length <= 25;
 const mobileOk = (v: string) => /^\d{9,15}$/.test(v);
 const sanitizeMobile = (v: string) => v.replace(/\D/g, '').slice(0, 15);
 const openAvatarPicker = () => avatarInputRef.value?.click();
-const onAvatarChange = (e: Event) => {
+const onAvatarChange = async (e: Event) => {
   const f = (e.target as HTMLInputElement).files?.[0];
   if (!f) return;
+
   const allowed = ['image/png', 'image/jpeg', 'image/webp'];
   if (!allowed.includes(f.type) || f.size > 5 * 1024 * 1024) return;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    form.value.avatarPreview = String(reader.result || '');
-    avatarRemoved.value = false;
-  };
-  reader.readAsDataURL(f);
+  const dataUrl = await fileToAvatarBase64(f);
+  if (!dataUrl) return;
+
+  form.value.avatarPreview = dataUrl;
+  avatarRemoved.value = false;
 };
+function fileToAvatarBase64(file: File): Promise<string | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const maxSize = 400;
+
+      let { width, height } = img;
+      const ratio = Math.min(maxSize / width, maxSize / height, 1);
+      width = width * ratio;
+      height = height * ratio;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        URL.revokeObjectURL(url);
+        resolve(null);
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const quality = 0.7;
+
+      const dataUrl = canvas.toDataURL(mimeType, quality);
+
+      URL.revokeObjectURL(url);
+      resolve(dataUrl);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+
+    img.src = url;
+  });
+}
+
 const clearAvatar = () => {
   form.value.avatarPreview = '';
   avatarRemoved.value = true;

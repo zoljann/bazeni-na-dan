@@ -90,11 +90,48 @@ const onImagesPicked = async (e: Event) => {
   (e.target as HTMLInputElement).value = '';
 };
 function fileToBase64(f: File) {
-  return new Promise<string | null>((r) => {
-    const reader = new FileReader();
-    reader.onload = () => r(typeof reader.result === 'string' ? reader.result : null);
-    reader.onerror = () => r(null);
-    reader.readAsDataURL(f);
+  return new Promise<string | null>((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(f);
+
+    img.onload = () => {
+      const maxWidth = 1600;
+      const maxHeight = 1600;
+
+      let { width, height } = img;
+
+      const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+      width = width * ratio;
+      height = height * ratio;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        URL.revokeObjectURL(url);
+        resolve(null);
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const mimeType = f.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const quality = 0.8;
+
+      const dataUrl = canvas.toDataURL(mimeType, quality);
+
+      URL.revokeObjectURL(url);
+      resolve(dataUrl);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+
+    img.src = url;
   });
 }
 const removeImage = (i: number) => form.value.images.splice(i, 1);
