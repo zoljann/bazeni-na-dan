@@ -14,7 +14,10 @@ const router = createRouter({
       };
     }
 
-    return { top: 0, behavior: 'smooth' };
+    return {
+      left: 0,
+      top: 0
+    };
   },
   routes: [
     {

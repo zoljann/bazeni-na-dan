@@ -82,10 +82,10 @@ const submitVisibility = async () => {
       adminPassword.value.trim()
     );
 
-    if (res.state === 'error') {
-      notifications.addNotification(res.message, 'error');
-    } else {
+    if (res.state === 'success') {
       notifications.addNotification('Vidljivost bazena ažurirana.', 'success');
+    } else {
+      notifications.addNotification(res.message, 'error');
     }
   } catch {
     notifications.addNotification('Ažuriranje vidljivosti nije uspjelo.', 'error');
