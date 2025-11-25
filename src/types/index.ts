@@ -9,7 +9,13 @@ export type Pool = {
   pricePerDay?: number;
   description?: string;
   busyDays?: string[];
-  filters?: { heated: boolean; petsAllowed: boolean };
+  filters?: {
+    heated: boolean;
+    petsAllowed: boolean;
+    partyAllowed: boolean;
+    wiFi: boolean;
+    bbq: boolean;
+  };
   owner?: { name: string; avatarUrl: string; mobileNumber: string };
   visibleUntil: string;
   createdAt: string;

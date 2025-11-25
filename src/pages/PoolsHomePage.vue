@@ -234,7 +234,10 @@ const scrollToHowItWorks = () => {
 .content {
   position: relative;
   min-height: 94vh;
-  background: url('../assets/background.jpg') center / cover no-repeat fixed;
+  background: url('../assets/background.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   display: grid;
   place-items: center;
 
@@ -249,6 +252,8 @@ const scrollToHowItWorks = () => {
       font-weight: 900;
       margin: 0 0 16px;
       width: 90%;
+      color: var(--text-color-white);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
     }
   }
 

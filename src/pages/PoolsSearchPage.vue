@@ -24,7 +24,13 @@ const selectedDate = ref<string | null>(null);
 const showLocationDropdown = ref(false);
 const selectedCity = ref<string>('Sve lokacije');
 const showFilters = ref(false);
-const filters = ref({ petsAllowed: false, heated: false });
+const filters = ref({
+  petsAllowed: false,
+  heated: false,
+  partyAllowed: false,
+  wiFi: false,
+  bbq: false
+});
 
 const filteredPools = computed(() => {
   const iso = selectedDate.value ? selectedDate.value.slice(0, 10) : null;
@@ -35,7 +41,10 @@ const filteredPools = computed(() => {
       (city === 'sve lokacije' || !city || p.city.toLowerCase() === city) &&
       (!iso || (Array.isArray(p.busyDays) && !p.busyDays.includes(iso))) &&
       (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
-      (!filters.value.heated || !!p.filters?.heated)
+      (!filters.value.heated || !!p.filters?.heated) &&
+      (!filters.value.partyAllowed || !!p.filters?.partyAllowed) &&
+      (!filters.value.wiFi || !!p.filters?.wiFi) &&
+      (!filters.value.bbq || !!p.filters?.bbq)
   );
 });
 const displayDate = computed(() => {

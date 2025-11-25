@@ -35,7 +35,7 @@ const form = ref({
   capacity: '',
   pricePerDay: '',
   description: '',
-  filters: { heated: false, petsAllowed: false },
+  filters: { petsAllowed: false, heated: false, partyAllowed: false, wiFi: false, bbq: false },
   enableAvailability: false,
   busyDays: [] as string[],
   images: [] as string[]
@@ -129,7 +129,13 @@ const fillFromPool = (p: Pool) => {
   form.value.capacity = String(p.capacity || '');
   form.value.pricePerDay = p.pricePerDay !== undefined ? String(p.pricePerDay) : '';
   form.value.description = p.description || '';
-  form.value.filters = { heated: !!p?.filters?.heated, petsAllowed: !!p?.filters?.petsAllowed };
+  form.value.filters = {
+    heated: !!p?.filters?.heated,
+    petsAllowed: !!p?.filters?.petsAllowed,
+    partyAllowed: !!p.filters?.partyAllowed,
+    wiFi: !!p.filters?.wiFi,
+    bbq: !!p.filters?.bbq
+  };
   form.value.images = Array.isArray(p.images) ? p.images.slice(0, 7) : [];
   const loadedBusy = Array.isArray(p.busyDays) ? (p.busyDays as string[]) : [];
   form.value.enableAvailability = loadedBusy.length > 0;
@@ -411,12 +417,28 @@ onMounted(async () => {
 
         <div class="auth-field">
           <span class="auth-label">Opcije</span>
+
           <label class="optcheck">
             <input
               type="checkbox"
-              v-model="form.filters.petsAllowed"
+              v-model="form.filters.wiFi"
             />
-            <span class="optcheck-label">🐶 Dozvoljeni ljubimci</span>
+            <span class="optcheck-label">📶 Wi-Fi dostupan</span>
+          </label>
+          <label class="optcheck">
+            <input
+              type="checkbox"
+              v-model="form.filters.bbq"
+            />
+            <span class="optcheck-label">🍖 Roštilj na raspolaganju</span>
+          </label>
+
+          <label class="optcheck">
+            <input
+              type="checkbox"
+              v-model="form.filters.partyAllowed"
+            />
+            <span class="optcheck-label">🎉 Dozvoljene zabave</span>
           </label>
           <label class="optcheck">
             <input
@@ -424,6 +446,13 @@ onMounted(async () => {
               v-model="form.filters.heated"
             />
             <span class="optcheck-label">🔥 Grijani bazen</span>
+          </label>
+          <label class="optcheck">
+            <input
+              type="checkbox"
+              v-model="form.filters.petsAllowed"
+            />
+            <span class="optcheck-label">🐶 Dozvoljeni ljubimci</span>
           </label>
         </div>
 

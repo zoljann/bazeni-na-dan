@@ -3,8 +3,20 @@ import { ref, computed, watch, nextTick } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import isMobile from 'is-mobile';
 
-type PoolFilters = { petsAllowed: boolean; heated: boolean };
-const DEFAULT_FILTERS: PoolFilters = { petsAllowed: false, heated: false };
+type PoolFilters = {
+  petsAllowed: boolean;
+  heated: boolean;
+  partyAllowed: boolean;
+  wiFi: boolean;
+  bbq: boolean;
+};
+const DEFAULT_FILTERS: PoolFilters = {
+  petsAllowed: false,
+  heated: false,
+  partyAllowed: false,
+  wiFi: false,
+  bbq: false
+};
 
 const props = defineProps<{
   modelValue: boolean;
@@ -66,7 +78,14 @@ function onApply() {
   close();
 }
 
-const hasSelected = computed(() => local.value.petsAllowed || local.value.heated);
+const hasSelected = computed(
+  () =>
+    local.value.petsAllowed ||
+    local.value.heated ||
+    local.value.partyAllowed ||
+    local.value.wiFi ||
+    local.value.bbq
+);
 
 const classes = computed(() => ({
   [`filters--${isMobileView ? 'mobile' : 'desktop'}`]: true,
@@ -117,6 +136,45 @@ const classes = computed(() => ({
               <input
                 type="checkbox"
                 v-model="local.heated"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
+            </label>
+          </li>
+          <li class="filters-list-item">
+            <label class="filters-check">
+              <span class="filters-check-label">Dozvoljene zabave</span>
+              <input
+                type="checkbox"
+                v-model="local.partyAllowed"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
+            </label>
+          </li>
+          <li class="filters-list-item">
+            <label class="filters-check">
+              <span class="filters-check-label">Dostupan wi-fi</span>
+              <input
+                type="checkbox"
+                v-model="local.wiFi"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
+            </label>
+          </li>
+          <li class="filters-list-item">
+            <label class="filters-check">
+              <span class="filters-check-label">Roštilj na raspolaganju</span>
+              <input
+                type="checkbox"
+                v-model="local.bbq"
               />
               <span
                 class="filters-check-box"

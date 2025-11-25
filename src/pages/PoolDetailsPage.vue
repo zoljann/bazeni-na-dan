@@ -32,6 +32,9 @@ const selectedPoolId = computed(() => route.query.id as string);
 const isPoolAddedToFavorites = computed(() => isPoolFavorite(pool.value!));
 const hasHeated = computed(() => !!pool.value?.filters?.heated);
 const hasPets = computed(() => !!pool.value?.filters?.petsAllowed);
+const hasPartyAllowed = computed(() => !!pool.value?.filters?.partyAllowed);
+const hasWifi = computed(() => !!pool.value?.filters?.wiFi);
+const hasBbq = computed(() => !!pool.value?.filters?.bbq);
 const poolDetailsClasses = computed(() => ({
   [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
@@ -260,22 +263,57 @@ onMounted(async () => {
           <li class="pool-details-feature">
             <span
               class="pool-details-feature-icon"
-              :class="{ 'is-on': hasHeated, 'is-off': !hasHeated }"
-              >🔥</span
+              :class="{ 'is-on': hasWifi, 'is-off': !hasWifi }"
             >
-            <span class="pool-details-feature-text">{{
-              hasHeated ? 'Grijani bazen' : 'Bez grijanja'
-            }}</span>
+              📶
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasWifi ? 'Wi-Fi dostupan' : 'Wi-Fi nije dostupan' }}
+            </span>
+          </li>
+          <li class="pool-details-feature">
+            <span
+              class="pool-details-feature-icon"
+              :class="{ 'is-on': hasBbq, 'is-off': !hasBbq }"
+            >
+              🍖
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasBbq ? 'Roštilj na raspolaganju' : 'Nema roštilja' }}
+            </span>
+          </li>
+          <li class="pool-details-feature">
+            <span
+              class="pool-details-feature-icon"
+              :class="{ 'is-on': hasPartyAllowed, 'is-off': !hasPartyAllowed }"
+            >
+              🎉
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasPartyAllowed ? 'Dozvoljene zabave' : 'Zabave nisu dozvoljene' }}
+            </span>
+          </li>
+          <li class="pool-details-feature">
+            <span
+              class="pool-details-feature-icon"
+              :class="{ 'is-on': hasHeated, 'is-off': !hasHeated }"
+            >
+              🔥
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasHeated ? 'Grijani bazen' : 'Bez grijanja' }}
+            </span>
           </li>
           <li class="pool-details-feature">
             <span
               class="pool-details-feature-icon"
               :class="{ 'is-on': hasPets, 'is-off': !hasPets }"
-              >🐶</span
             >
-            <span class="pool-details-feature-text">{{
-              hasPets ? 'Dozvoljeni ljubimci' : 'Ljubimci nisu dozvoljeni'
-            }}</span>
+              🐶
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasPets ? 'Ljubimci dozvoljeni' : 'Ljubimci nisu dozvoljeni' }}
+            </span>
           </li>
         </ul>
       </section>
@@ -534,7 +572,6 @@ onMounted(async () => {
     grid-template-columns: 34px 1fr;
     align-items: center;
     gap: 10px;
-    padding: 10px;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     background: #fbfdff;

@@ -164,7 +164,13 @@ type CreatePoolPayload = {
     images: string[];
     pricePerDay?: number;
     description?: string;
-    filters?: { heated: boolean; petsAllowed: boolean };
+    filters?: {
+      heated: boolean;
+      petsAllowed: boolean;
+      partyAllowed: boolean;
+      wiFi: boolean;
+      bbq: boolean;
+    };
     busyDays?: string[];
   };
 };
