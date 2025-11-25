@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
+  <url>
+    <loc>https://bazeni-na-dan.com/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/pretraga</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/pretraga?grad=Mostar</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/pretraga?grad=Sarajevo</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/pretraga?grad=Banja%20Luka</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/pretraga?grad=Tuzla</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bazeni-na-dan.com/sacuvani</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

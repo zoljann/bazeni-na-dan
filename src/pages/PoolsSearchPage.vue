@@ -88,7 +88,12 @@ const emptyText = computed(() => {
   if (filtersCount.value > 0) return 'Nema bazena sa izabranim filterima.';
   return 'Nema objavljenih bazena.';
 });
-
+const currentCityTitle = computed(() => {
+  if (!selectedCity.value || selectedCity.value === 'Sve lokacije') {
+    return 'Bosni i Hercegovini';
+  }
+  return selectedCity.value;
+});
 const searchClasses = computed(() => ({
   [`search--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
@@ -118,6 +123,36 @@ const toggleFilters = () => {
 const openPool = (id: string) => {
   router.push({ name: 'PoolDetailsPage', query: { id } });
 };
+const updateSeo = () => {
+  const cityLabel =
+    !selectedCity.value || selectedCity.value === 'Sve lokacije'
+      ? 'Bosni i Hercegovini'
+      : selectedCity.value;
+
+  document.title = `Bazeni na dan – privatni bazeni za najam u ${cityLabel}`;
+
+  let desc = document.querySelector("meta[name='description']");
+  if (!desc) {
+    desc = document.createElement('meta');
+    desc.setAttribute('name', 'description');
+    document.head.appendChild(desc);
+  }
+  desc.setAttribute(
+    'content',
+    `Iznajmi privatni bazen na dan u ${cityLabel}. Pronađi i rezerviši privatne bazene za druženje, rođendane i proslave.`
+  );
+
+  const baseUrl = 'https://bazeni-na-dan.com';
+  const href = baseUrl + route.fullPath;
+
+  let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', href);
+};
 
 onMounted(async () => {
   const res = await getAvailablePools();
@@ -136,6 +171,7 @@ watch(
   () => route.query.grad,
   (city) => {
     selectedCity.value = (city as string) || 'Sve lokacije';
+    updateSeo();
   },
   { immediate: true }
 );
@@ -154,6 +190,7 @@ watch(showFilters, (v) => {
     class="search"
     :class="searchClasses"
   >
+    <h1 class="visually-hidden">Bazeni na dan – pretraga bazena na dan u {{ currentCityTitle }}</h1>
     <div class="search-controls">
       <div class="search-locwrap">
         <button
@@ -417,6 +454,18 @@ watch(showFilters, (v) => {
     color: #6b7280;
     font-weight: 700;
     line-height: 1;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   &--mobile {

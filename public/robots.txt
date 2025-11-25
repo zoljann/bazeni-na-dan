@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin
+
+Sitemap: https://bazeni-na-dan.com/sitemap.xml

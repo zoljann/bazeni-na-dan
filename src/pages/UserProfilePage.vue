@@ -201,7 +201,7 @@ onMounted(() => {
           <img
             v-if="form.avatarPreview"
             :src="form.avatarPreview"
-            alt="Avatar"
+            alt="Avatar bazeni"
             class="auth-avatar-img"
           />
           <div

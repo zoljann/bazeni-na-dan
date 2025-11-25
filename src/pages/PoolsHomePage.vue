@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Navigation from '../components/Navigation.vue';
 import isMobile from 'is-mobile';
 import LocationDropdown from '../components/utility/LocationDropdown.vue';
@@ -39,6 +39,69 @@ const scrollToHowItWorks = () => {
     block: 'start'
   });
 };
+const updateSeoHome = () => {
+  document.title = 'Bazeni na dan – iznajmi privatne bazene na dan u BiH';
+
+  let desc = document.querySelector("meta[name='description']");
+  if (!desc) {
+    desc = document.createElement('meta');
+    desc.setAttribute('name', 'description');
+    document.head.appendChild(desc);
+  }
+  desc.setAttribute(
+    'content',
+    'Bazeni na dan je platforma za pretragu i iznajmljivanje privatnih bazena na dan širom Bosne i Hercegovine. Pretraži bazene po gradu, datumu i filterima i pronađi idealan bazen za druženje, rođendane i proslave.'
+  );
+
+  const href = 'https://bazeni-na-dan.com/';
+
+  let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', href);
+
+  const faqEntities = [
+    ...(faqData.guests || []).map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a
+      }
+    })),
+    ...(faqData.hosts || []).map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a
+      }
+    }))
+  ];
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities
+  };
+
+  let faqScript = document.querySelector('#faq-schema') as HTMLScriptElement | null;
+  if (!faqScript) {
+    faqScript = document.createElement('script');
+    faqScript.type = 'application/ld+json';
+    faqScript.id = 'faq-schema';
+    document.head.appendChild(faqScript);
+  }
+  faqScript.text = JSON.stringify(faqSchema);
+};
+
+onMounted(() => {
+  updateSeoHome();
+});
+
 </script>
 
 <template>

@@ -118,7 +118,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown));
             <img
               class="image-preview-img"
               :src="img"
-              alt="pregled slike"
+              alt="pregled slike bazen na dan iznajmljivanje"
               draggable="false"
             />
           </SwiperSlide>

@@ -57,17 +57,77 @@ const onSlideChange = (sw: any) => {
 };
 const goPrev = () => swiperRef.value?.slidePrev();
 const goNext = () => swiperRef.value?.slideNext();
+const buildPoolDescription = (p: Pool): string => {
+  const city = p.city || 'Bosni i Hercegovini';
+  const base =
+    (p.description && p.description.trim()) ||
+    `Privatni bazen za dnevni najam u ${city} za do ${p.capacity} gostiju. Iznajmi bazen na dan i uživaj sa društvom ili porodicom.`;
+
+  const normalized = base.replace(/\s+/g, ' ');
+  return normalized.length > 155 ? normalized.slice(0, 152) + '...' : normalized;
+};
+
+const updateSeoPool = (p: Pool) => {
+  const city = p.city || 'Bosni i Hercegovini';
+  const baseUrl = 'https://bazeni-na-dan.com';
+  const pageUrl = baseUrl + route.fullPath;
+  const desc = buildPoolDescription(p);
+
+  document.title = `${p.title} – bazen na dan ${city}`;
+
+  let descTag = document.querySelector("meta[name='description']");
+  if (!descTag) {
+    descTag = document.createElement('meta');
+    descTag.setAttribute('name', 'description');
+    document.head.appendChild(descTag);
+  }
+  descTag.setAttribute('content', desc);
+
+  let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', pageUrl);
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: p.title,
+    description: desc,
+    url: pageUrl,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: city,
+      addressCountry: 'Bosnia and Herzegovina'
+    },
+    telephone: p.owner?.mobileNumber || undefined,
+    priceRange: p.pricePerDay ? `${p.pricePerDay} BAM` : undefined
+  };
+
+  let schemaScript = document.querySelector('#pool-schema') as HTMLScriptElement | null;
+  if (!schemaScript) {
+    schemaScript = document.createElement('script');
+    schemaScript.type = 'application/ld+json';
+    schemaScript.id = 'pool-schema';
+    document.head.appendChild(schemaScript);
+  }
+  schemaScript.text = JSON.stringify(schema);
+};
 
 onMounted(async () => {
   const storedPool = poolsStore.findPoolById(selectedPoolId.value);
   if (storedPool) {
     pool.value = storedPool;
+    updateSeoPool(storedPool);
     return;
   }
 
   const res = await getPoolById(selectedPoolId.value);
   if (res.state === 'success') {
     pool.value = res.pool;
+    updateSeoPool(res.pool);
   } else {
     useNotificationsStore.addNotification('Odabrani bazen ne postoji', 'error');
     router.replace({ name: 'PoolsSearchPage' });
@@ -130,7 +190,8 @@ onMounted(async () => {
               <img
                 class="pool-details-media-img"
                 :src="img"
-                alt="bazen slike"
+                :alt="`Privatni bazen na dan u ${pool.city} – ${pool.title}`"
+                decoding="async"
                 @click="openPreview(i)"
               />
             </SwiperSlide>
@@ -193,7 +254,7 @@ onMounted(async () => {
               :src="
                 pool.owner?.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
               "
-              alt="avatar domaćina"
+              alt="avatar bazeni na dan"
               class="pool-details-host-avatar-img"
             />
           </div>

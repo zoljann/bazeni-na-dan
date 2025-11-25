@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
         <img
           class="navigation-left-logo"
           src="../assets/logo.png"
-          alt="Bazeni na dan"
+          alt="Bazeni na dan BiH"
         />
         <h3
           v-if="!isMobileView && props.variant === 'solid'"

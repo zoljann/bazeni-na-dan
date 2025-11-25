@@ -59,10 +59,12 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
 </script>
 
 <template>
-  <div
+  <article
     class="pool-card"
     :class="poolCardClasses"
     @click="onPoolClick"
+    itemscope
+    itemtype="https://schema.org/LocalBusiness"
   >
     <div class="pool-card-media">
       <Swiper
@@ -79,7 +81,10 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
           <img
             class="pool-card-media-img"
             :src="img"
-            alt="bazen slike"
+            :alt="`Iznajmi bazen na dan u ${pool.city} – ${pool.title}`"
+            loading="lazy"
+            decoding="async"
+            itemprop="image"
           />
         </SwiperSlide>
       </Swiper>
@@ -159,7 +164,12 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     </div>
 
     <div class="pool-card-body">
-      <h3 class="pool-card-body-title">{{ pool.title }}</h3>
+      <h3
+        class="pool-card-body-title"
+        itemprop="name"
+      >
+        {{ pool.title }}
+      </h3>
       <div class="pool-card-body-meta">
         <span class="pool-card-body-meta-item">
           <svg
@@ -180,7 +190,11 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
               fill="currentColor"
             />
           </svg>
-          <span class="pool-card-body-meta-text">{{ pool.city }}</span>
+          <span
+            class="pool-card-body-meta-text"
+            itemprop="address"
+            >{{ pool.city }}</span
+          >
         </span>
         <span class="pool-card-body-meta-item">
           <svg
@@ -316,7 +330,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       @cancel="showVisibilityInfo = false"
       @update:open="(v) => (showVisibilityInfo = v)"
     />
-  </div>
+  </article>
 </template>
 
 <style scoped lang="scss">
