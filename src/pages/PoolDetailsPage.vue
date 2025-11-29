@@ -362,7 +362,7 @@ onMounted(async () => {
               🔥
             </span>
             <span class="pool-details-feature-text">
-              {{ hasHeated ? 'Grijani bazen' : 'Bez grijanja' }}
+              {{ hasHeated ? 'Grijani bazen' : 'Nije grijani bazen' }}
             </span>
           </li>
           <li class="pool-details-feature">

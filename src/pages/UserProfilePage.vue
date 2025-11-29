@@ -272,7 +272,6 @@ onMounted(() => {
             class="auth-input"
             type="text"
             autocomplete="given-name"
-            maxlength="40"
           />
           <p
             v-if="errors.firstName"
@@ -297,7 +296,6 @@ onMounted(() => {
             class="auth-input"
             type="text"
             autocomplete="family-name"
-            maxlength="40"
           />
           <p
             v-if="errors.lastName"
@@ -323,7 +321,6 @@ onMounted(() => {
             type="email"
             inputmode="email"
             autocomplete="email"
-            maxlength="60"
           />
           <p
             v-if="errors.email"
@@ -350,7 +347,6 @@ onMounted(() => {
             type="tel"
             inputmode="numeric"
             pattern="[0-9]*"
-            maxlength="15"
           />
           <p
             v-if="errors.mobileNumber"
@@ -398,7 +394,6 @@ onMounted(() => {
               v-model="pwd.currentPassword"
               class="auth-input"
               autocomplete="current-password"
-              maxlength="25"
             />
             <p
               v-if="pwdErrors.currentPassword"
@@ -422,7 +417,6 @@ onMounted(() => {
               v-model="pwd.newPassword"
               class="auth-input"
               autocomplete="new-password"
-              maxlength="25"
             />
             <p
               v-if="pwdErrors.newPassword"

@@ -76,7 +76,6 @@ const pickCity = (c: string) => {
   form.value.city = c;
   showCityDropdown.value = false;
 };
-const sanitizeInt = (v: string, maxLen = 6) => v.replace(/\D+/g, '').slice(0, maxLen);
 const onImagesPicked = async (e: Event) => {
   const files = Array.from((e.target as HTMLInputElement).files || []);
   if (!files.length) return;
@@ -142,17 +141,37 @@ const openImagePreview = (index: number) => {
 const validate = () => {
   errors.value = {};
   const t = form.value.title.trim();
-  if (t.length < 3 || t.length > 40) errors.value.title = 'Naslov mora imati 3–40 karaktera.';
+  if (t.length < 3 || t.length > 40) errors.value.title = 'Naslov mora imati od 3 do 40 karaktera.';
   if (!form.value.city || !allCities.includes(form.value.city))
     errors.value.city = 'Odaberite grad iz liste.';
-  const cap = Number(form.value.capacity);
-  if (!cap || cap < 1 || cap > 100)
-    errors.value.capacity = 'Unesite maksimalni kapacitet gostiju od 1–100.';
-  const price = form.value.pricePerDay ? Number(form.value.pricePerDay) : undefined;
-  if (form.value.pricePerDay && (!price || price < 1 || price > 10000))
-    errors.value.pricePerDay = 'Unesite iznos 1–10000 ili ostavite prazno.';
+
+  const rawCap = form.value.capacity.trim();
+  if (!rawCap) {
+    errors.value.capacity = 'Unesite maksimalni kapacitet gostiju.';
+  } else if (!/^\d+$/.test(rawCap)) {
+    errors.value.capacity = 'Dozvoljene su samo cifre.';
+  } else {
+    const cap = Number(rawCap);
+    if (cap < 1 || cap > 100) {
+      errors.value.capacity = 'Unesite maksimalni kapacitet gostiju od 1 do 100.';
+    }
+  }
+
+  const rawPrice = form.value.pricePerDay.trim();
+  if (rawPrice) {
+    if (!/^\d+$/.test(rawPrice)) {
+      errors.value.pricePerDay = 'Dozvoljene su samo cifre.';
+    } else {
+      const price = Number(rawPrice);
+      if (price < 1 || price > 10000) {
+        errors.value.pricePerDay = 'Unesite iznos 1 do 10000 ili ostavite prazno.';
+      }
+    }
+  }
+
   const d = form.value.description.trim();
-  if (d && (d.length < 1 || d.length > 300)) errors.value.description = '1–300 karaktera.';
+  if (d && (d.length < 1 || d.length > 650))
+    errors.value.description = 'Opis može biti od 1 do 650 karaktera.';
   if (form.value.images.length < 1 || form.value.images.length > 7)
     errors.value.images = 'Dodajte minimalno 1 a maksimalno 7 slika.';
 
@@ -288,6 +307,7 @@ onMounted(async () => {
         v-else
         class="auth-form"
         @submit.prevent="submit"
+        novalidate
       >
         <div
           class="auth-field"
@@ -304,7 +324,6 @@ onMounted(async () => {
             v-model.trim="form.title"
             class="auth-input"
             type="text"
-            maxlength="40"
           />
           <p
             v-if="errors.title"
@@ -350,7 +369,6 @@ onMounted(async () => {
               v-model="cityQuery"
               class="auth-input citydrop-search"
               type="text"
-              maxlength="40"
               placeholder="Pretraga"
             />
             <div class="citydrop-list">
@@ -386,12 +404,9 @@ onMounted(async () => {
           >
           <input
             id="capacity"
-            :value="form.capacity"
-            @input="form.capacity = sanitizeInt(($event.target as HTMLInputElement).value, 3)"
+            v-model="form.capacity"
             class="auth-input"
             inputmode="numeric"
-            pattern="[0-9]*"
-            maxlength="3"
           />
           <p
             v-if="errors.capacity"
@@ -413,12 +428,9 @@ onMounted(async () => {
           >
           <input
             id="price"
-            :value="form.pricePerDay"
-            @input="form.pricePerDay = sanitizeInt(($event.target as HTMLInputElement).value, 5)"
+            v-model="form.pricePerDay"
             class="auth-input"
             inputmode="numeric"
-            pattern="[0-9]*"
-            maxlength="5"
           />
           <p
             v-if="errors.pricePerDay"
@@ -442,7 +454,7 @@ onMounted(async () => {
             id="desc"
             v-model.trim="form.description"
             class="auth-input textarea"
-            maxlength="300"
+            maxlength="650"
           />
           <p
             v-if="errors.description"

@@ -100,14 +100,16 @@ const cells = computed<Cell[]>(() => {
 
     if (mode.value === 'view') {
       const isBusy = busySet.value.has(iso);
+      const isUnavailable = isBusy || isPast;
+
       out.push({
         iso,
         label: d,
         disabled: true,
         classes: {
           'availcal-cell': true,
-          'is-available': !isBusy,
-          'is-disabled': isBusy
+          'is-available': !isUnavailable,
+          'is-disabled': isUnavailable
         }
       });
     } else {

@@ -112,7 +112,6 @@ const submitLogin = async () => {
             class="auth-input"
             type="text"
             autocomplete="given-name"
-            maxlength="40"
           />
           <p
             v-if="regErrors.firstName"
@@ -137,7 +136,6 @@ const submitLogin = async () => {
             class="auth-input"
             type="text"
             autocomplete="family-name"
-            maxlength="40"
           />
           <p
             v-if="regErrors.lastName"
@@ -163,7 +161,6 @@ const submitLogin = async () => {
             type="email"
             inputmode="email"
             autocomplete="email"
-            maxlength="60"
           />
           <p
             v-if="regErrors.email"
@@ -190,7 +187,6 @@ const submitLogin = async () => {
             type="tel"
             inputmode="numeric"
             pattern="[0-9]*"
-            maxlength="15"
           />
           <p
             v-if="regErrors.mobileNumber"
@@ -216,7 +212,6 @@ const submitLogin = async () => {
               class="auth-input"
               :type="showRegPassword ? 'text' : 'password'"
               autocomplete="new-password"
-              maxlength="25"
             />
             <button
               type="button"
@@ -299,7 +294,6 @@ const submitLogin = async () => {
             type="email"
             inputmode="email"
             autocomplete="email"
-            maxlength="60"
           />
           <p
             v-if="loginErrors.email"
@@ -325,7 +319,6 @@ const submitLogin = async () => {
               class="auth-input"
               :type="showLoginPassword ? 'text' : 'password'"
               autocomplete="current-password"
-              maxlength="25"
             />
             <button
               type="button"
