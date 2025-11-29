@@ -18,6 +18,9 @@ export type Pool = {
   };
   owner?: { name: string; avatarUrl: string; mobileNumber: string };
   visibleUntil: string;
+  checkIn?: string;
+  checkOut?: string;
+  rulesDescription?: string;
   createdAt: string;
   updatedAt: string;
 };

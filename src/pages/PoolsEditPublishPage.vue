@@ -35,6 +35,9 @@ const form = ref({
   capacity: '',
   pricePerDay: '',
   description: '',
+  rulesDescription: '',
+  checkIn: '',
+  checkOut: '',
   filters: { petsAllowed: false, heated: false, partyAllowed: false, wiFi: false, bbq: false },
   enableAvailability: false,
   busyDays: [] as string[],
@@ -46,6 +49,9 @@ const errors = ref<{
   capacity?: string;
   pricePerDay?: string;
   description?: string;
+  rulesDescription?: string;
+  checkIn?: string;
+  checkOut?: string;
   images?: string;
 }>({});
 const fieldRefs = ref<Record<string, HTMLElement | null>>({
@@ -54,6 +60,9 @@ const fieldRefs = ref<Record<string, HTMLElement | null>>({
   capacity: null,
   pricePerDay: null,
   description: null,
+  rulesDescription: null,
+  checkIn: null,
+  checkOut: null,
   images: null
 });
 
@@ -170,8 +179,39 @@ const validate = () => {
   }
 
   const d = form.value.description.trim();
-  if (d && (d.length < 1 || d.length > 650))
-    errors.value.description = 'Opis može biti od 1 do 650 karaktera.';
+  if (!d || d.length > 800) {
+    errors.value.description = 'Opis može biti od 1 do 800 karaktera.';
+  }
+
+  const rules = form.value.rulesDescription.trim();
+  if (rules && rules.length > 650) {
+    errors.value.rulesDescription = 'Pravila bazena mogu imati do 650 karaktera.';
+  }
+
+  const rawCheckIn = form.value.checkIn.trim();
+  if (rawCheckIn) {
+    if (!/^\d+$/.test(rawCheckIn)) {
+      errors.value.checkIn = 'Dozvoljene su samo cifre.';
+    } else {
+      const ci = Number(rawCheckIn);
+      if (ci < 1 || ci > 24) {
+        errors.value.checkIn = 'Unesite sat od 1 do 24 ili ostavite prazno.';
+      }
+    }
+  }
+
+  const rawCheckOut = form.value.checkOut.trim();
+  if (rawCheckOut) {
+    if (!/^\d+$/.test(rawCheckOut)) {
+      errors.value.checkOut = 'Dozvoljene su samo cifre.';
+    } else {
+      const co = Number(rawCheckOut);
+      if (co < 1 || co > 24) {
+        errors.value.checkOut = 'Unesite sat od 1 do 24 ili ostavite prazno.';
+      }
+    }
+  }
+
   if (form.value.images.length < 1 || form.value.images.length > 7)
     errors.value.images = 'Dodajte minimalno 1 a maksimalno 7 slika.';
 
@@ -185,10 +225,13 @@ const fillFromPool = (p: Pool) => {
   form.value.capacity = String(p.capacity || '');
   form.value.pricePerDay = p.pricePerDay !== undefined ? String(p.pricePerDay) : '';
   form.value.description = p.description || '';
+  form.value.rulesDescription = p.rulesDescription || '';
+  form.value.checkIn = p.checkIn !== undefined && p.checkIn !== null ? String(p.checkIn) : '';
+  form.value.checkOut = p.checkOut !== undefined && p.checkOut !== null ? String(p.checkOut) : '';
   form.value.filters = {
     heated: !!p?.filters?.heated,
     petsAllowed: !!p?.filters?.petsAllowed,
-    partyAllowed: !!p.filters?.partyAllowed,
+    partyAllowed: !!p?.filters?.partyAllowed,
     wiFi: !!p.filters?.wiFi,
     bbq: !!p.filters?.bbq
   };
@@ -209,6 +252,9 @@ const submit = async () => {
       images: form.value.images.slice(0, 7),
       pricePerDay: form.value.pricePerDay ? Number(form.value.pricePerDay) : undefined,
       description: form.value.description.trim() || undefined,
+      rulesDescription: form.value.rulesDescription.trim() || undefined,
+      checkIn: form.value.checkIn ? Number(form.value.checkIn) : undefined,
+      checkOut: form.value.checkOut ? Number(form.value.checkOut) : undefined,
       filters: { ...form.value.filters },
       busyDays: form.value.enableAvailability ? [...form.value.busyDays].sort() : undefined
     }
@@ -452,13 +498,14 @@ onMounted(async () => {
           <label
             for="desc"
             class="auth-label"
-            >Opis</label
           >
+            Opis <span class="req">*</span>
+          </label>
           <textarea
             id="desc"
             v-model.trim="form.description"
             class="auth-input textarea"
-            maxlength="650"
+            maxlength="800"
           />
           <p
             v-if="errors.description"
@@ -466,6 +513,99 @@ onMounted(async () => {
           >
             {{ errors.description }}
           </p>
+        </div>
+
+        <div
+          class="auth-field"
+          :class="{ 'has-error': !!errors.rulesDescription }"
+          :ref="setFieldRef('rulesDescription')"
+        >
+          <label
+            for="rules"
+            class="auth-label"
+          >
+            Pravila bazena (opcionalno)
+          </label>
+          <textarea
+            id="rules"
+            v-model.trim="form.rulesDescription"
+            class="auth-input textarea"
+            maxlength="650"
+          />
+          <p
+            v-if="errors.rulesDescription"
+            class="auth-error"
+          >
+            {{ errors.rulesDescription }}
+          </p>
+        </div>
+
+        <div class="auth-field auth-field--row">
+          <div
+            class="auth-field-inner"
+            :class="{ 'has-error': !!errors.checkIn }"
+            :ref="setFieldRef('checkIn')"
+          >
+            <label
+              for="checkin"
+              class="auth-label"
+            >
+              Prijava u (koliko sati, opcionalno)
+            </label>
+            <select
+              id="checkin"
+              v-model="form.checkIn"
+              class="auth-input"
+            >
+              <option value="">Odaberi</option>
+              <option
+                v-for="h in 24"
+                :key="h"
+                :value="String(h)"
+              >
+                {{ h }}h
+              </option>
+            </select>
+            <p
+              v-if="errors.checkIn"
+              class="auth-error"
+            >
+              {{ errors.checkIn }}
+            </p>
+          </div>
+
+          <div
+            class="auth-field-inner"
+            :class="{ 'has-error': !!errors.checkOut }"
+            :ref="setFieldRef('checkOut')"
+          >
+            <label
+              for="checkout"
+              class="auth-label"
+            >
+              Odjava u (koliko sati, opcionalno)
+            </label>
+            <select
+              id="checkout"
+              v-model="form.checkOut"
+              class="auth-input"
+            >
+              <option value="">Odaberi</option>
+              <option
+                v-for="h in 24"
+                :key="h"
+                :value="String(h)"
+              >
+                {{ h }}h
+              </option>
+            </select>
+            <p
+              v-if="errors.checkOut"
+              class="auth-error"
+            >
+              {{ errors.checkOut }}
+            </p>
+          </div>
         </div>
 
         <div class="auth-field">
@@ -679,6 +819,16 @@ onMounted(async () => {
   .has-error .auth-input {
     border-color: #ffb3b3;
     background: #fff4f4;
+  }
+
+  &-field--row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 10px;
+  }
+
+  &-field-inner {
+    display: grid;
+    gap: 6px;
   }
 
   &-submit {

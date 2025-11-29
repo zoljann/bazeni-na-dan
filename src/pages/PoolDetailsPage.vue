@@ -268,8 +268,9 @@ onMounted(async () => {
           <a
             v-if="!isMobileView"
             class="pool-details-host-phone"
-            >📞 {{ pool.owner?.mobileNumber }}</a
           >
+            📞 {{ pool.owner?.mobileNumber }}
+          </a>
         </div>
 
         <div class="pool-details-card pool-details-price">
@@ -311,8 +312,40 @@ onMounted(async () => {
         <h2 class="pool-details-section-title">O bazenu</h2>
         <p class="pool-details-text">
           {{ pool.description }}
+
+          <template v-if="pool.checkIn || pool.checkOut">
+            <br />
+            <br />
+            <strong class="pool-details-timerules-inline">
+              <span class="pool-details-timerules-icon">⏰</span>
+
+              <span v-if="pool.checkIn"> Dolazak od {{ pool.checkIn }}h </span>
+
+              <span
+                v-if="pool.checkIn && pool.checkOut"
+                class="pool-details-timerules-separator"
+                >,
+              </span>
+
+              <span v-if="pool.checkOut"> odlazak do {{ pool.checkOut }}h </span>
+            </strong>
+          </template>
         </p>
       </section>
+
+      <div class="pool-details-card pool-details-calendar">
+        <AvailabilityCalendar
+          v-if="Array.isArray(pool.busyDays)"
+          :busy-days="pool.busyDays"
+        />
+        <p
+          v-else
+          class="pool-details-text"
+        >
+          Domaćin nije uključio kalendar dostupnosti. Kontaktirajte ga za više informacija na
+          {{ pool.owner?.mobileNumber }}
+        </p>
+      </div>
 
       <section class="pool-details-card pool-details-featureswrap">
         <h2 class="pool-details-section-title">Mogućnosti</h2>
@@ -378,20 +411,16 @@ onMounted(async () => {
           </li>
         </ul>
       </section>
-    </div>
 
-    <div class="pool-details-calendar">
-      <AvailabilityCalendar
-        v-if="Array.isArray(pool.busyDays)"
-        :busy-days="pool.busyDays"
-      />
-      <p
-        v-else
-        class="pool-details-text"
+      <section
+        v-if="pool.rulesDescription"
+        class="pool-details-card pool-details-timerules"
       >
-        Domaćin nije uključio kalendar dostupnosti. Kontaktirajte ga za više informacija na
-        {{ pool.owner?.mobileNumber }}
-      </p>
+        <h2 class="pool-details-section-title">Pravila bazena</h2>
+        <p class="pool-details-text pool-details-timerules-text">
+          {{ pool.rulesDescription }}
+        </p>
+      </section>
     </div>
   </section>
 
@@ -487,15 +516,6 @@ onMounted(async () => {
     }
   }
 
-  &-about {
-    max-height: 350px;
-    display: grid;
-
-    .pool-details-text {
-      overflow: auto;
-    }
-  }
-
   &-card {
     border: 1px solid #e5e7eb;
     border-radius: 16px;
@@ -523,6 +543,7 @@ onMounted(async () => {
 
     &-avatar {
       border-radius: 50%;
+      overflow: hidden;
     }
 
     &-avatar-img {
@@ -591,11 +612,19 @@ onMounted(async () => {
     }
   }
 
-  &-calendar {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(2, 8, 23, 0.06);
-    padding: 12px;
+  &-timerules-inline {
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    border: 1px solid #bfdbfe;
+    color: #023c63;
+    font-weight: 800;
+  }
+
+  &-timerules-separator {
+    opacity: 0.6;
   }
 
   &-body {
@@ -614,12 +643,8 @@ onMounted(async () => {
   }
 
   &-featureswrap {
-    max-height: 350px;
     display: grid;
-
-    .pool-details-features {
-      overflow: auto;
-    }
+    grid-template-rows: auto 1fr;
   }
 
   &-features {
@@ -699,6 +724,10 @@ onMounted(async () => {
         grid-template-columns: 1fr;
       }
 
+      &-features {
+        overflow: visible;
+      }
+
       &-price-amount {
         font-size: 18px;
       }
@@ -738,7 +767,7 @@ onMounted(async () => {
       }
 
       &-summarybar {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
       }
 
       &-favbtn {
@@ -752,15 +781,43 @@ onMounted(async () => {
       }
 
       &-body {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        grid-template-areas:
+          'about   features'
+          'calendar timerules';
+        column-gap: 18px;
+        row-gap: 18px;
+        align-items: stretch;
+      }
+
+      &-about {
+        grid-area: about;
+        max-height: 350px;
+      }
+
+      &-calendar {
+        grid-area: calendar;
       }
 
       &-featureswrap {
-        grid-template-rows: auto 1fr;
+        grid-area: features;
+        max-height: 350px;
       }
 
       &-features {
         grid-auto-rows: max-content;
+        overflow: auto;
+      }
+
+      &-timerules {
+        grid-area: timerules;
+        display: flex;
+        flex-direction: column;
+      }
+
+      &-timerules-text {
+        overflow: auto;
       }
 
       &-price {
