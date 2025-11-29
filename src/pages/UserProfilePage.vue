@@ -440,7 +440,7 @@ onMounted(() => {
           class="auth-secondary"
           @click="router.push({ name: 'PoolsPublishedPage' })"
         >
-          Moji objavljeni bazeni
+          Objavljeni bazeni
         </button>
       </form>
     </div>

@@ -528,7 +528,7 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
 
   &-visibility-link {
     padding: 0;
-    color: var(--primary-color);
+    color: red;
     font-weight: 800;
     text-decoration: underline;
     cursor: pointer;

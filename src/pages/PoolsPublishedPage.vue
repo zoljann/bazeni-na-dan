@@ -36,6 +36,7 @@ const confirmDelete = async () => {
   try {
     pools.value = pools.value.filter((p) => p.id !== id);
     await deletePool(id);
+    userStore.decrementPublishedPoolsCount();
     notifications.addNotification('Bazen je obrisan.', 'success');
   } catch {
     notifications.addNotification('Brisanje nije uspjelo.', 'error');

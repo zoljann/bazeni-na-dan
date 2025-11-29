@@ -78,11 +78,33 @@ export const useUserStore = defineStore('userStore', () => {
     return 'success' as const;
   };
 
+  const incrementPublishedPoolsCount = () => {
+    if (!user.value) return;
+    user.value.publishedPoolsCount = (user.value.publishedPoolsCount ?? 0) + 1;
+    storage.setItem(USER_STORAGE_KEY, user.value);
+  };
+
+  const decrementPublishedPoolsCount = () => {
+    if (!user.value) return;
+    const current = user.value.publishedPoolsCount ?? 0;
+    user.value.publishedPoolsCount = Math.max(0, current - 1);
+    storage.setItem(USER_STORAGE_KEY, user.value);
+  };
+
   const logout = () => {
     setUser(null);
     setAccessToken(null);
     useNotificationsStore.addNotification('Uspješna odjava', 'success');
   };
 
-  return { user, isAuthenticated, login, register, updateProfile, logout };
+  return {
+    user,
+    isAuthenticated,
+    login,
+    register,
+    updateProfile,
+    incrementPublishedPoolsCount,
+    decrementPublishedPoolsCount,
+    logout
+  };
 });

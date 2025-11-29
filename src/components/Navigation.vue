@@ -18,6 +18,14 @@ const isDropdownOpen = ref(false);
 const dropdownRef = ref<HTMLElement>();
 
 const menuLabel = computed(() => (userStore.isAuthenticated ? userStore.user?.firstName : 'Meni'));
+const publishButtonLabel = computed(() => {
+  if (!userStore.isAuthenticated) {
+    return 'Objavi svoj bazen';
+  }
+
+  const count = userStore.user?.publishedPoolsCount ?? 0;
+  return count > 0 ? 'Objavljeni bazeni' : 'Objavi svoj bazen';
+});
 const navigationClasses = computed(() => ({
   'navigation-scrolled': scrolledNavigation.value || props.variant === 'solid',
   [`navigation--${isMobileView ? 'mobile' : 'desktop'}`]: true
@@ -97,7 +105,7 @@ onBeforeUnmount(() => {
           class="navigation-right-button"
           @click="goToPoolsPublishedPage"
         >
-          Objavi svoj bazen
+          {{ publishButtonLabel }}
         </button>
 
         <div
@@ -143,7 +151,7 @@ onBeforeUnmount(() => {
                 class="navigation-right-dropdown-links-item"
                 @click.prevent="goToPoolsPublishedPage"
               >
-                {{ userStore.isAuthenticated ? 'Objavljeni bazeni' : 'Objavi svoj bazen' }}
+                {{ publishButtonLabel }}
               </a>
               <a
                 class="navigation-right-dropdown-links-item"
