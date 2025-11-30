@@ -9,13 +9,17 @@ type PoolFilters = {
   partyAllowed: boolean;
   wiFi: boolean;
   bbq: boolean;
+  parking: boolean;
+  summerKitchen: boolean;
 };
 const DEFAULT_FILTERS: PoolFilters = {
   petsAllowed: false,
   heated: false,
   partyAllowed: false,
   wiFi: false,
-  bbq: false
+  bbq: false,
+  parking: false,
+  summerKitchen: false
 };
 
 const props = defineProps<{
@@ -84,7 +88,9 @@ const hasSelected = computed(
     local.value.heated ||
     local.value.partyAllowed ||
     local.value.wiFi ||
-    local.value.bbq
+    local.value.bbq ||
+    local.value.parking ||
+    local.value.summerKitchen
 );
 
 const classes = computed(() => ({
@@ -175,6 +181,32 @@ const classes = computed(() => ({
               <input
                 type="checkbox"
                 v-model="local.bbq"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
+            </label>
+          </li>
+          <li class="filters-list-item">
+            <label class="filters-check">
+              <span class="filters-check-label">Privatni parking</span>
+              <input
+                type="checkbox"
+                v-model="local.parking"
+              />
+              <span
+                class="filters-check-box"
+                aria-hidden="true"
+              ></span>
+            </label>
+          </li>
+          <li class="filters-list-item">
+            <label class="filters-check">
+              <span class="filters-check-label">Ljetna kuhinja uz bazen</span>
+              <input
+                type="checkbox"
+                v-model="local.summerKitchen"
               />
               <span
                 class="filters-check-box"

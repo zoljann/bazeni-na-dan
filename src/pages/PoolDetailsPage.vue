@@ -35,6 +35,8 @@ const hasPets = computed(() => !!pool.value?.filters?.petsAllowed);
 const hasPartyAllowed = computed(() => !!pool.value?.filters?.partyAllowed);
 const hasWifi = computed(() => !!pool.value?.filters?.wiFi);
 const hasBbq = computed(() => !!pool.value?.filters?.bbq);
+const hasParking = computed(() => !!pool.value?.filters?.parking);
+const hasSummerKitchen = computed(() => !!pool.value?.filters?.summerKitchen);
 const poolDetailsClasses = computed(() => ({
   [`pool-details--${isMobileView ? 'mobile' : 'desktop'}`]: true
 }));
@@ -384,6 +386,28 @@ onMounted(async () => {
             </span>
             <span class="pool-details-feature-text">
               {{ hasPartyAllowed ? 'Dozvoljene zabave' : 'Zabave nisu dozvoljene' }}
+            </span>
+          </li>
+          <li class="pool-details-feature">
+            <span
+              class="pool-details-feature-icon"
+              :class="{ 'is-on': hasParking, 'is-off': !hasParking }"
+            >
+              🚗
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasParking ? 'Privatni parking uz objekat' : 'Nema privatnog parkinga' }}
+            </span>
+          </li>
+          <li class="pool-details-feature">
+            <span
+              class="pool-details-feature-icon"
+              :class="{ 'is-on': hasSummerKitchen, 'is-off': !hasSummerKitchen }"
+            >
+              🍽️
+            </span>
+            <span class="pool-details-feature-text">
+              {{ hasSummerKitchen ? 'Ljetna kuhinja uz bazen' : 'Nema ljetne kuhinje' }}
             </span>
           </li>
           <li class="pool-details-feature">

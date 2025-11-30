@@ -29,7 +29,9 @@ const filters = ref({
   heated: false,
   partyAllowed: false,
   wiFi: false,
-  bbq: false
+  bbq: false,
+  parking: false,
+  summerKitchen: false
 });
 
 const filteredPools = computed(() => {
@@ -44,7 +46,9 @@ const filteredPools = computed(() => {
       (!filters.value.heated || !!p.filters?.heated) &&
       (!filters.value.partyAllowed || !!p.filters?.partyAllowed) &&
       (!filters.value.wiFi || !!p.filters?.wiFi) &&
-      (!filters.value.bbq || !!p.filters?.bbq)
+      (!filters.value.bbq || !!p.filters?.bbq) &&
+      (!filters.value.bbq || !!p.filters?.parking) &&
+      (!filters.value.bbq || !!p.filters?.summerKitchen)
   );
 });
 const displayDate = computed(() => {

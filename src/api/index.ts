@@ -170,6 +170,8 @@ type CreatePoolPayload = {
       partyAllowed: boolean;
       wiFi: boolean;
       bbq: boolean;
+      parking: boolean;
+      summerKitchen: boolean;
     };
     busyDays?: string[];
   };

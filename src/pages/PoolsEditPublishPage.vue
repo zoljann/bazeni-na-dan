@@ -38,7 +38,15 @@ const form = ref({
   rulesDescription: '',
   checkIn: '',
   checkOut: '',
-  filters: { petsAllowed: false, heated: false, partyAllowed: false, wiFi: false, bbq: false },
+  filters: {
+    petsAllowed: false,
+    heated: false,
+    partyAllowed: false,
+    wiFi: false,
+    bbq: false,
+    parking: false,
+    summerKitchen: false
+  },
   enableAvailability: false,
   busyDays: [] as string[],
   images: [] as string[]
@@ -233,7 +241,9 @@ const fillFromPool = (p: Pool) => {
     petsAllowed: !!p?.filters?.petsAllowed,
     partyAllowed: !!p?.filters?.partyAllowed,
     wiFi: !!p.filters?.wiFi,
-    bbq: !!p.filters?.bbq
+    bbq: !!p.filters?.bbq,
+    parking: !!p.filters?.parking,
+    summerKitchen: !!p.filters?.summerKitchen
   };
   form.value.images = Array.isArray(p.images) ? p.images.slice(0, 7) : [];
   const loadedBusy = Array.isArray(p.busyDays) ? (p.busyDays as string[]) : [];
@@ -550,7 +560,7 @@ onMounted(async () => {
               for="checkin"
               class="auth-label"
             >
-              Prijava u (koliko sati, opcionalno)
+              Prijava u (opcionalno)
             </label>
             <select
               id="checkin"
@@ -583,7 +593,7 @@ onMounted(async () => {
               for="checkout"
               class="auth-label"
             >
-              Odjava u (koliko sati, opcionalno)
+              Odjava u (opcionalno)
             </label>
             <select
               id="checkout"
@@ -609,7 +619,7 @@ onMounted(async () => {
         </div>
 
         <div class="auth-field">
-          <span class="auth-label">Opcije</span>
+          <span class="auth-label">Odaberi mogućnosti</span>
 
           <label class="optcheck">
             <input
@@ -625,13 +635,26 @@ onMounted(async () => {
             />
             <span class="optcheck-label">🍖 Roštilj na raspolaganju</span>
           </label>
-
           <label class="optcheck">
             <input
               type="checkbox"
               v-model="form.filters.partyAllowed"
             />
             <span class="optcheck-label">🎉 Dozvoljene zabave</span>
+          </label>
+          <label class="optcheck">
+            <input
+              type="checkbox"
+              v-model="form.filters.parking"
+            />
+            <span class="optcheck-label">🚗 Privatni parking</span>
+          </label>
+          <label class="optcheck">
+            <input
+              type="checkbox"
+              v-model="form.filters.summerKitchen"
+            />
+            <span class="optcheck-label">🍽️ Ljetna kuhinja uz bazen</span>
           </label>
           <label class="optcheck">
             <input

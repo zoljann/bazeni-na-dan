@@ -15,6 +15,8 @@ export type Pool = {
     partyAllowed: boolean;
     wiFi: boolean;
     bbq: boolean;
+    parking: boolean;
+    summerKitchen: boolean;
   };
   owner?: { name: string; avatarUrl: string; mobileNumber: string };
   visibleUntil: string;
