@@ -121,14 +121,13 @@ onMounted(async () => {
   if (storedPool) {
     pool.value = storedPool;
     updateSeoPool(storedPool);
-    return;
   }
 
   const res = await getPoolById(selectedPoolId.value);
   if (res.state === 'success') {
     pool.value = res.pool;
     updateSeoPool(res.pool);
-  } else {
+  } else if (!storedPool) {
     useNotificationsStore.addNotification('Odabrani bazen ne postoji', 'error');
     router.replace({ name: 'PoolsSearchPage' });
   }
@@ -148,7 +147,7 @@ onMounted(async () => {
       <p class="pool-details-meta">
         📍 {{ pool.city }}
         <span class="pool-details-meta-dot">•</span>
-        <span>Kapacitet do {{ pool.capacity }} osoba</span>
+        <span>Pregledi: {{ pool.views }}</span>
       </p>
 
       <button
@@ -422,6 +421,22 @@ onMounted(async () => {
         </p>
       </section>
     </div>
+
+    <section class="pool-details-aboutsite">
+      <h2 class="pool-details-aboutsite-title">Bazeni na dan ukratko</h2>
+      <p class="pool-details-aboutsite-text">
+        bazeni-na-dan.com je lokalna platforma za pretragu i iznajmljivanje privatnih bazena na dan
+        širom Bosne i Hercegovine. Na jednom mjestu okupljamo bazene iz različitih gradova, sa
+        preglednim cijenama, pravilima korištenja i mogućnostima (Wi-Fi, roštilj, grijani bazen,
+        parking..).
+      </p>
+      <p class="pool-details-aboutsite-text">
+        Kao gost lako pronađeš privatni bazen za dnevni najam u
+        {{ pool.city || 'svom gradu' }} ili nekom drugom gradu u BiH za druženje, rođendan ili
+        proslavu i direktno kontaktiraš domaćina – bez provizija i skrivenih troškova. Ako imaš
+        vlastiti bazen, možeš ga oglasiti na stranici i doći do više upita tokom cijele sezone.
+      </p>
+    </section>
   </section>
 
   <ImagePreview
@@ -640,6 +655,7 @@ onMounted(async () => {
 
   &-text {
     color: #4b5563;
+    text-align: justify;
   }
 
   &-featureswrap {
@@ -686,6 +702,29 @@ onMounted(async () => {
     &-text {
       font-weight: 700;
       color: var(--text-color-black);
+    }
+  }
+
+  &-aboutsite {
+    margin: 16px 0 24px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+
+    &-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #4b5563;
+      margin: 0 0 6px;
+    }
+
+    &-text {
+      font-size: 14px;
+      color: #6b7280;
+      text-align: justify;
+    }
+
+    &-text + &-text {
+      margin-top: 4px;
     }
   }
 
@@ -789,6 +828,18 @@ onMounted(async () => {
         column-gap: 18px;
         row-gap: 18px;
         align-items: stretch;
+      }
+
+      &-aboutsite {
+        margin-top: 20px;
+
+        &-title {
+          font-size: 16px;
+        }
+
+        &-text {
+          font-size: 15px;
+        }
       }
 
       &-about {

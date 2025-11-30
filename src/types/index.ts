@@ -21,6 +21,7 @@ export type Pool = {
   checkIn?: string;
   checkOut?: string;
   rulesDescription?: string;
+  views?: number;
   createdAt: string;
   updatedAt: string;
 };
