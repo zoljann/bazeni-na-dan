@@ -11,6 +11,7 @@ type PoolFilters = {
   bbq: boolean;
   parking: boolean;
   summerKitchen: boolean;
+  minCapacity: number;
 };
 const DEFAULT_FILTERS: PoolFilters = {
   petsAllowed: false,
@@ -19,7 +20,8 @@ const DEFAULT_FILTERS: PoolFilters = {
   wiFi: false,
   bbq: false,
   parking: false,
-  summerKitchen: false
+  summerKitchen: false,
+  minCapacity: 4
 };
 
 const props = defineProps<{
@@ -84,6 +86,7 @@ function onApply() {
 
 const hasSelected = computed(
   () =>
+    local.value.minCapacity !== DEFAULT_FILTERS.minCapacity ||
     local.value.petsAllowed ||
     local.value.heated ||
     local.value.partyAllowed ||
@@ -122,6 +125,21 @@ const classes = computed(() => ({
 
     <div class="filters-content">
       <div class="filters-section">
+        <div class="filters-capacity">
+          <div class="filters-capacity-labelrow">
+            <span class="filters-capacity-label">Minimalni kapacitet</span>
+            <span class="filters-capacity-value"> {{ local.minCapacity }} osoba </span>
+          </div>
+
+          <input
+            class="filters-capacity-slider"
+            type="range"
+            min="1"
+            max="40"
+            v-model.number="local.minCapacity"
+          />
+        </div>
+
         <ul class="filters-list">
           <li class="filters-list-item">
             <label class="filters-check">
@@ -400,6 +418,26 @@ const classes = computed(() => ({
       background 0.12s ease,
       border-color 0.12s ease,
       box-shadow 0.12s ease;
+  }
+
+  &-capacity {
+    padding: 10px 12px 8px;
+
+    &-labelrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    &-value {
+      color: #4b5563;
+    }
+
+    &-slider {
+      width: 100%;
+    }
   }
 
   &--mobile {

@@ -25,6 +25,7 @@ const showLocationDropdown = ref(false);
 const selectedCity = ref<string>('Sve lokacije');
 const showFilters = ref(false);
 const filters = ref({
+  minCapacity: 4,
   petsAllowed: false,
   heated: false,
   partyAllowed: false,
@@ -42,15 +43,17 @@ const filteredPools = computed(() => {
     (p) =>
       (city === 'sve lokacije' || !city || p.city.toLowerCase() === city) &&
       (!iso || (Array.isArray(p.busyDays) && !p.busyDays.includes(iso))) &&
+      Number(p.capacity) >= filters.value.minCapacity &&
       (!filters.value.petsAllowed || !!p.filters?.petsAllowed) &&
       (!filters.value.heated || !!p.filters?.heated) &&
       (!filters.value.partyAllowed || !!p.filters?.partyAllowed) &&
       (!filters.value.wiFi || !!p.filters?.wiFi) &&
       (!filters.value.bbq || !!p.filters?.bbq) &&
-      (!filters.value.bbq || !!p.filters?.parking) &&
-      (!filters.value.bbq || !!p.filters?.summerKitchen)
+      (!filters.value.parking || !!p.filters?.parking) &&
+      (!filters.value.summerKitchen || !!p.filters?.summerKitchen)
   );
 });
+
 const displayDate = computed(() => {
   if (!selectedDate.value) return null;
   const d = new Date(selectedDate.value);
@@ -84,7 +87,10 @@ const resultsText = computed(() => {
 
   return parts.join('');
 });
-const filtersCount = computed(() => Object.values(filters.value).filter(Boolean).length);
+const filtersCount = computed(() => {
+  const { minCapacity, ...rest } = filters.value;
+  return Object.values(rest).filter(Boolean).length;
+});
 const emptyText = computed(() => {
   if (selectedDate.value && filtersCount.value > 0)
     return 'Nema bazena za odabrani datum i filtere.';
