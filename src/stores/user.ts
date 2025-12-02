@@ -48,7 +48,12 @@ export const useUserStore = defineStore('userStore', () => {
   }) => {
     const res = await registerUser(payload);
     if (res.state === 'error') {
-      useNotificationsStore.addNotification('Registracija nije uspjela.', 'error');
+      if (res.message === 'Email') {
+        useNotificationsStore.addNotification('Uneseni e-mail se već koristi.', 'error');
+      } else {
+        useNotificationsStore.addNotification('Registracija nije uspjela.', 'error');
+      }
+
       return 'error' as const;
     }
 

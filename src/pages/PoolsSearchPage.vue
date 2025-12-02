@@ -53,7 +53,10 @@ const filteredPools = computed(() => {
       (!filters.value.summerKitchen || !!p.filters?.summerKitchen)
   );
 });
-
+const sortedPools = computed(() => {
+  const list = filteredPools.value ?? [];
+  return [...list].sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
+});
 const displayDate = computed(() => {
   if (!selectedDate.value) return null;
   const d = new Date(selectedDate.value);
@@ -89,7 +92,7 @@ const resultsText = computed(() => {
 });
 const filtersCount = computed(() => {
   const { minCapacity, ...rest } = filters.value;
-  return Object.values(rest).filter(Boolean).length;
+  return Object.values(rest).filter(Boolean).length + (minCapacity === 4 ? 0 : 1);
 });
 const emptyText = computed(() => {
   if (selectedDate.value && filtersCount.value > 0)
@@ -341,7 +344,7 @@ watch(showFilters, (v) => {
         />
         <PoolCard
           v-else
-          v-for="p in filteredPools"
+          v-for="p in sortedPools"
           :key="p.id"
           :pool="p"
           @open-pool="openPool"

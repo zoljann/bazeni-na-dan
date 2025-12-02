@@ -32,15 +32,10 @@ api.interceptors.response.use(
 
 function handleApiError(e: unknown): ApiError {
   const error = (e instanceof AxiosError && e?.response?.data) || e;
-  const httpCode = e instanceof AxiosError && e.response?.status;
 
   return {
     state: 'error',
-    message:
-      (error?.code === 'ERR_NETWORK' && 'Network error') ||
-      (httpCode && httpCode >= 400 && httpCode < 600 && 'Server error') ||
-      error?.details ||
-      error?.message
+    message: error?.details || error?.message
   };
 }
 

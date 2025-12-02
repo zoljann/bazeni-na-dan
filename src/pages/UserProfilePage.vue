@@ -34,7 +34,7 @@ const authClasses = computed(() => ({
 }));
 
 const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-const nameOk = (v: string) => v.trim().length >= 2 && v.trim().length <= 40;
+const nameOk = (v: string) => v.trim().length >= 2 && v.trim().length <= 15;
 const passOk = (v: string) => v.length >= 6 && v.length <= 25;
 const mobileOk = (v: string) => /^\d{9,15}$/.test(v);
 const sanitizeMobile = (v: string) => v.replace(/\D/g, '').slice(0, 15);
@@ -122,9 +122,9 @@ const submit = async () => {
   pwdErrors.value = {};
 
   if (!nameOk(form.value.firstName))
-    errors.value.firstName = 'Unesite ispravno ime (min 2, max 40 karaktera).';
+    errors.value.firstName = 'Unesite ispravno ime (min 2, max 15 karaktera).';
   if (!nameOk(form.value.lastName))
-    errors.value.lastName = 'Unesite ispravno prezime (min 2, max 40 karaktera).';
+    errors.value.lastName = 'Unesite ispravno prezime (min 2, max 15 karaktera).';
   if (!emailOk(form.value.email)) errors.value.email = 'Email nije ispravnog formata.';
   if (!mobileOk(form.value.mobileNumber))
     errors.value.mobileNumber = 'Broj telefona mora imati 9–15 cifara.';

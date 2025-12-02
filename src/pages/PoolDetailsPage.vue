@@ -735,14 +735,14 @@ onMounted(async () => {
     border-top: 1px solid #e5e7eb;
 
     &-title {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       color: #4b5563;
       margin: 0 0 6px;
     }
 
     &-text {
-      font-size: 14px;
+      font-size: 12px;
       color: #6b7280;
       text-align: justify;
     }
@@ -858,17 +858,17 @@ onMounted(async () => {
         margin-top: 20px;
 
         &-title {
-          font-size: 16px;
+          font-size: 14px;
         }
 
         &-text {
-          font-size: 15px;
+          font-size: 13px;
         }
       }
 
       &-about {
         grid-area: about;
-        max-height: 350px;
+        max-height: 370px;
       }
 
       &-calendar {
@@ -877,7 +877,7 @@ onMounted(async () => {
 
       &-featureswrap {
         grid-area: features;
-        max-height: 350px;
+        max-height: 370px;
       }
 
       &-features {
