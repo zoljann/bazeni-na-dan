@@ -46,6 +46,8 @@ interface ApiError {
 
 type AuthSuccess = { state: 'success'; user: User };
 type UpdateUserSuccess = { state: 'success'; user: User };
+type ForgotPasswordSuccess = { state: 'success' };
+type ResetPasswordSuccess = { state: 'success' };
 type AvailablePoolsSuccess = { state: 'success'; pools: Pool[] };
 type PoolByIdSuccess = { state: 'success'; pool: Pool };
 type CreatePoolSuccess = { state: 'success'; pool: Pool };
@@ -122,6 +124,30 @@ export async function updateUser(
     const { data } = await api.put('/user', body);
 
     return { state: 'success', user: data.user as User };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function forgotPassword(payload: {
+  email: string;
+}): Promise<ForgotPasswordSuccess | ApiError> {
+  try {
+    await api.post('/auth/forgot-password', payload);
+
+    return { state: 'success' };
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
+
+export async function resetPassword(payload: {
+  token: string;
+  password: string;
+}): Promise<ResetPasswordSuccess | ApiError> {
+  try {
+    await api.post('/auth/reset-password', payload);
+    return { state: 'success' };
   } catch (e) {
     return handleApiError(e);
   }

@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import type { User } from 'src/types';
 import { notificationsStore } from './notifications';
-import { loginUser, registerUser, updateUser } from '../api';
+import { forgotPassword, loginUser, registerUser, resetPassword, updateUser } from '../api';
 import { storage } from '../utility/localStorage';
 import { setAccessToken } from '../utility/token';
 
@@ -83,6 +83,18 @@ export const useUserStore = defineStore('userStore', () => {
     return 'success' as const;
   };
 
+  const requestForgotPassword = async (email: string) => {
+    const res = await forgotPassword({ email });
+
+    return res.state === 'success' ? ('success' as const) : ('error' as const);
+  };
+
+  const requestResetPassword = async (token: string, newPassword: string) => {
+    const res = await resetPassword({ token, password: newPassword });
+
+    return res.state === 'success' ? ('success' as const) : ('error' as const);
+  };
+
   const incrementPublishedPoolsCount = () => {
     if (!user.value) return;
     user.value.publishedPoolsCount = (user.value.publishedPoolsCount ?? 0) + 1;
@@ -108,6 +120,8 @@ export const useUserStore = defineStore('userStore', () => {
     login,
     register,
     updateProfile,
+    requestForgotPassword,
+    requestResetPassword,
     incrementPublishedPoolsCount,
     decrementPublishedPoolsCount,
     logout

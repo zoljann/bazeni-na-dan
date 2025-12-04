@@ -5,9 +5,11 @@ import isMobile from 'is-mobile';
 import Navigation from '../../components/Navigation.vue';
 import { useUserStore } from '../../stores/user';
 import TitleBar from '../../components/TitleBar.vue';
+import { notificationsStore } from '@/stores/notifications';
 
 const router = useRouter();
 const route = useRoute();
+const notifications = notificationsStore();
 const nextRoute = (route.query.next as string) || 'PoolsHomePage';
 const userStore = useUserStore();
 const isMobileView = isMobile();
@@ -63,6 +65,37 @@ const submitLogin = async () => {
 
   const res = await userStore.login(loginPayload.value.email, loginPayload.value.password);
   if (res === 'success') router.push({ name: nextRoute });
+};
+
+const submitForgotPassword = async () => {
+  loginErrors.value = { ...loginErrors.value, email: undefined };
+
+  const email = loginPayload.value.email.trim();
+
+  if (!email) {
+    loginErrors.value = {
+      ...loginErrors.value,
+      email: 'Unesite email adresu za reset lozinke.'
+    };
+    return;
+  }
+
+  if (!emailOk(email)) {
+    loginErrors.value = {
+      ...loginErrors.value,
+      email: 'Email nije ispravnog formata.'
+    };
+    return;
+  }
+
+  const res = await userStore.requestForgotPassword(email);
+
+  if (res === 'success') {
+    loginPayload.value.email = '';
+    notifications.addNotification('Poslali smo upute za reset lozinke na email.', 'success', 10000);
+  } else {
+    notifications.addNotification('Neuspješan pokušaj reseta lozinke.', 'error');
+  }
 };
 </script>
 
@@ -373,6 +406,14 @@ const submitLogin = async () => {
         </div>
 
         <button
+          type="button"
+          class="auth-forgot"
+          @click="submitForgotPassword"
+        >
+          Zaboravljena lozinka?
+        </button>
+
+        <button
           type="submit"
           class="auth-submit"
         >
@@ -480,6 +521,15 @@ const submitLogin = async () => {
     font-weight: 900;
     border: 1px solid var(--primary-color);
     box-shadow: 0 6px 18px rgba(0, 178, 255, 0.18);
+    cursor: pointer;
+  }
+
+  &-forgot {
+    text-align: right;
+    color: #0369a1;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: underline;
     cursor: pointer;
   }
 
