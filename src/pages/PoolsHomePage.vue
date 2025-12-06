@@ -205,9 +205,9 @@ onMounted(() => {
             <span class="content-after-how-it-works-badge">2</span>
             <h3 class="content-after-how-it-works-body-title">Otvori bazen i provjeri kalendar</h3>
             <p class="content-after-how-it-works-body-text">
-              Otvori profil bazena koji ti se sviđa i na dnu stranice provjeri kalendar dostupnosti,
+              Otvori profil bazena koji ti se sviđa i provjeri kalendar dostupnosti,
               ako ga bazen ima. Ako kalendara nema, termin i cijenu možeš provjeriti direktno s
-              domaćinom, a uz to vidi šta je sve uključeno u cijenu (oprema, roštilj, parking..).
+              domaćinom, a uz to vidi šta je sve uključeno u cijenu (oprema, roštilj, parking, wi-fi..).
             </p>
           </div>
         </div>

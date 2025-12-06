@@ -282,7 +282,10 @@ const submit = async () => {
       userStore.incrementPublishedPoolsCount();
     }
 
-    notifications.addNotification(isEdit.value ? 'Bazen ažuriran.' : 'Bazen objavljen.', 'success');
+    notifications.addNotification(
+      isEdit.value ? 'Bazen ažuriran.' : 'Bazen objavljen i vidljiv narednih mjesec dana.',
+      'success'
+    );
     router.push({ name: 'PoolsPublishedPage' });
   } catch {
     notifications.addNotification('Nešto je pošlo po krivu, pokušaj ponovo kasnije.', 'error');

@@ -41,6 +41,22 @@ const isPoolAvailableTomorrow = computed(() => {
   const iso = d.toISOString().slice(0, 10);
   return Array.isArray(busy) && !busy.includes(iso);
 });
+const visibilityExpiresAt = computed(() =>
+  props.pool.visibleUntil ? new Date(props.pool.visibleUntil) : null
+);
+const isPoolCurrentlyVisible = computed(
+  () =>
+    !!props.pool.isVisible &&
+    (!visibilityExpiresAt.value || visibilityExpiresAt.value >= new Date())
+);
+const visibleUntilLabel = computed(() => {
+  const d = visibilityExpiresAt.value;
+  if (!d) return '';
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+});
 
 const openVisibilityInfo = () => (showVisibilityInfo.value = true);
 const onPoolClick = () => emit('openPool', props.pool.id);
@@ -299,11 +315,15 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
       </button>
     </div>
     <div
-      v-if="actions && !pool.isVisible"
+      v-if="actions"
       class="pool-card-visibility-hint"
       @click.stop
     >
-      Ovaj bazen trenutno <strong>nije vidljiv</strong>.
+      <template v-if="isPoolCurrentlyVisible">
+        Bazen je <strong>vidljiv</strong>
+        <span v-if="visibleUntilLabel"> do {{ visibleUntilLabel }}. </span>
+      </template>
+      <template v-else> Bazen trenutno <strong>nije vidljiv</strong>. </template>
       <button
         type="button"
         class="pool-card-visibility-link"
@@ -317,13 +337,14 @@ const onLikeClick = () => toggleFavoritePool(props.pool);
     <ConfirmPopup
       :open="showVisibilityInfo"
       title="Vidljivost bazena"
-      :message="`**Vaš bazen trenutno NIJE javno vidljiv.**
+      :message="`Prvi mjesec nakon objave je **potpuno besplatan**.
 
-      Da bi postao vidljiv, potrebno je kontaktirati administratora(viber, whatsapp, poziv..) na **${env.adminMobileNumber}** i dogovoriti detalje.
+      Vaš oglas dobija:
+    - **Kalendar dostupnosti** – gosti odmah vide slobodne datume, vi imate manje dopisivanja.
+    - **Dijeljiv link oglasa** – sve je na jednoj stranici: slike, videi, pravila, cijene i dostupnost; samo pošaljete link potencijalnim gostima.
+    - **Besplatan marketing** – mi radimo promociju bazena na Googleu, Instagramu i ostalim društvenim mrežama.
 
-      **Cijena paketa:** 100KM/mjesec (promo za prvih 5 bazena **50KM**/mjesec).
-
-      Objavom na našoj platformi **garantujemo** više pregleda, upita i rezervacija — imaćete **više popunjenih termina** i manje praznih dana.`"
+    Nakon prvog mjeseca vidljivost je **100KM/mjesec** – cijena koja se u pravilu pokrije sa pola jedne rezervacije. Za produženje se javite administratoru na **${env.adminMobileNumber}**.`"
       :rich="true"
       cancel-label="Zatvori"
       @confirm="showVisibilityInfo = false"

@@ -8,7 +8,7 @@ export const faqData = {
     },
     {
       q: 'Kako provjeravam da li je termin slobodan?',
-      a: 'Ako je domaćin uključio kalendar dostupnosti, na dnu pregleda bazena vidiš slobodne i zauzete datume. Ako kalendara nema, provjeru termina radiš direktno s domaćinom putem kontakta navedenog u pregledu bazena.'
+      a: 'Ako je domaćin uključio kalendar dostupnosti, na pregledu bazena vidiš slobodne i zauzete datume. Ako kalendara nema, provjeru termina radiš direktno s domaćinom putem kontakta navedenog u pregledu bazena.'
     },
     {
       q: 'Koliko ljudi mogu povesti?',
@@ -20,7 +20,7 @@ export const faqData = {
     },
     {
       q: 'Šta ako moram otkazati dolazak?',
-      a: 'Ako ti se promijene planovi, obavijesti domaćina što je prije moguće koristeći kontakt podatke iz profila bazena. Svaki bazen može imati vlastita pravila otkazivanja, zato ih pročitaj prije dogovora i poštuj ono što ste se dogovorili.'
+      a: 'Ako ti se promijene planovi, obavijesti domaćina što je prije moguće. Svaki bazen može imati vlastita pravila otkazivanja, zato ih pročitaj prije dogovora i poštuj ono što ste se dogovorili.'
     },
     {
       q: 'Kontakt administracije web stranice',
@@ -30,11 +30,11 @@ export const faqData = {
   hosts: [
     {
       q: 'Šta mi je potrebno da bih postao domaćin?',
-      a: 'Registruješ se na web stranici i kroz nekoliko jednostavnih koraka dodaš svoj bazen: fotografije, opis, pravila i osnovne informacije. Nakon objave možeš odmah pregledati svoj bazen.'
+      a: 'Registruješ se na web stranici i kroz nekoliko jednostavnih koraka BESPLATNO dodaš svoj bazen: fotografije, opis, pravila i osnovne informacije. Nakon objave tvoj bazen postaje javno vidljiv.'
     },
     {
       q: 'Kako upravljam bazenom?',
-      a: 'Nakon objave možeš u svakom trenutku uređivati profil bazena: dodavati i brisati fotografije, mijenjati opis, pravila, cijene i maksimalan broj gostiju. Ako uključiš kalendar dostupnosti, označavaš zauzete i slobodne dane po potrebi. Također možeš jednostavno poslati link svog bazena potencijalnim gostima kako bi odmah vidjeli dostupne termine bez dodatnih upita/poziva.'
+      a: 'Nakon objave možeš u svakom trenutku uređivati profil bazena: dodavati i brisati fotografije, mijenjati opis, pravila, cijene i maksimalan broj gostiju. Ako uključiš kalendar dostupnosti, označavaš zauzete i slobodne dane po potrebi. Također možeš jednostavno poslati link svog bazena potencijalnim gostima kako bi odmah vidjeli dostupne termine, slike, pravila i drugo bez dodatnih upita/poziva.'
     },
     {
       q: 'Kako gosti pronalaze moj bazen?',
@@ -43,10 +43,6 @@ export const faqData = {
     {
       q: 'Kako gosti rezervišu moj bazen?',
       a: 'Rezervacije se ne rade preko web stranice. Gosti te kontaktiraju direktno putem kontakta navedenog u profilu bazena i s tobom dogovaraju termin i uslove. Ako koristiš kalendar dostupnosti, nakon dogovora jednostavno označiš dan kao zauzet i ostalim posjetiocima je odmah jasno kada je bazen slobodan.'
-    },
-    {
-      q: 'Da li postoji provizija ili dodatni troškovi?',
-      a: 'Ne uzimamo proviziju po rezervaciji. Plaćaš samo simboličnu mjesečnu naknadu da bi tvoj bazen bio vidljiv gostima. Cilj stranice je okupiti sve bazene u BiH na jednom mjestu kako bi domaćini lakše dolazili do novih gostiju — a gosti lakše pronašli dostupne bazene za željene termine.'
     }
   ]
 };
