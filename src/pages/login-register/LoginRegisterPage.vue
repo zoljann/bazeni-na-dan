@@ -43,9 +43,9 @@ const sanitizeMobile = (v: string) => v.replace(/\D/g, '').slice(0, 15);
 const submitRegister = async () => {
   regErrors.value = {};
   if (!nameOk(reg.value.firstName))
-    regErrors.value.firstName = 'Unesite ispravno ime (min 2, max 15 karaktera).';
+    regErrors.value.firstName = 'Unesite ispravno ime (2-15 karaktera).';
   if (!nameOk(reg.value.lastName))
-    regErrors.value.lastName = 'Unesite ispravno prezime (min 2, max 15 karaktera).';
+    regErrors.value.lastName = 'Unesite ispravno prezime (2-15 karaktera).';
   if (!emailOk(reg.value.email)) regErrors.value.email = 'Email nije ispravnog formata.';
   if (!mobileOk(reg.value.mobileNumber))
     regErrors.value.mobileNumber = 'Broj telefona mora imati 9–15 cifara.';

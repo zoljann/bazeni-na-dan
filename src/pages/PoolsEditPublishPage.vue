@@ -158,7 +158,7 @@ const openImagePreview = (index: number) => {
 const validate = () => {
   errors.value = {};
   const t = form.value.title.trim();
-  if (t.length < 3 || t.length > 40) errors.value.title = 'Naslov mora imati od 3 do 40 karaktera.';
+  if (t.length < 3 || t.length > 40) errors.value.title = 'Unesi ispravan naslov (3-40 karaktera).';
   if (!form.value.city || !allCities.includes(form.value.city))
     errors.value.city = 'Odaberite grad iz liste.';
 
@@ -283,7 +283,7 @@ const submit = async () => {
     }
 
     notifications.addNotification(
-      isEdit.value ? 'Bazen ažuriran.' : 'Bazen objavljen i vidljiv narednih mjesec dana.',
+      isEdit.value ? 'Bazen ažuriran.' : 'Bazen je objavljen i vidljiv narednih mjesec dana.',
       'success'
     );
     router.push({ name: 'PoolsPublishedPage' });
@@ -576,7 +576,7 @@ onMounted(async () => {
                 :key="h"
                 :value="String(h)"
               >
-                {{ h }}h
+                {{ h }}:00
               </option>
             </select>
             <p
@@ -609,7 +609,7 @@ onMounted(async () => {
                 :key="h"
                 :value="String(h)"
               >
-                {{ h }}h
+                {{ h }}:00
               </option>
             </select>
             <p

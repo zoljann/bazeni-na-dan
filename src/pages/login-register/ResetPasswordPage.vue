@@ -46,7 +46,11 @@ const submitReset = async () => {
   const res = await userStore.requestResetPassword(token.value, password.value);
 
   if (res === 'success') {
-    notifications.addNotification('Lozinka je uspješno promijenjena. Možete se prijaviti.', 'success', 8000);
+    notifications.addNotification(
+      'Lozinka je uspješno promijenjena. Možete se prijaviti.',
+      'success',
+      8000
+    );
     password.value = '';
     confirmPassword.value = '';
     router.replace({ name: 'LoginRegisterPage' });

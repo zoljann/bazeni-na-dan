@@ -38,7 +38,7 @@ export const faqData = {
     },
     {
       q: 'Kako gosti pronalaze moj bazen?',
-      a: 'Gosti pretražuju bazene po gradovima, filtrima i terminima, upoređuju fotografije, opise i pravila, i tako dolaze do tvog bazena. Što je profil sređeniji (dobre fotografije, jasan opis, jasna pravila), to ćeš dobiti više pregleda i poziva.'
+      a: 'Gosti pretražuju bazene po gradovima, filterima i terminima, upoređuju fotografije, opise i pravila i tako dolaze do tvog bazena. Što je profil sređeniji (dobre fotografije, jasan opis, jasna pravila), to ćeš dobiti više pregleda i poziva.'
     },
     {
       q: 'Kako gosti rezervišu moj bazen?',

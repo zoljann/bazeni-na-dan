@@ -122,9 +122,9 @@ const submit = async () => {
   pwdErrors.value = {};
 
   if (!nameOk(form.value.firstName))
-    errors.value.firstName = 'Unesite ispravno ime (min 2, max 15 karaktera).';
+    errors.value.firstName = 'Unesite ispravno ime (2-15 karaktera).';
   if (!nameOk(form.value.lastName))
-    errors.value.lastName = 'Unesite ispravno prezime (min 2, max 15 karaktera).';
+    errors.value.lastName = 'Unesite ispravno prezime (2-15 karaktera).';
   if (!emailOk(form.value.email)) errors.value.email = 'Email nije ispravnog formata.';
   if (!mobileOk(form.value.mobileNumber))
     errors.value.mobileNumber = 'Broj telefona mora imati 9–15 cifara.';

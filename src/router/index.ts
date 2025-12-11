@@ -58,7 +58,7 @@ const router = createRouter({
       component: () => import('../pages/login-register/LoginRegisterPage.vue'),
       meta: { guestOnly: true }
     },
- {
+    {
       path: '/resetovanje-lozinke',
       name: 'ResetPasswordPage',
       component: () => import('../pages/login-register/ResetPasswordPage.vue'),
